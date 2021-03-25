@@ -1,7 +1,10 @@
 package it.polito.mad.group27.carpooling
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 data class Profile (
     var fullName: String = "",
     var nickName: String = "",
@@ -9,4 +12,4 @@ data class Profile (
     var location: String = "",
     var registrationDate: String = "",
     var rating: Float = .0f,
-) : Serializable
+): Parcelable

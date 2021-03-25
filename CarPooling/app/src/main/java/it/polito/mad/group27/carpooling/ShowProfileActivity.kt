@@ -7,6 +7,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun AppCompatActivity.getLogTag(): String {
     return getString(R.string.log_tag)
@@ -57,6 +60,8 @@ class ShowProfileActivity : AppCompatActivity() {
 
         val editIntent = Intent(this, EditProfileActivity::class.java)
             .also { it.putExtra("group27.lab1.profile", profile) }
+
+//        Json.decodeFromString<Profile>(Json.encodeToString(profile))
         startActivityForResult(editIntent, RequestCodes.EDIT_PROFILE.ordinal)
     }
 }
