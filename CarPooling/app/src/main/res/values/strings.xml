@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Car Pooling</string>
+    <string name="default_location">Turin, Italy</string>
+    <string name="default_email">john.smith@polito.it</string>
+    <string name="default_nickname">MadJohn</string>
+    <string name="default_fullname">John Smith</string>
+    <string name="reputation">Reputation</string>
+    <string name="since">Since</string>
+    <string name="default_registration_date">25/03/2021</string>
+</resources>
