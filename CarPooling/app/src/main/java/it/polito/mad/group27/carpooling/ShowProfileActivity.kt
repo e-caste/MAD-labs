@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 
 class ShowProfileActivity : AppCompatActivity() {
+
+    enum class RequestCodes {
+        EDIT_PROFILE
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
@@ -32,5 +38,8 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun editProfile() {
         Log.d("MAD-group-27", "edit button clicked")
+
+        val editIntent = Intent(this, EditProfileActivity::class.java)
+        startActivityForResult(editIntent, RequestCodes.EDIT_PROFILE.ordinal)
     }
 }
