@@ -8,4 +8,8 @@
     <string name="since">Since</string>
     <string name="default_registration_date">25/03/2021</string>
     <string name="edit">Edit</string>
+    <string name="hint_fullname">Your full name</string>
+    <string name="hint_nickname">Your nickname</string>
+    <string name="hint_email">Your email</string>
+    <string name="hint_address">Your address</string>
 </resources>
