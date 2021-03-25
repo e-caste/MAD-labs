@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#9C27B0"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:paddingLeft="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/fullNameView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_fullname"
+                android:inputType="textCapWords"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_fullname"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:imeOptions="actionNext"
+                android:nextFocusDown="@id/nicknameView"
+                android:focusable="true"/>
+
+            <EditText
+                android:id="@+id/nicknameView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_nickname"
+                android:inputType="textShortMessage"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_nickname"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:imeOptions="actionNext"
+                android:nextFocusDown="@id/emailView"
+                android:focusable="true"/>
+
+            <EditText
+                android:id="@+id/emailView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_email"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:imeOptions="actionNext"
+                android:nextFocusDown="@id/locationView"
+                android:focusable="true"/>
+
+            <EditText
+                android:id="@+id/locationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_address"
+                android:inputType="textShortMessage"
+                android:text="@string/default_location"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:focusable="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
