@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Car Pooling</string>
+    <string name="log_tag">MAD-group-27</string>
     <string name="default_location">Turin, Italy</string>
     <string name="default_email">john.smith@polito.it</string>
     <string name="default_nickname">MadJohn</string>

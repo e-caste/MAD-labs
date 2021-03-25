@@ -10,7 +10,7 @@
     tools:context=".EditProfileActivity">
 
     <ImageButton
-        android:id="@+id/imageView"
+        android:id="@+id/imageProfileButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -29,46 +29,46 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/fullNameView"
+                android:id="@+id/fullNameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:hint="@string/hint_fullname"
                 android:imeOptions="actionNext"
                 android:inputType="textCapWords"
-                android:nextFocusDown="@id/nicknameView"
+                android:nextFocusDown="@id/nicknameEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_fullname"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
             <EditText
-                android:id="@+id/nicknameView"
+                android:id="@+id/nicknameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:hint="@string/hint_nickname"
                 android:imeOptions="actionNext"
                 android:inputType="textShortMessage"
-                android:nextFocusDown="@id/emailView"
+                android:nextFocusDown="@id/emailEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_nickname"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <EditText
-                android:id="@+id/emailView"
+                android:id="@+id/emailEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:hint="@string/hint_email"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
-                android:nextFocusDown="@id/locationView"
+                android:nextFocusDown="@id/locationEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_email"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <EditText
-                android:id="@+id/locationView"
+                android:id="@+id/locationEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"

@@ -8,6 +8,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 
+fun AppCompatActivity.getLogTag(): String {
+    return getString(R.string.log_tag)
+}
+
 class ShowProfileActivity : AppCompatActivity() {
 
     enum class RequestCodes {
@@ -37,7 +41,7 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun editProfile() {
-        Log.d("MAD-group-27", "edit button clicked")
+        Log.d(getLogTag(), "edit button clicked")
 
         val editIntent = Intent(this, EditProfileActivity::class.java)
         startActivityForResult(editIntent, RequestCodes.EDIT_PROFILE.ordinal)
