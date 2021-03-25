@@ -11,6 +11,9 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        val profile = intent.getSerializableExtra("group27.lab1.profile") as Profile  // use as? if null can be received
+        Log.d(getLogTag(), "received object of class ${profile::class.java}: $profile")
+
         val imageButton = findViewById<ImageButton>(R.id.imageProfileButton)
         val fullNameEdit = findViewById<EditText>(R.id.fullNameEdit)
         val nickNameEdit = findViewById<EditText>(R.id.nicknameEdit)

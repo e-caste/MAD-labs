@@ -55,7 +55,7 @@
                     android:layout_height="match_parent"
                     android:indeterminate="false"
                     android:numStars="5"
-                    android:rating="3" />
+                    android:rating="@string/default_rating" />
 
                 <TextView
                     android:id="@+id/textView6"

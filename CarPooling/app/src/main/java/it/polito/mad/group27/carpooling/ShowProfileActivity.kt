@@ -14,6 +14,8 @@ fun AppCompatActivity.getLogTag(): String {
 
 class ShowProfileActivity : AppCompatActivity() {
 
+    private val profile = Profile()
+
     enum class RequestCodes {
         EDIT_PROFILE
     }
@@ -21,6 +23,16 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
+
+        // if something in storage -> set it
+        // TODO get data from storage
+        // else use defaults from strings.xml
+        profile.fullName = getString(R.string.default_fullname)
+        profile.nickName = getString(R.string.default_nickname)
+        profile.email = getString(R.string.default_email)
+        profile.location = getString(R.string.default_location)
+        profile.registrationDate = getString(R.string.default_registration_date)
+        profile.rating = getString(R.string.default_rating).toFloat()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -44,6 +56,7 @@ class ShowProfileActivity : AppCompatActivity() {
         Log.d(getLogTag(), "edit button clicked")
 
         val editIntent = Intent(this, EditProfileActivity::class.java)
+            .also { it.putExtra("group27.lab1.profile", profile) }
         startActivityForResult(editIntent, RequestCodes.EDIT_PROFILE.ordinal)
     }
 }
