@@ -14,4 +14,5 @@
     <string name="hint_nickname">Your nickname</string>
     <string name="hint_email">Your email</string>
     <string name="hint_address">Your address</string>
+    <string name="save">Save</string>
 </resources>
