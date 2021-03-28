@@ -2,8 +2,9 @@ package it.polito.mad.group27.carpooling
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 @Parcelize
 data class Profile (
     var fullName: String = "John Smith",

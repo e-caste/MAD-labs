@@ -2,7 +2,6 @@ package it.polito.mad.group27.carpooling
 
 import android.app.Activity
 import android.content.Intent
-import android.media.Rating
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +11,10 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun AppCompatActivity.getLogTag(): String {
     return getString(R.string.log_tag)
@@ -37,8 +40,15 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
 
         // if something in storage -> set it
-        // TODO get data from storage
-        // else use defaults from Profile
+        val savedProfileJson = getPreferences(MODE_PRIVATE)
+                .getString(getString(R.string.saved_profile_preference), null)
+        if(savedProfileJson!=null) try {
+            profile = Json.decodeFromString(savedProfileJson)
+        }catch (e:SerializationException){
+            Log.d(getLogTag(), "Cannot parse saved preference profile")
+        }
+
+
 
         profileImageView = findViewById(R.id.profileImageView)
         fullNameView = findViewById(R.id.fullNameView)
@@ -75,7 +85,6 @@ class ShowProfileActivity : AppCompatActivity() {
         val editIntent = Intent(this, EditProfileActivity::class.java)
             .also { it.putExtra("group27.lab1.profile", profile) }
 
-//        Json.decodeFromString<Profile>(Json.encodeToString(profile))
         startActivityForResult(editIntent, RequestCodes.EDIT_PROFILE.ordinal)
     }
 
@@ -88,7 +97,13 @@ class ShowProfileActivity : AppCompatActivity() {
                     if(profile != newProfile && newProfile != null){
                         profile = newProfile
                         updateFields()
-                        //TODO SharedPreferences
+
+
+                        val sharedPref = getPreferences(MODE_PRIVATE) ?: return
+                        with (sharedPref.edit()) {
+                            putString(getString(R.string.saved_profile_preference), Json.encodeToString(profile))
+                            apply()
+                        }
 
                     }
 
