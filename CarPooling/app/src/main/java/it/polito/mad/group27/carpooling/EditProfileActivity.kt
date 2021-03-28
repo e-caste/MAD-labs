@@ -2,6 +2,7 @@ package it.polito.mad.group27.carpooling
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
@@ -19,6 +20,12 @@ class EditProfileActivity : AppCompatActivity() {
         val nickNameEdit = findViewById<EditText>(R.id.nicknameEdit)
         val emailEdit = findViewById<EditText>(R.id.emailEdit)
         val locationEdit = findViewById<EditText>(R.id.locationEdit)
+
+        // TODO img
+        fullNameEdit.setText(profile.fullName)
+        nickNameEdit.setText(profile.nickName)
+        emailEdit.setText(profile.email)
+        locationEdit.setText(profile.location)
 
         imageButton.setOnClickListener {
             Log.d(getLogTag(), "image button clicked")
