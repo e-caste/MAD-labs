@@ -29,13 +29,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
         // if something in storage -> set it
         // TODO get data from storage
-        // else use defaults from strings.xml
-        profile.fullName = getString(R.string.default_fullname)
-        profile.nickName = getString(R.string.default_nickname)
-        profile.email = getString(R.string.default_email)
-        profile.location = getString(R.string.default_location)
-        profile.registrationDate = getString(R.string.default_registration_date)
-        profile.rating = getString(R.string.default_rating).toFloat()
+        // else use defaults from Profile
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
