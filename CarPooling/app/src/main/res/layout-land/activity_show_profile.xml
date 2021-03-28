@@ -68,7 +68,7 @@
                     android:paddingRight="4sp"/>
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/registrationDateView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/default_registration_date" />
