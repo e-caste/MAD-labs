@@ -9,14 +9,29 @@
     android:paddingRight="16dp"
     tools:context=".EditProfileActivity">
 
-    <ImageButton
-        android:id="@+id/imageProfileButton"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#9C27B0"
-        android:scaleType="fitCenter"
-        tools:src="@tools:sample/avatars" />
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/imageProfileView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#aaFF3E3E" />
+
+        <ImageButton
+            android:id="@+id/imageProfileButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#009C27B0"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:padding="64dp"
+            android:src="@drawable/ic_baseline_camera_alt_24" />
+
+    </FrameLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
