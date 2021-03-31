@@ -26,7 +26,7 @@
             android:cropToPadding="false"
             android:scaleType="fitCenter"
             android:padding="64dp"
-            android:src="@drawable/ic_baseline_camera_alt_24" />
+            android:src="@drawable/ic_baseline_photo_camera_24" />
     </FrameLayout>
 
     <ScrollView
