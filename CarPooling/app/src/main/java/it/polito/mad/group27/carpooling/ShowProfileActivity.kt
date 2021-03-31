@@ -48,8 +48,6 @@ class ShowProfileActivity : AppCompatActivity() {
             Log.d(getLogTag(), "Cannot parse saved preference profile")
         }
 
-
-
         profileImageView = findViewById(R.id.profileImageView)
         fullNameView = findViewById(R.id.fullNameView)
         nickNameView = findViewById(R.id.nicknameView)
