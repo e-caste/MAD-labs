@@ -4,11 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 
@@ -20,6 +19,11 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var nickNameEdit : EditText
     private lateinit var emailEdit : EditText
     private lateinit var locationEdit : EditText
+
+    private enum class RequestCodes {
+        TAKE_PHOTO,
+        SELECT_IMAGE_IN_ALBUM,
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +44,11 @@ class EditProfileActivity : AppCompatActivity() {
         emailEdit.setText(profile.email)
         locationEdit.setText(profile.location)
 
+
+        registerForContextMenu(imageButton)
         imageButton.setOnClickListener {
             Log.d(getLogTag(), "image button clicked")
+            openContextMenu(imageButton)
         }
     }
 
@@ -59,6 +66,48 @@ class EditProfileActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.select_image_source_menu, menu)
+        Log.d(getLogTag(), "context menu created")
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.camera ->{
+                Log.d(getLogTag(), "taking picture...")
+                takePhoto()
+                return true
+            }
+            R.id.gallery ->{
+                Log.d(getLogTag(), "choosing picture from gallery...")
+                selectImageInAlbum()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun takePhoto() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, RequestCodes.TAKE_PHOTO.ordinal)
+        }
+    }
+
+    private fun selectImageInAlbum() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal)
         }
     }
 
