@@ -3,17 +3,16 @@ package it.polito.mad.group27.carpooling
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import androidx.appcompat.app.AppCompatActivity
+
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -88,12 +87,12 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.camera ->{
+            R.id.camera -> {
                 Log.d(getLogTag(), "taking picture...")
                 takePhoto()
                 return true
             }
-            R.id.gallery ->{
+            R.id.gallery -> {
                 Log.d(getLogTag(), "choosing picture from gallery...")
                 selectImageInAlbum()
                 return true
@@ -121,15 +120,15 @@ class EditProfileActivity : AppCompatActivity() {
         when(requestCode) {
             RequestCodes.TAKE_PHOTO.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
-                if(resultCode == Activity.RESULT_OK && data != null) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
                     val imageBitmap = data.extras!!.get("data") as Bitmap
                     imageProfileView.setImageBitmap(imageBitmap)
                 }
             }
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
-                if(resultCode == Activity.RESULT_OK && data != null) {
-                    // TODO
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    imageProfileView.setImageURI(data.data)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
