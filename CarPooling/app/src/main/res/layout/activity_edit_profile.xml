@@ -14,11 +14,12 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imageProfileView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#aaFF3E3E" />
+            android:background="#aaFF3E3E"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/imageProfileButton"

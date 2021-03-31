@@ -117,22 +117,20 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun setImageProfileBitmap(resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK && data != null) {
-            val imageBitmap = data.extras!!.get("data") as Bitmap
-            imageProfileView.setImageBitmap(imageBitmap)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             RequestCodes.TAKE_PHOTO.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
-                setImageProfileBitmap(resultCode, data)
+                if(resultCode == Activity.RESULT_OK && data != null) {
+                    val imageBitmap = data.extras!!.get("data") as Bitmap
+                    imageProfileView.setImageBitmap(imageBitmap)
+                }
             }
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
-                setImageProfileBitmap(resultCode, data)
+                if(resultCode == Activity.RESULT_OK && data != null) {
+                    // TODO
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
