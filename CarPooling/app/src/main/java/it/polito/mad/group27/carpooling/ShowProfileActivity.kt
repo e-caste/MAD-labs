@@ -96,15 +96,12 @@ class ShowProfileActivity : AppCompatActivity() {
                         profile = newProfile
                         updateFields()
 
-
                         val sharedPref = getPreferences(MODE_PRIVATE) ?: return
                         with (sharedPref.edit()) {
                             putString(getString(R.string.saved_profile_preference), Json.encodeToString(profile))
                             apply()
                         }
-
                     }
-
                     updateFields()
                 }
             }

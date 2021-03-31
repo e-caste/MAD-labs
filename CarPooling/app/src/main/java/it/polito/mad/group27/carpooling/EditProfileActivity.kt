@@ -2,6 +2,7 @@ package it.polito.mad.group27.carpooling
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,15 +11,19 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var profile: Profile
+    private lateinit var imageProfileView: ImageView
     private lateinit var imageButton: ImageButton
-    private lateinit var fullNameEdit : EditText
-    private lateinit var nickNameEdit : EditText
-    private lateinit var emailEdit : EditText
-    private lateinit var locationEdit : EditText
+    private lateinit var fullNameEdit: EditText
+    private lateinit var nickNameEdit: EditText
+    private lateinit var emailEdit: EditText
+    private lateinit var locationEdit: EditText
 
     private enum class RequestCodes {
         TAKE_PHOTO,
@@ -32,6 +37,7 @@ class EditProfileActivity : AppCompatActivity() {
         profile = intent.getParcelableExtra<Profile>("group27.lab1.profile") ?: Profile()
         Log.d(getLogTag(), "received object of class ${profile::class.java}: $profile")
 
+        imageProfileView = findViewById(R.id.imageProfileView)
         imageButton = findViewById(R.id.imageProfileButton)
         fullNameEdit = findViewById(R.id.fullNameEdit)
         nickNameEdit = findViewById(R.id.nicknameEdit)
@@ -108,6 +114,27 @@ class EditProfileActivity : AppCompatActivity() {
         intent.type = "image/*"
         if (intent.resolveActivity(packageManager) != null) {
             startActivityForResult(intent, RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal)
+        }
+    }
+
+    private fun setImageProfileBitmap(resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_OK && data != null) {
+            val imageBitmap = data.extras!!.get("data") as Bitmap
+            imageProfileView.setImageBitmap(imageBitmap)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            RequestCodes.TAKE_PHOTO.ordinal -> {
+                Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
+                setImageProfileBitmap(resultCode, data)
+            }
+            RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
+                Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
+                setImageProfileBitmap(resultCode, data)
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
