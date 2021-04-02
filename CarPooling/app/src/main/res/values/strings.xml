@@ -1,21 +1,21 @@
 <resources>
-    <string name="app_name">Car Pooling</string>
-    <string name="log_tag">MAD-group-27</string>
+    <string name="app_name" translatable="false">Car Pooling</string>
+    <string name="log_tag" translatable="false">MAD-group-27</string>
     <string name="default_location">Turin, Italy</string>
     <string name="default_email">john.smith@polito.it</string>
     <string name="default_nickname">MadJohn</string>
     <string name="default_fullname">John Smith</string>
-    <string name="default_rating">4.5</string>
+    <string name="default_rating" translatable="false">4.5</string>
     <string name="reputation">Reputation</string>
     <string name="since">Since</string>
-    <string name="default_registration_date">25/03/2021</string>
+    <string name="default_registration_date" translatable="false">25/03/2021</string>
     <string name="edit">Edit</string>
     <string name="hint_fullname">Your full name</string>
     <string name="hint_nickname">Your nickname</string>
     <string name="hint_email">Your email</string>
     <string name="hint_address">Your address</string>
     <string name="save">Save</string>
-    <string name="saved_profile_preference">group27.lab1.saved_profile_preference</string>
+    <string name="saved_profile_preference" translatable="false">group27.lab1.saved_profile_preference</string>
     <string name="action_camera">Take a picture</string>
     <string name="action_gallery">Choose picture from gallery</string>
 </resources>

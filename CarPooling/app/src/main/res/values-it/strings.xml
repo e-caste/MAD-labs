@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_location">Torino, Italia</string>
+    <string name="default_email">giovanni.smitti@polito.it</string>
+    <string name="default_nickname">Giò</string>
+    <string name="default_fullname">Giovanni Smitti</string>
+    <string name="reputation">Reputazione</string>
+    <string name="since">Dal</string>
+    <string name="edit">Modifica</string>
+    <string name="hint_fullname">Il tuo nome</string>
+    <string name="hint_nickname">Il tuo soprannome</string>
+    <string name="hint_email">La tua email</string>
+    <string name="hint_address">Il tuo indirizzo</string>
+    <string name="save">Salva</string>
+    <string name="action_camera">Fai una foto</string>
+    <string name="action_gallery">Scegli una foto dalla galleria</string>
+</resources>
