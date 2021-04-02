@@ -118,4 +118,16 @@ class ShowProfileActivity : AppCompatActivity() {
         registrationDateView.text = profile.registrationDate
         reputationBar.rating = profile.rating
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("profile", profile)
+        Log.d(getLogTag(), "saved to bundle: $profile")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d(getLogTag(), "got from bundle: $profile")
+        profile = savedInstanceState.getParcelable("profile") ?: Profile()
+    }
 }
