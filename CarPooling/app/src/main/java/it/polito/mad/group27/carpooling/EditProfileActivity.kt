@@ -19,6 +19,7 @@ import com.lyrebirdstudio.croppylib.Croppy
 import java.io.File
 import java.io.OutputStream
 import com.lyrebirdstudio.croppylib.main.CropRequest
+import java.io.ByteArrayOutputStream
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -56,8 +57,10 @@ class EditProfileActivity : AppCompatActivity() {
 
         //TODO get profile image filename through function (or even file)
         val profileImageFile =  File(filesDir,"profile.png")
-        profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
-        imageProfileView.setImageBitmap(profileImage)
+        if(profileImageFile.exists() && profileImageFile.absolutePath != null) {
+            profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+            imageProfileView.setImageBitmap(profileImage)
+        }
         fullNameEdit.setText(profile.fullName)
         nickNameEdit.setText(profile.nickName)
         emailEdit.setText(profile.email)
@@ -135,10 +138,19 @@ class EditProfileActivity : AppCompatActivity() {
             RequestCodes.TAKE_PHOTO.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    profileImage = data.extras!!.get("data") as Bitmap
-                    imageProfileView.setImageBitmap(profileImage)
+                    val profileImageTmp = data.extras!!.get("data") as Bitmap
 
-                    profileImageChanged = true
+                    openFileOutput("profile_tmp.png", Context.MODE_PRIVATE).use {
+                        it.writeBitmap(profileImageTmp)
+                    }
+                    val manualCropRequest = CropRequest.Manual(
+                        sourceUri = File(filesDir,"profile_tmp.png").toUri(),
+                        destinationUri = File(filesDir,"profile_tmp.png").toUri(),
+                        requestCode = 101
+                    )
+                    Croppy.start(this, cropRequest = manualCropRequest)
+//                    imageProfileView.setImageBitmap(profileImage)
+//                    profileImageChanged = true
 
                 }
             }
@@ -157,11 +169,11 @@ class EditProfileActivity : AppCompatActivity() {
             101 -> {
                 Log.d(getLogTag(), "returned $resultCode from croppy with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null){
-                    imageProfileView.setImageURI(data?.data)
+                    profileImage = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
+                    imageProfileView.setImageBitmap(profileImage)
                     profileImageChanged = true
                     }
             }
-
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -175,6 +187,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveProfile() {
         if (profileImageChanged){
+
             openFileOutput("profile.png", Context.MODE_PRIVATE).use {
                 it.writeBitmap(profileImage)
             }

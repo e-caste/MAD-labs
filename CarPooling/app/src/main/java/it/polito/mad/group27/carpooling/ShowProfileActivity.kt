@@ -1,12 +1,16 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Activity
+import android.app.WallpaperColors.fromBitmap
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,11 +18,17 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.io.OutputStream
+
 
 fun AppCompatActivity.getLogTag(): String {
     return getString(R.string.log_tag)
@@ -48,7 +58,7 @@ class ShowProfileActivity : AppCompatActivity() {
                 .getString(getString(R.string.saved_profile_preference), null)
         if(savedProfileJson!=null) try {
             profile = Json.decodeFromString(savedProfileJson)
-        }catch (e:SerializationException){
+        }catch (e: SerializationException){
             Log.d(getLogTag(), "Cannot parse saved preference profile")
         }
 
@@ -93,16 +103,25 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             RequestCodes.EDIT_PROFILE.ordinal -> {
-                Log.d(getLogTag(), "returned $resultCode with ${data?.getParcelableExtra<Profile>("group27.lab1.profileresult")?.toString()}")
-                if(resultCode == Activity.RESULT_OK){
+                Log.d(
+                    getLogTag(),
+                    "returned $resultCode with ${
+                        data?.getParcelableExtra<Profile>("group27.lab1.profileresult")?.toString()
+                    }"
+                )
+                if (resultCode == Activity.RESULT_OK) {
                     val newProfile = data?.getParcelableExtra<Profile>("group27.lab1.profileresult")
-                    if(profile != newProfile && newProfile != null){
+                    if (profile != newProfile && newProfile != null) {
                         profile = newProfile
                         updateFields()
 
                         val sharedPref = getPreferences(MODE_PRIVATE) ?: return
-                        with (sharedPref.edit()) {
-                            putString(getString(R.string.saved_profile_preference), Json.encodeToString(profile))
+                        with(sharedPref.edit()) {
+                            putString(
+                                getString(R.string.saved_profile_preference), Json.encodeToString(
+                                    profile
+                                )
+                            )
                             apply()
                         }
                     }
@@ -114,9 +133,13 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun updateFields() {
-        val profileImageFile =  File(filesDir,"profile.png")
-        val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
-        profileImageView.setImageBitmap(bitmap)
+
+        if (File(filesDir, "profile.png").exists()){
+            val profileImageFile = File(filesDir, "profile.png")
+            val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+            profileImageView.setImageBitmap(bitmap)
+        }
+
         fullNameView.text = profile.fullName
         nickNameView.text = profile.nickName
         emailView.text = profile.email
@@ -124,4 +147,16 @@ class ShowProfileActivity : AppCompatActivity() {
         registrationDateView.text = profile.registrationDate
         reputationBar.rating = profile.rating
     }
+
+    private fun OutputStream.writeBitmap(
+        bitmap: Bitmap,
+        format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+        quality: Int = 100
+    ) {
+        use { out ->
+            bitmap.compress(format, quality, out)
+            out.flush()
+        }
+    }
+
 }
