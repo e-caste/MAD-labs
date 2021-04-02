@@ -149,4 +149,16 @@ class EditProfileActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("profile", profile)
+        Log.d(getLogTag(), "saved to bundle: $profile")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d(getLogTag(), "got from bundle: $profile")
+        profile = savedInstanceState.getParcelable("profile") ?: Profile()
+    }
 }
