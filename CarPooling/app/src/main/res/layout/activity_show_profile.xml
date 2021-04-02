@@ -15,7 +15,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#9C27B0"
-        tools:src="@tools:sample/avatars" />
+        android:src="@drawable/ic_baseline_person_24"/>
 
     <ScrollView
         android:layout_width="match_parent"

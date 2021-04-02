@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#aaFF3E3E"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_person_24"/>
 
         <ImageButton
             android:id="@+id/imageProfileButton"
