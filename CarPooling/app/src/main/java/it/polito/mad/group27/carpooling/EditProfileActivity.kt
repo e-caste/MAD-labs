@@ -1,9 +1,12 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -12,10 +15,20 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import com.lyrebirdstudio.aspectratiorecyclerviewlib.aspectratio.model.AspectRatio
+import com.lyrebirdstudio.croppylib.Croppy
+import com.lyrebirdstudio.croppylib.main.CropRequest
+import java.io.File
+import java.io.OutputStream
 
 
 class EditProfileActivity : AppCompatActivity() {
 
+
+    private lateinit var profileImage: Bitmap
+    private var imageUri: Uri? = null
+    private var profileImageChanged = false
     private lateinit var profile: Profile
     private lateinit var imageProfileView: ImageView
     private lateinit var imageButton: ImageButton
@@ -24,9 +37,11 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var emailEdit: EditText
     private lateinit var locationEdit: EditText
 
+
     private enum class RequestCodes {
         TAKE_PHOTO,
         SELECT_IMAGE_IN_ALBUM,
+        CROP_IMAGE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +58,12 @@ class EditProfileActivity : AppCompatActivity() {
         emailEdit = findViewById(R.id.emailEdit)
         locationEdit = findViewById(R.id.locationEdit)
 
-        // TODO img
+        //TODO get profile image filename through function (or even file)
+        val profileImageFile = File(filesDir, "profile.png")
+        if (profileImageFile.exists() && profileImageFile.absolutePath != null) {
+            profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+            imageProfileView.setImageBitmap(profileImage)
+        }
         fullNameEdit.setText(profile.fullName)
         nickNameEdit.setText(profile.nickName)
         emailEdit.setText(profile.email)
@@ -102,10 +122,16 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
+        imageUri = contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
+        )
+        Log.d(getLogTag(), "$imageUri")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivityForResult(intent, RequestCodes.TAKE_PHOTO.ordinal)
-        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        startActivityForResult(intent, RequestCodes.TAKE_PHOTO.ordinal)
     }
 
     private fun selectImageInAlbum() {
@@ -116,27 +142,77 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun runCroppy(sourceUri: Uri) {
+        val manualCropRequest = CropRequest.Manual(
+            sourceUri = sourceUri,
+            destinationUri = File(filesDir, "profile_tmp.png").toUri(),
+            requestCode = RequestCodes.CROP_IMAGE.ordinal,
+            excludedAspectRatios = arrayListOf(
+                AspectRatio.ASPECT_FREE,
+                AspectRatio.ASPECT_INS_STORY,
+                AspectRatio.ASPECT_FACE_COVER,
+                AspectRatio.ASPECT_FACE_POST,
+                AspectRatio.ASPECT_PIN_POST,
+                AspectRatio.ASPECT_TWIT_HEADER,
+                AspectRatio.ASPECT_TWIT_POST,
+                AspectRatio.ASPECT_A_4,
+                AspectRatio.ASPECT_A_5,
+                AspectRatio.ASPECT_YOU_COVER,
+                AspectRatio.ASPECT_1_2,
+                AspectRatio.ASPECT_16_9,
+                AspectRatio.ASPECT_9_16
+            )
+        )
+        Croppy.start(this, cropRequest = manualCropRequest)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             RequestCodes.TAKE_PHOTO.ordinal -> {
-                Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val imageBitmap = data.extras!!.get("data") as Bitmap
-                    imageProfileView.setImageBitmap(imageBitmap)
+                Log.d(
+                    getLogTag(),
+                    "returned $resultCode from camera with ${imageUri ?: "no image"}"
+                )
+                if (resultCode == Activity.RESULT_OK && imageUri != null) {
+                    runCroppy(imageUri!!)
                 }
             }
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    imageProfileView.setImageURI(data.data)
+                    runCroppy(data.data!!)
+                }
+            }
+            RequestCodes.CROP_IMAGE.ordinal -> {
+                Log.d(getLogTag(), "returned $resultCode from croppy with ${data ?: "no image"}")
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    profileImage = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
+                    imageProfileView.setImageBitmap(profileImage)
+                    profileImageChanged = true
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    private fun OutputStream.writeBitmap(
+        bitmap: Bitmap,
+        format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+        quality: Int = 100
+    ) {
+        use { out ->
+            bitmap.compress(format, quality, out)
+            out.flush()
+        }
+    }
+
     private fun saveProfile() {
-        //TODO img
+        if (profileImageChanged) {
+
+            openFileOutput("profile.png", Context.MODE_PRIVATE).use {
+                it.writeBitmap(profileImage)
+            }
+        }
         profile.fullName = fullNameEdit.text.toString()
         profile.nickName = nickNameEdit.text.toString()
         profile.email = emailEdit.text.toString()
