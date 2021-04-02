@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -27,6 +29,17 @@ class EditProfileActivity : AppCompatActivity() {
     private enum class RequestCodes {
         TAKE_PHOTO,
         SELECT_IMAGE_IN_ALBUM,
+    }
+
+    val watcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        override fun afterTextChanged(s: Editable?) {
+            invalidateOptionsMenu()
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +68,9 @@ class EditProfileActivity : AppCompatActivity() {
             Log.d(getLogTag(), "image button clicked")
             openContextMenu(imageButton)
         }
+
+        fullNameEdit.addTextChangedListener(watcher)
+        emailEdit.addTextChangedListener(watcher)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -83,6 +99,16 @@ class EditProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.select_image_source_menu, menu)
         Log.d(getLogTag(), "context menu created")
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        val validFullName = fullNameEdit.text.toString().trim().split("\\s+".toRegex()).size > 1
+        val validEmail = android.util.Patterns.EMAIL_ADDRESS
+                            .matcher(emailEdit.text.toString()).matches()
+
+        menu!!.findItem(R.id.save_profile).isEnabled = validFullName && validEmail
+        return true
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
