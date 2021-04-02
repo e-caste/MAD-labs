@@ -2,8 +2,11 @@ package it.polito.mad.group27.carpooling
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +18,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.File
 
 fun AppCompatActivity.getLogTag(): String {
     return getString(R.string.log_tag)
@@ -110,7 +114,9 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun updateFields() {
-        //TODO img
+        val profileImageFile =  File(filesDir,"profile.png")
+        val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+        profileImageView.setImageBitmap(bitmap)
         fullNameView.text = profile.fullName
         nickNameView.text = profile.nickName
         emailView.text = profile.email
