@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -12,6 +13,10 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import com.lyrebirdstudio.croppylib.Croppy
+import com.lyrebirdstudio.croppylib.main.CropRequest
+import java.io.File
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -128,9 +133,21 @@ class EditProfileActivity : AppCompatActivity() {
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    imageProfileView.setImageURI(data.data)
+                    val manualCropRequest = CropRequest.Manual(
+                            sourceUri = data.data!!,
+                            destinationUri = File(filesDir,"profile_tmp.png").toUri(),
+                            requestCode = 101
+                    )
+//                    imageProfileView.setImageURI(data.data)
+                    Croppy.start(this, cropRequest = manualCropRequest)
                 }
             }
+            101 -> {
+                Log.d(getLogTag(), "returned $resultCode from croppy with ${data ?: "no image"}")
+                if (resultCode == Activity.RESULT_OK && data != null)
+                    imageProfileView.setImageURI(data?.data)
+            }
+
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
