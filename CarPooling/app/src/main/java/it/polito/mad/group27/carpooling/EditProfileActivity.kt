@@ -131,6 +131,9 @@ class EditProfileActivity : AppCompatActivity() {
         Log.d(getLogTag(), "$imageUri")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+        intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+        intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
         startActivityForResult(intent, RequestCodes.TAKE_PHOTO.ordinal)
     }
 
