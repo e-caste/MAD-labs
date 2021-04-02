@@ -1,15 +1,9 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Activity
-import android.app.WallpaperColors.fromBitmap
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -18,10 +12,7 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -38,10 +29,10 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private var profile = Profile()
     private lateinit var profileImageView: ImageView
-    private lateinit var fullNameView : TextView
-    private lateinit var nickNameView : TextView
-    private lateinit var emailView : TextView
-    private lateinit var locationView : TextView
+    private lateinit var fullNameView: TextView
+    private lateinit var nickNameView: TextView
+    private lateinit var emailView: TextView
+    private lateinit var locationView: TextView
     private lateinit var registrationDateView: TextView
     private lateinit var reputationBar: RatingBar
 
@@ -55,10 +46,10 @@ class ShowProfileActivity : AppCompatActivity() {
 
         // if something in storage -> set it
         val savedProfileJson = getPreferences(MODE_PRIVATE)
-                .getString(getString(R.string.saved_profile_preference), null)
-        if(savedProfileJson!=null) try {
+            .getString(getString(R.string.saved_profile_preference), null)
+        if (savedProfileJson != null) try {
             profile = Json.decodeFromString(savedProfileJson)
-        }catch (e: SerializationException){
+        } catch (e: SerializationException) {
             Log.d(getLogTag(), "Cannot parse saved preference profile")
         }
 
@@ -101,7 +92,7 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             RequestCodes.EDIT_PROFILE.ordinal -> {
                 Log.d(
                     getLogTag(),
@@ -134,7 +125,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun updateFields() {
 
-        if (File(filesDir, "profile.png").exists()){
+        if (File(filesDir, "profile.png").exists()) {
             val profileImageFile = File(filesDir, "profile.png")
             val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             profileImageView.setImageBitmap(bitmap)
