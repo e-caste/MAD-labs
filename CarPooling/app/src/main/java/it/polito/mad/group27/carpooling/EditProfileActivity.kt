@@ -1,6 +1,7 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,10 +13,15 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
+import java.io.OutputStream
 
 
 class EditProfileActivity : AppCompatActivity() {
 
+
+    private lateinit var profileImage: Bitmap
+    private var profileImageChanged = false
     private lateinit var profile: Profile
     private lateinit var imageProfileView: ImageView
     private lateinit var imageButton: ImageButton
@@ -23,6 +29,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var nickNameEdit: EditText
     private lateinit var emailEdit: EditText
     private lateinit var locationEdit: EditText
+
 
     private enum class RequestCodes {
         TAKE_PHOTO,
@@ -43,7 +50,10 @@ class EditProfileActivity : AppCompatActivity() {
         emailEdit = findViewById(R.id.emailEdit)
         locationEdit = findViewById(R.id.locationEdit)
 
-        // TODO img
+        //TODO get profile image filename through function (or even file)
+        val profileImageFile =  File(filesDir,"profile.png")
+        profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+        imageProfileView.setImageBitmap(profileImage)
         fullNameEdit.setText(profile.fullName)
         nickNameEdit.setText(profile.nickName)
         emailEdit.setText(profile.email)
@@ -121,22 +131,38 @@ class EditProfileActivity : AppCompatActivity() {
             RequestCodes.TAKE_PHOTO.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from camera with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val imageBitmap = data.extras!!.get("data") as Bitmap
-                    imageProfileView.setImageBitmap(imageBitmap)
+                    profileImage = data.extras!!.get("data") as Bitmap
+                    imageProfileView.setImageBitmap(profileImage)
+
+                    profileImageChanged = true
+
                 }
             }
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
                 Log.d(getLogTag(), "returned $resultCode from gallery with ${data ?: "no image"}")
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     imageProfileView.setImageURI(data.data)
+
+                    profileImageChanged = true
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    private fun OutputStream.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG, quality: Int = 100) {
+        use { out ->
+            bitmap.compress(format, quality, out)
+            out.flush()
+        }
+    }
+
     private fun saveProfile() {
-        //TODO img
+        if (profileImageChanged){
+            openFileOutput("profile.png", Context.MODE_PRIVATE).use {
+                it.writeBitmap(profileImage)
+            }
+        }
         profile.fullName = fullNameEdit.text.toString()
         profile.nickName = nickNameEdit.text.toString()
         profile.email = emailEdit.text.toString()
