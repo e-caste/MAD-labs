@@ -31,13 +31,14 @@ class EditProfileActivity : AppCompatActivity() {
         SELECT_IMAGE_IN_ALBUM,
     }
 
-    val watcher = object : TextWatcher {
+    private class Watcher(val predicate : () -> Boolean, val actionTrue : () -> Unit, val actionFalse : () -> Unit) : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
         override fun afterTextChanged(s: Editable?) {
-            invalidateOptionsMenu()
+            if(predicate.invoke()) actionTrue()
+            else actionFalse()
         }
 
     }
@@ -69,8 +70,46 @@ class EditProfileActivity : AppCompatActivity() {
             openContextMenu(imageButton)
         }
 
-        fullNameEdit.addTextChangedListener(watcher)
-        emailEdit.addTextChangedListener(watcher)
+        fullNameEdit.addTextChangedListener(Watcher(
+            { fullNameEdit.text.isEmpty() || fullNameEdit.text.trim().split("\\s+".toRegex()).size < 2 },
+            { fullNameEdit.error = "You must insert both your name and your surname"
+                invalidateOptionsMenu()
+            },
+            { fullNameEdit.error = null
+                invalidateOptionsMenu()
+            }
+        ))
+
+        nickNameEdit.addTextChangedListener(Watcher(
+            { nickNameEdit.text.length < 4 },
+            { nickNameEdit.error = "Nickname must be at least 4 characters long"
+                invalidateOptionsMenu()
+            },
+            { nickNameEdit.error = null
+                invalidateOptionsMenu()
+            }
+        ))
+
+        emailEdit.addTextChangedListener(Watcher(
+            { emailEdit.text.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches() },
+            { emailEdit.error = "You must insert an e-mail address"
+                invalidateOptionsMenu()
+            },
+            { emailEdit.error = null
+                invalidateOptionsMenu()
+            }
+        ))
+
+        locationEdit.addTextChangedListener(Watcher(
+            //TODO check location format
+            { locationEdit.text.isEmpty() },
+            { locationEdit.error = "You must insert a location"
+                invalidateOptionsMenu()
+            },
+            { locationEdit.error = null
+                invalidateOptionsMenu()
+            }
+        ))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -103,11 +142,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         super.onPrepareOptionsMenu(menu)
-        val validFullName = fullNameEdit.text.toString().trim().split("\\s+".toRegex()).size > 1
-        val validEmail = android.util.Patterns.EMAIL_ADDRESS
-                            .matcher(emailEdit.text.toString()).matches()
-
-        menu!!.findItem(R.id.save_profile).isEnabled = validFullName && validEmail
+        menu!!.findItem(R.id.save_profile).isEnabled = validateFields()
         return true
     }
 
@@ -159,6 +194,15 @@ class EditProfileActivity : AppCompatActivity() {
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private fun validateFields() : Boolean {
+       return fullNameEdit.text.isNotEmpty()
+               &&fullNameEdit.text.trim().split("\\s+".toRegex()).size >= 2
+               && nickNameEdit.text.length >= 4
+               && emailEdit.text.isNotEmpty()
+               && android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches()
+               && locationEdit.text.isNotEmpty()
     }
 
     private fun saveProfile() {
