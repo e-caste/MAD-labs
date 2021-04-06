@@ -298,13 +298,18 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable("profile", profile)
-        Log.d(getLogTag(), "saved to bundle: $profile")
+        outState.putBoolean("profileImageChanged", profileImageChanged)
+        Log.d(getLogTag(), "saved to bundle: $profileImageChanged")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        Log.d(getLogTag(), "got from bundle: $profile")
-        profile = savedInstanceState.getParcelable("profile") ?: Profile()
+        profileImageChanged = savedInstanceState.getBoolean("profileImageChanged")
+        Log.d(getLogTag(), "got from bundle: $profileImageChanged")
+        if (profileImageChanged) {
+            val profileImageFile = File(filesDir, getString(R.string.profile_image_tmp))
+            profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
+            imageProfileView.setImageBitmap(profileImage)
+        }
     }
 }
