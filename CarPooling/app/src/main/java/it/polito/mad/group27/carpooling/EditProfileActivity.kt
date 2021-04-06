@@ -272,7 +272,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun validateFields() : Boolean {
        return fullNameEdit.text.isNotEmpty()
-               &&fullNameEdit.text.trim().split("\\s+".toRegex()).size >= 2
+               && fullNameEdit.text.trim().split("\\s+".toRegex()).size >= 2
                && nickNameEdit.text.length >= 4
                && emailEdit.text.isNotEmpty()
                && android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches()
@@ -281,7 +281,6 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveProfile() {
         if (profileImageChanged) {
-
             openFileOutput("profile.png", Context.MODE_PRIVATE).use {
                 it.writeBitmap(profileImage)
             }
