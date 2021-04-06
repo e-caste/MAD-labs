@@ -46,14 +46,14 @@
                 android:id="@+id/fullNameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:hint="@string/hint_fullname"
+                android:imeOptions="actionNext"
                 android:inputType="textCapWords"
+                android:nextFocusDown="@id/nicknameEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_fullname"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@id/nicknameEdit"
-                android:focusable="true"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <EditText
                 android:id="@+id/nicknameEdit"

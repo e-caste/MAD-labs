@@ -54,7 +54,7 @@
                 android:nextFocusDown="@id/nicknameEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_fullname"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <EditText
                 android:id="@+id/nicknameEdit"
