@@ -201,9 +201,8 @@ class EditProfileActivity : AppCompatActivity() {
     private fun selectImageInAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivityForResult(intent, RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal)
-        }
+        Log.d(getLogTag(), "selectedImageInAlbum")
+        startActivityForResult(intent, RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal)
     }
 
     private fun runCroppy(sourceUri: Uri) {
