@@ -75,7 +75,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         fullNameEdit.addTextChangedListener(Watcher(
             { fullNameEdit.text.isEmpty() || fullNameEdit.text.trim().split("\\s+".toRegex()).size < 2 },
-            { fullNameEdit.error = "You must insert both your name and your surname"
+            { fullNameEdit.error = getString(R.string.validation_fullname)
                 invalidateOptionsMenu()
             },
             { fullNameEdit.error = null
@@ -85,7 +85,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         nickNameEdit.addTextChangedListener(Watcher(
             { nickNameEdit.text.length < 4 },
-            { nickNameEdit.error = "Nickname must be at least 4 characters long"
+            { nickNameEdit.error = getString(R.string.validation_nickname)
                 invalidateOptionsMenu()
             },
             { nickNameEdit.error = null
@@ -95,7 +95,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         emailEdit.addTextChangedListener(Watcher(
             { emailEdit.text.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches() },
-            { emailEdit.error = "You must insert an e-mail address"
+            { emailEdit.error = getString(R.string.validation_email)
                 invalidateOptionsMenu()
             },
             { emailEdit.error = null
@@ -106,7 +106,7 @@ class EditProfileActivity : AppCompatActivity() {
         locationEdit.addTextChangedListener(Watcher(
             //TODO check location format
             { locationEdit.text.isEmpty() },
-            { locationEdit.error = "You must insert a location"
+            { locationEdit.error = getString(R.string.validation_location)
                 invalidateOptionsMenu()
             },
             { locationEdit.error = null

@@ -20,4 +20,8 @@
     <string name="action_gallery">Choose picture from gallery</string>
     <string name="profile_image" translatable="false">profile.png</string>
     <string name="profile_image_tmp" translatable="false">profile_tmp.png</string>
+    <string name="validation_fullname">You must insert both your name and your surname</string>
+    <string name="validation_nickname">Nickname must be at least 4 characters long</string>
+    <string name="validation_email">You must insert an e-mail address</string>
+    <string name="validation_location">You must insert a location</string>
 </resources>
