@@ -165,6 +165,7 @@ class EditProfileActivity : AppCompatActivity() {
                 Log.d(getLogTag(), "deleting picture...")
                 imageProfileView.setImageResource(R.drawable.ic_baseline_person_24)
                 profileImage = null
+                profileImageChanged = true
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -279,11 +280,9 @@ class EditProfileActivity : AppCompatActivity() {
                     it.writeBitmap(profileImage!!)
                 }
             } else {
-                deleteFile(getString(R.string.profile_image))
-//                File(filesDir, getString(R.string.profile_image)).canonicalFile.delete()
+                File(filesDir, getString(R.string.profile_image)).delete()
             }
-            deleteFile(getString(R.string.profile_image_tmp))
-//            File(filesDir, getString(R.string.profile_image_tmp)).canonicalFile.delete()
+            File(filesDir, getString(R.string.profile_image_tmp)).delete()
         }
         profile.fullName = fullNameEdit.text.toString()
         profile.nickName = nickNameEdit.text.toString()
