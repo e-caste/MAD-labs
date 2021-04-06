@@ -54,6 +54,7 @@
                 android:nextFocusDown="@id/nicknameEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_fullname"
+                android:autofillHints="name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <EditText
@@ -67,6 +68,7 @@
                 android:nextFocusDown="@id/emailEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_nickname"
+                android:autofillHints="username"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <EditText
@@ -80,6 +82,7 @@
                 android:nextFocusDown="@id/locationEdit"
                 android:paddingBottom="@dimen/textBottom"
                 android:text="@string/default_email"
+                android:autofillHints="email"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <EditText
@@ -90,6 +93,7 @@
                 android:hint="@string/hint_address"
                 android:inputType="textShortMessage"
                 android:text="@string/default_location"
+                android:autofillHints="addressLocality"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         </LinearLayout>
