@@ -7,7 +7,7 @@
     <string name="reputation">Reputazione</string>
     <string name="since">Dal</string>
     <string name="edit">Modifica</string>
-    <string name="hint_fullname">Il tuo nome</string>
+    <string name="hint_fullname">Nome e cognome</string>
     <string name="hint_nickname">Il tuo soprannome</string>
     <string name="hint_email">La tua email</string>
     <string name="hint_address">Il tuo indirizzo</string>
