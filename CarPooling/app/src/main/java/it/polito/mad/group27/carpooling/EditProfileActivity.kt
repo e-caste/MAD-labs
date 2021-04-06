@@ -211,18 +211,23 @@ class EditProfileActivity : AppCompatActivity() {
             requestCode = RequestCodes.CROP_IMAGE.ordinal,
             excludedAspectRatios = arrayListOf(
                 AspectRatio.ASPECT_FREE,
+                AspectRatio.ASPECT_INS_4_5,
                 AspectRatio.ASPECT_INS_STORY,
-                AspectRatio.ASPECT_FACE_COVER,
+                AspectRatio.ASPECT_5_4,
+                AspectRatio.ASPECT_3_4,
+                AspectRatio.ASPECT_4_3,
                 AspectRatio.ASPECT_FACE_POST,
+                AspectRatio.ASPECT_FACE_COVER,
                 AspectRatio.ASPECT_PIN_POST,
-                AspectRatio.ASPECT_TWIT_HEADER,
+                AspectRatio.ASPECT_3_2,
+                AspectRatio.ASPECT_9_16,
+                AspectRatio.ASPECT_16_9,
+                AspectRatio.ASPECT_1_2,
+                AspectRatio.ASPECT_YOU_COVER,
                 AspectRatio.ASPECT_TWIT_POST,
+                AspectRatio.ASPECT_TWIT_HEADER,
                 AspectRatio.ASPECT_A_4,
                 AspectRatio.ASPECT_A_5,
-                AspectRatio.ASPECT_YOU_COVER,
-                AspectRatio.ASPECT_1_2,
-                AspectRatio.ASPECT_16_9,
-                AspectRatio.ASPECT_9_16
             )
         )
         Croppy.start(this, cropRequest = manualCropRequest)
