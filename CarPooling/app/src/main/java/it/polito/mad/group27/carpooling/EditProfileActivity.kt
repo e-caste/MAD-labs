@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -27,7 +25,6 @@ import java.io.OutputStream
 
 class EditProfileActivity : AppCompatActivity() {
 
-
     private lateinit var profileImage: Bitmap
     private var imageUri: Uri? = null
     private var profileImageChanged = false
@@ -39,23 +36,10 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var emailEdit: EditText
     private lateinit var locationEdit: EditText
 
-
     private enum class RequestCodes {
         TAKE_PHOTO,
         SELECT_IMAGE_IN_ALBUM,
-        CROP_IMAGE
-    }
-
-    private class Watcher(val predicate : () -> Boolean, val actionTrue : () -> Unit, val actionFalse : () -> Unit) : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        override fun afterTextChanged(s: Editable?) {
-            if(predicate.invoke()) actionTrue()
-            else actionFalse()
-        }
-
+        CROP_IMAGE,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

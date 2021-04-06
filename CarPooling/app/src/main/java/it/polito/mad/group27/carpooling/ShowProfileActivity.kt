@@ -150,16 +150,5 @@ class ShowProfileActivity : AppCompatActivity() {
         Log.d(getLogTag(), "got from bundle: $profile")
         profile = savedInstanceState.getParcelable("profile") ?: Profile()
     }
-    
-    private fun OutputStream.writeBitmap(
-        bitmap: Bitmap,
-        format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
-        quality: Int = 100
-    ) {
-        use { out ->
-            bitmap.compress(format, quality, out)
-            out.flush()
-        }
-    }
 
 }
