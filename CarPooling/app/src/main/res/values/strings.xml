@@ -24,4 +24,5 @@
     <string name="validation_nickname">Nickname must be at least 4 characters long</string>
     <string name="validation_email">You must insert an e-mail address</string>
     <string name="validation_location">You must insert a location</string>
+    <string name="action_delete">Delete picture</string>
 </resources>

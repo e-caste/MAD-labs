@@ -18,4 +18,5 @@
     <string name="validation_nickname">Il soprannome deve essere di almeno 4 caratteri</string>
     <string name="validation_email">Devi inserire un indirizzo e-mail</string>
     <string name="validation_location">Devi inserire un luogo</string>
+    <string name="action_delete">Rimuovi foto</string>
 </resources>

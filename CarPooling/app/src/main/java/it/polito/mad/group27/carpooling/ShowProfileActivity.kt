@@ -104,8 +104,6 @@ class ShowProfileActivity : AppCompatActivity() {
                     val newProfile = data?.getParcelableExtra<Profile>("group27.lab1.profileresult")
                     if (profile != newProfile && newProfile != null) {
                         profile = newProfile
-                        updateFields()
-
                         val sharedPref = getPreferences(MODE_PRIVATE) ?: return
                         with(sharedPref.edit()) {
                             putString(
@@ -129,6 +127,10 @@ class ShowProfileActivity : AppCompatActivity() {
             val profileImageFile = File(filesDir, getString(R.string.profile_image))
             val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             profileImageView.setImageBitmap(bitmap)
+            Log.d(getLogTag(), "image is set, using user selected image...")
+        } else {
+            profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
+            Log.d(getLogTag(), "image is removed, setting default icon...")
         }
 
         fullNameView.text = profile.fullName

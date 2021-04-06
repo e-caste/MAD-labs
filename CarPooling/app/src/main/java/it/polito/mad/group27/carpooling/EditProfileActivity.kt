@@ -25,7 +25,7 @@ import java.io.OutputStream
 
 class EditProfileActivity : AppCompatActivity() {
 
-    private lateinit var profileImage: Bitmap
+    private var profileImage: Bitmap? = null
     private var imageUri: Uri? = null
     private var profileImageChanged = false
     private lateinit var profile: Profile
@@ -161,6 +161,12 @@ class EditProfileActivity : AppCompatActivity() {
                 selectImageInAlbum()
                 return true
             }
+            R.id.delete -> {
+                Log.d(getLogTag(), "deleting picture...")
+                imageProfileView.setImageResource(R.drawable.ic_baseline_person_24)
+                profileImage = null
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -268,9 +274,16 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveProfile() {
         if (profileImageChanged) {
-            openFileOutput(getString(R.string.profile_image), Context.MODE_PRIVATE).use {
-                it.writeBitmap(profileImage)
+            if (profileImage != null) {
+                openFileOutput(getString(R.string.profile_image), Context.MODE_PRIVATE).use {
+                    it.writeBitmap(profileImage!!)
+                }
+            } else {
+                deleteFile(getString(R.string.profile_image))
+//                File(filesDir, getString(R.string.profile_image)).canonicalFile.delete()
             }
+            deleteFile(getString(R.string.profile_image_tmp))
+//            File(filesDir, getString(R.string.profile_image_tmp)).canonicalFile.delete()
         }
         profile.fullName = fullNameEdit.text.toString()
         profile.nickName = nickNameEdit.text.toString()
