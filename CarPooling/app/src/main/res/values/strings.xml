@@ -18,4 +18,6 @@
     <string name="saved_profile_preference" translatable="false">group27.lab1.saved_profile_preference</string>
     <string name="action_camera">Take a picture</string>
     <string name="action_gallery">Choose picture from gallery</string>
+    <string name="profile_image" translatable="false">profile.png</string>
+    <string name="profile_image_tmp" translatable="false">profile_tmp.png</string>
 </resources>

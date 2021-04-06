@@ -125,8 +125,8 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun updateFields() {
 
-        if (File(filesDir, "profile.png").exists()) {
-            val profileImageFile = File(filesDir, "profile.png")
+        if (File(filesDir, getString(R.string.profile_image)).exists()) {
+            val profileImageFile = File(filesDir, getString(R.string.profile_image))
             val bitmap = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             profileImageView.setImageBitmap(bitmap)
         }

@@ -72,8 +72,7 @@ class EditProfileActivity : AppCompatActivity() {
         emailEdit = findViewById(R.id.emailEdit)
         locationEdit = findViewById(R.id.locationEdit)
 
-        //TODO get profile image filename through function (or even file)
-        val profileImageFile = File(filesDir, "profile.png")
+        val profileImageFile = File(filesDir, getString(R.string.profile_image))
         if (profileImageFile.exists() && profileImageFile.absolutePath != null) {
             profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             imageProfileView.setImageBitmap(profileImage)
@@ -208,7 +207,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun runCroppy(sourceUri: Uri) {
         val manualCropRequest = CropRequest.Manual(
             sourceUri = sourceUri,
-            destinationUri = File(filesDir, "profile_tmp.png").toUri(),
+            destinationUri = File(filesDir, getString(R.string.profile_image_tmp)).toUri(),
             requestCode = RequestCodes.CROP_IMAGE.ordinal,
             excludedAspectRatios = arrayListOf(
                 AspectRatio.ASPECT_FREE,
@@ -280,7 +279,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveProfile() {
         if (profileImageChanged) {
-            openFileOutput("profile.png", Context.MODE_PRIVATE).use {
+            openFileOutput(getString(R.string.profile_image), Context.MODE_PRIVATE).use {
                 it.writeBitmap(profileImage)
             }
         }
