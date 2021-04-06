@@ -28,7 +28,8 @@
             android:background="#009C27B0"
             android:cropToPadding="false"
             android:scaleType="fitCenter"
-            android:padding="64dp"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
             android:src="@drawable/ic_baseline_photo_camera_24" />
     </FrameLayout>
 
