@@ -25,4 +25,8 @@
     <string name="validation_email">You must insert an e-mail address</string>
     <string name="validation_location">You must insert a location</string>
     <string name="action_delete">Delete picture</string>
+    <string name="toast_camera_permission_settings">Please enable camera permission in settings.</string>
+    <string name="toast_storage_permission_settings">Please enable multimedia files permission in settings.</string>
+    <string name="toast_camera_permission_info">Camera permission is needed to take a new profile picture.</string>
+    <string name="toast_storage_permission_info">Multimedia files permission is needed to get a new profile picture from the gallery.</string>
 </resources>

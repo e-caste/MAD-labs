@@ -194,7 +194,7 @@ class EditProfileActivity : AppCompatActivity() {
             Log.d(getLogTag(), "asking user for permission to use camera...")
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    Toast.makeText(this, "Camera permission is needed to take a new profile picture.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_camera_permission_info), Toast.LENGTH_SHORT).show()
                 }
             }
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RequestCodes.PERMISSION_CAMERA.ordinal)
@@ -210,7 +210,7 @@ class EditProfileActivity : AppCompatActivity() {
             Log.d(getLogTag(), "asking user for permission to access storage...")
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "Multimedia files permission is needed to get a new profile picture from the gallery.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_storage_permission_info), Toast.LENGTH_SHORT).show()
                 }
             }
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), RequestCodes.PERMISSION_STORAGE.ordinal)
@@ -226,7 +226,7 @@ class EditProfileActivity : AppCompatActivity() {
             RequestCodes.PERMISSION_CAMERA.ordinal -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.d(getLogTag(), "camera permission has been denied by user")
-                    Toast.makeText(this, "Please enable camera permission in settings.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_camera_permission_settings), Toast.LENGTH_SHORT).show()
                 } else {
                     Log.d(getLogTag(), "camera permission has been granted by user")
                     takePhoto()
@@ -235,7 +235,7 @@ class EditProfileActivity : AppCompatActivity() {
             RequestCodes.PERMISSION_STORAGE.ordinal -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.d(getLogTag(), "storage permission has been denied by user")
-                    Toast.makeText(this, "Please enable multimedia files permission in settings.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_storage_permission_settings), Toast.LENGTH_SHORT).show()
                 } else {
                     Log.d(getLogTag(), "storage permission has been granted by user")
                     selectImageInAlbum()
