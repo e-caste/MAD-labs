@@ -1,9 +1,11 @@
 package it.polito.mad.group27.carpooling
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -14,7 +16,10 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.lyrebirdstudio.aspectratiorecyclerviewlib.aspectratio.model.AspectRatio
 import com.lyrebirdstudio.croppylib.Croppy
@@ -35,8 +40,11 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var nickNameEdit: EditText
     private lateinit var emailEdit: EditText
     private lateinit var locationEdit: EditText
+    private var hasCameraPermission: Boolean = false
 
     private enum class RequestCodes {
+        PERMISSION_CAMERA,
+        PERMISSION_STORAGE,
         TAKE_PHOTO,
         SELECT_IMAGE_IN_ALBUM,
         CROP_IMAGE,
@@ -159,7 +167,11 @@ class EditProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.camera -> {
                 Log.d(getLogTag(), "taking picture...")
-                takePhoto()
+                if (hasCameraPermission) {
+                    takePhoto()
+                } else {
+                    checkOrRequestCameraPermission()
+                }
                 return true
             }
             R.id.gallery -> {
@@ -175,6 +187,38 @@ class EditProfileActivity : AppCompatActivity() {
                 return true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun checkOrRequestCameraPermission() {
+        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
+            Log.d(getLogTag(), "camera permission is already granted, not asking user...")
+            hasCameraPermission = true
+            takePhoto()
+        } else {
+            Log.d(getLogTag(), "asking user for permission to use camera...")
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RequestCodes.PERMISSION_CAMERA.ordinal)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            RequestCodes.PERMISSION_CAMERA.ordinal -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(getLogTag(), "camera permission has been denied by user")
+                    Toast.makeText(this, "Please enable camera permission in settings.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(getLogTag(), "camera permission has been granted by user")
+                    hasCameraPermission = true
+                    takePhoto()
+                }
+            }
         }
     }
 
