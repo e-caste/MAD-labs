@@ -40,7 +40,6 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var nickNameEdit: EditText
     private lateinit var emailEdit: EditText
     private lateinit var locationEdit: EditText
-    private var hasCameraPermission: Boolean = false
 
     private enum class RequestCodes {
         PERMISSION_CAMERA,
@@ -167,11 +166,7 @@ class EditProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.camera -> {
                 Log.d(getLogTag(), "taking picture...")
-                if (hasCameraPermission) {
-                    takePhoto()
-                } else {
-                    checkOrRequestCameraPermission()
-                }
+                checkCameraPermissionAndTakePhoto()
                 return true
             }
             R.id.gallery -> {
@@ -190,14 +185,18 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkOrRequestCameraPermission() {
+    private fun checkCameraPermissionAndTakePhoto() {
         val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
             Log.d(getLogTag(), "camera permission is already granted, not asking user...")
-            hasCameraPermission = true
             takePhoto()
         } else {
             Log.d(getLogTag(), "asking user for permission to use camera...")
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    Toast.makeText(this, "Camera permission is needed to take a new profile picture.", Toast.LENGTH_SHORT).show()
+                }
+            }
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RequestCodes.PERMISSION_CAMERA.ordinal)
         }
     }
@@ -207,7 +206,6 @@ class EditProfileActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             RequestCodes.PERMISSION_CAMERA.ordinal -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
@@ -215,10 +213,10 @@ class EditProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Please enable camera permission in settings.", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.d(getLogTag(), "camera permission has been granted by user")
-                    hasCameraPermission = true
                     takePhoto()
                 }
             }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
