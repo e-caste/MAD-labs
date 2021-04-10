@@ -140,6 +140,12 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.select_image_source_menu, menu)
+        if (profileImage != null) {
+            var deleteItem = menu?.findItem(R.id.delete)
+            if (deleteItem != null) {
+                deleteItem.isVisible = true
+            }
+        }
         Log.d(getLogTag(), "context menu created")
     }
 
