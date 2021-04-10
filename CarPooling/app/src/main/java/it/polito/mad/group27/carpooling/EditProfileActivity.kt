@@ -192,11 +192,6 @@ class EditProfileActivity : AppCompatActivity() {
             takePhoto()
         } else {
             Log.d(getLogTag(), "asking user for permission to use camera...")
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    Toast.makeText(this, getString(R.string.toast_camera_permission_info), Toast.LENGTH_SHORT).show()
-                }
-            }
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), RequestCodes.PERMISSION_CAMERA.ordinal)
         }
     }
@@ -208,11 +203,6 @@ class EditProfileActivity : AppCompatActivity() {
             selectImageInAlbum()
         } else {
             Log.d(getLogTag(), "asking user for permission to access storage...")
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, getString(R.string.toast_storage_permission_info), Toast.LENGTH_SHORT).show()
-                }
-            }
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), RequestCodes.PERMISSION_STORAGE.ordinal)
         }
     }
