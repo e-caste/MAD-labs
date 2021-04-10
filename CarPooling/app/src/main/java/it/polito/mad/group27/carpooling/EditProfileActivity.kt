@@ -197,7 +197,7 @@ class EditProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.toast_camera_permission_info), Toast.LENGTH_SHORT).show()
                 }
             }
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RequestCodes.PERMISSION_CAMERA.ordinal)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), RequestCodes.PERMISSION_CAMERA.ordinal)
         }
     }
 
@@ -224,7 +224,7 @@ class EditProfileActivity : AppCompatActivity() {
     ) {
         when (requestCode) {
             RequestCodes.PERMISSION_CAMERA.ordinal -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isEmpty() || grantResults.filter{it != PackageManager.PERMISSION_GRANTED}.count()>0) {
                     Log.d(getLogTag(), "camera permission has been denied by user")
                     Toast.makeText(this, getString(R.string.toast_camera_permission_settings), Toast.LENGTH_SHORT).show()
                 } else {
