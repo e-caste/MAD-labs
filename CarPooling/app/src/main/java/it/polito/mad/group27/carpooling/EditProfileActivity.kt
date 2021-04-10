@@ -171,7 +171,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             R.id.gallery -> {
                 Log.d(getLogTag(), "choosing picture from gallery...")
-                selectImageInAlbum()
+                checkStoragePermissionAndGetPhoto()
                 return true
             }
             R.id.delete -> {
@@ -201,6 +201,22 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkStoragePermissionAndGetPhoto() {
+        val storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (storagePermission == PackageManager.PERMISSION_GRANTED) {
+            Log.d(getLogTag(), "storage permission is already granted, not asking user...")
+            selectImageInAlbum()
+        } else {
+            Log.d(getLogTag(), "asking user for permission to access storage...")
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, "Multimedia files permission is needed to get a new profile picture from the gallery.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), RequestCodes.PERMISSION_STORAGE.ordinal)
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -214,6 +230,15 @@ class EditProfileActivity : AppCompatActivity() {
                 } else {
                     Log.d(getLogTag(), "camera permission has been granted by user")
                     takePhoto()
+                }
+            }
+            RequestCodes.PERMISSION_STORAGE.ordinal -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(getLogTag(), "storage permission has been denied by user")
+                    Toast.makeText(this, "Please enable multimedia files permission in settings.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(getLogTag(), "storage permission has been granted by user")
+                    selectImageInAlbum()
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
