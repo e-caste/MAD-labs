@@ -187,7 +187,8 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun checkCameraPermissionAndTakePhoto() {
         val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-        if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
+        val writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED) {
             Log.d(getLogTag(), "camera permission is already granted, not asking user...")
             takePhoto()
         } else {
