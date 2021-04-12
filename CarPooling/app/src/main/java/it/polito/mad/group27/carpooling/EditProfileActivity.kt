@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -185,15 +186,19 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+
     private fun checkCameraPermissionAndTakePhoto() {
         val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         val writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (cameraPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED) {
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED && ( writePermission == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT > 28 )) {
             Log.d(getLogTag(), "camera permission is already granted, not asking user...")
             takePhoto()
         } else {
             Log.d(getLogTag(), "asking user for permission to use camera...")
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), RequestCodes.PERMISSION_CAMERA.ordinal)
+            if(Build.VERSION.SDK_INT > 28 )
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RequestCodes.PERMISSION_CAMERA.ordinal)
+            else
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), RequestCodes.PERMISSION_CAMERA.ordinal)
         }
     }
 
