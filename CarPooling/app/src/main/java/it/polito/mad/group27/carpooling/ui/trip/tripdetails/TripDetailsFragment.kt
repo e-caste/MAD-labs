@@ -8,20 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import it.polito.mad.group27.carpooling.R
 
-class TripDetailsFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = TripDetailsFragment()
-    }
+class TripDetailsFragment : Fragment(R.layout.trip_details_fragment) {
 
     private lateinit var viewModel: TripDetailsViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.trip_details_fragment, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

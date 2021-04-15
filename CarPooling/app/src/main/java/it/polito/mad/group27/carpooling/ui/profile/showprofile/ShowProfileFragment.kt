@@ -8,20 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import it.polito.mad.group27.carpooling.R
 
-class ShowProfileFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = ShowProfileFragment()
-    }
+class ShowProfileFragment : Fragment(R.layout.show_profile_fragment) {
 
     private lateinit var viewModel: ShowProfileViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.show_profile_fragment, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

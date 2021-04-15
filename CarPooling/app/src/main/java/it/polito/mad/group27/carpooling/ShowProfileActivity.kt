@@ -21,10 +21,6 @@ import java.io.File
 import java.io.OutputStream
 
 
-fun AppCompatActivity.getLogTag(): String {
-    return getString(R.string.log_tag)
-}
-
 class ShowProfileActivity : AppCompatActivity() {
 
     private var profile = Profile()
