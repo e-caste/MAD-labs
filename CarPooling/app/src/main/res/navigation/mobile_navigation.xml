@@ -3,23 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/nav_trips">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="it.polito.mad.group27.carpooling.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
-
+        android:id="@+id/nav_trips"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.TripList"
+        android:label="fragment_trip_list"
+        tools:layout="@layout/fragment_trip_list" >
+        <action
+            android:id="@+id/action_tripList_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
+        <action
+            android:id="@+id/action_tripList_to_tripEditFragment"
+            app:destination="@id/tripEditFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="it.polito.mad.group27.carpooling.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
+        android:id="@+id/nav_profile"
+        android:name="it.polito.mad.group27.carpooling.ui.profile.showprofile.ShowProfileFragment"
+        android:label="show_profile_fragment"
+        tools:layout="@layout/show_profile_fragment" >
+        <action
+            android:id="@+id/action_showProfileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="it.polito.mad.group27.carpooling.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/editProfileFragment"
+        android:name="it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment"
+        android:label="edit_profile_fragment"
+        tools:layout="@layout/edit_profile_fragment" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_showProfileFragment"
+            app:destination="@id/nav_profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripDetailsFragment"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.tripdetails.TripDetailsFragment"
+        android:label="trip_details_fragment"
+        tools:layout="@layout/trip_details_fragment" >
+        <action
+            android:id="@+id/action_tripDetailsFragment_to_tripEditFragment"
+            app:destination="@id/tripEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripEditFragment"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.tripedit.TripEditFragment"
+        android:label="trip_edit_fragment"
+        tools:layout="@layout/trip_edit_fragment" >
+        <action
+            android:id="@+id/action_tripEditFragment_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
+    </fragment>
 </navigation>

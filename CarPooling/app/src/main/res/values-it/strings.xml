@@ -23,4 +23,6 @@
     <string name="toast_storage_permission_settings">Per favore, dài all\'app il permesso di accedere alla galleria dalle impostazioni.</string>
     <string name="toast_camera_permission_info">Il permesso di usare la fotocamera è necessario se vuoi scattarti una nuova immagine del profilo.</string>
     <string name="toast_storage_permission_info">Il permesso di accedere alla galleria è necessario per ottenere una nuova foto per il tuo profilo.</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_trips">Trips</string>
 </resources>
