@@ -1,20 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/item_number"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        >
 
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        <ImageView
+            android:id="@+id/car_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_margin="0dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:src="@drawable/tesla_cybertruck"
+            android:foreground="@drawable/trip_card_gradient" />
+
+        <TextView
+            android:id="@+id/price_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="28.99 €"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            style="@style/trip_card_text_style" />
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:backgroundTint="#00000000"
+            android:contentDescription="edit button"
+            android:src="@drawable/ic_baseline_edit_24"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/departure_text"
+            android:layout_width="128sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:text="Torino Centro"
+            style="@style/trip_card_text_style"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="64dp"
+            android:contentDescription="right arrow icon"
+            android:scaleX="2"
+            android:scaleY="1.5"
+            android:src="@drawable/ic_baseline_arrow_right_alt_24"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/destination_text"
+            android:layout_width="128sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:text="Milano Porta Garibaldi"
+            style="@style/trip_card_text_style"/>
+
+        <ImageView
+            android:id="@+id/clock_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginLeft="60dp"
+            android:src="@drawable/ic_round_access_time_24"
+            android:contentDescription="clock icon"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/hour_departure_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginLeft="90dp"
+            android:text="12:30"
+            style="@style/trip_card_text_style"/>
+
+        <ImageView
+            android:id="@+id/calendar_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="180dp"
+            android:layout_marginLeft="180dp"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="calendar icon"
+            android:src="@drawable/ic_baseline_calendar_today_24"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/date_departure_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="210dp"
+            android:layout_marginLeft="210dp"
+            android:text="17/04/2021"
+            style="@style/trip_card_text_style"/>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
