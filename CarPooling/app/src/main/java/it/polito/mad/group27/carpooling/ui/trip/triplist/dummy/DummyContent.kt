@@ -45,12 +45,12 @@ object DummyContent {
 
     private fun createDummyItem(position: Int): DummyItem {
         return DummyItem(
-            carImages[position % carImages.size],
-            priceTexts[position % priceTexts.size],
-            departureTexts[position % departureTexts.size],
-            destinationTexts[position % destinationTexts.size],
-            hourDepartureTexts[position % hourDepartureTexts.size],
-            dateDepartureTexts[position % dateDepartureTexts.size],
+            carImages[(carImages.indices).random()],
+            priceTexts[(priceTexts.indices).random()],
+            departureTexts[(departureTexts.indices).random()],
+            destinationTexts[(destinationTexts.indices).random()],
+            hourDepartureTexts[(hourDepartureTexts.indices).random()],
+            dateDepartureTexts[(dateDepartureTexts.indices).random()],
         )
     }
 
