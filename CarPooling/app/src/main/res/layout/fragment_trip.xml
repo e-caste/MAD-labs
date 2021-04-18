@@ -47,11 +47,11 @@ tools:context=".MainActivity">
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
             android:layout_marginTop="9dp"
-            android:layout_marginEnd="10.5dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginRight="9dp"
             android:contentDescription="edit button shadow"
             android:src="@drawable/ic_baseline_edit_24"
-            app:tint="#22555555" />
+            app:tint="#44555555" />
 
         <ImageButton
             android:id="@+id/edit_button"
