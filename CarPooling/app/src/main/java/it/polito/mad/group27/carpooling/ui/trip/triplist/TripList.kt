@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -34,24 +35,26 @@ class TripList : Fragment(R.layout.fragment_trip_list) {
 //        }
     }
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        val view = inflater.inflate(R.layout.fragment_trip_list, container, false)
-//
-//        // Set the adapter
-//        if (view is RecyclerView) {
-//            with(view) {
-//                layoutManager = when {
-//                    columnCount <= 1 -> LinearLayoutManager(context)
-//                    else -> GridLayoutManager(context, columnCount)
-//                }
-//                adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
-//            }
-//        }
-//        return view
-//    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_trip_list, container, false)
+
+        // Set the adapter
+        if (view is RecyclerView) {
+            with(view) {
+                // TODO: fix this + override onConfigurationChanged in Activity - see https://www.tutorialspoint.com/how-to-detect-orientation-change-in-layout-in-android-using-kotlin
+                layoutManager = when (resources.configuration.orientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> GridLayoutManager(context, 2)
+                    else -> LinearLayoutManager(context)
+                }
+                adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
+            }
+        }
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
