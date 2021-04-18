@@ -77,7 +77,7 @@ tools:context=".MainActivity">
             android:text="Torino Centro"
             style="@style/trip_card_text_style"/>
 
-        <com.qhutch.elevationimageview.ElevationImageView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -86,9 +86,7 @@ tools:context=".MainActivity">
             android:scaleX="2"
             android:scaleY="1.5"
             android:src="@drawable/ic_baseline_arrow_right_alt_24"
-            android:tint="#FFFFFF"
-            app:compatEvelation="8dp"
-            android:elevation="8dp" />
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/destination_text"
@@ -104,7 +102,7 @@ tools:context=".MainActivity">
             android:text="Milano Porta Garibaldi"
             style="@style/trip_card_text_style"/>
 
-        <com.qhutch.elevationimageview.ElevationImageView
+        <ImageView
             android:id="@+id/clock_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,9 +112,7 @@ tools:context=".MainActivity">
             android:layout_marginLeft="60dp"
             android:src="@drawable/ic_round_access_time_24"
             android:contentDescription="clock icon"
-            android:tint="#FFFFFF"
-            app:compatEvelation="8dp"
-            android:elevation="8dp" />
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/hour_departure_text"
@@ -129,7 +125,7 @@ tools:context=".MainActivity">
             android:text="12:30"
             style="@style/trip_card_text_style"/>
 
-        <com.qhutch.elevationimageview.ElevationImageView
+        <ImageView
             android:id="@+id/calendar_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,9 +135,7 @@ tools:context=".MainActivity">
             android:layout_marginBottom="24dp"
             android:contentDescription="calendar icon"
             android:src="@drawable/ic_baseline_calendar_today_24"
-            android:tint="#FFFFFF"
-            app:compatEvelation="8dp"
-            android:elevation="8dp" />
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/date_departure_text"
