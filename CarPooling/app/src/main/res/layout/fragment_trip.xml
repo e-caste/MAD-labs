@@ -26,7 +26,7 @@ tools:context=".MainActivity">
             android:contentDescription="@string/app_name"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:src="@drawable/tesla_cybertruck"
+            android:src="@drawable/ic_baseline_directions_car_24"
             android:foreground="@drawable/trip_card_gradient" />
 
         <TextView
