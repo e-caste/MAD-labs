@@ -2,13 +2,11 @@ package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import it.polito.mad.group27.carpooling.R
 
-class EditProfileFragment : Fragment(R.layout.edit_profile_fragment) {
+import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
+
+class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment) {
 
     private lateinit var viewModel: EditProfileViewModel
 
