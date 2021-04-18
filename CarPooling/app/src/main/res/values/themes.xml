@@ -22,4 +22,13 @@
     <style name="Theme.CarPooling.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.CarPooling.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="trip_card_text_style">
+        <item name="android:textColor">#eeeeee</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
 </resources>

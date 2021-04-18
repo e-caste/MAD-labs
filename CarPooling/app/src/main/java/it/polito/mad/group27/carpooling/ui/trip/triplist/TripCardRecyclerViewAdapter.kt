@@ -4,6 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import it.polito.mad.group27.carpooling.R
 
@@ -11,7 +13,6 @@ import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent.Dumm
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
  */
 class TripCardRecyclerViewAdapter(
     private val values: List<DummyItem>
@@ -25,18 +26,28 @@ class TripCardRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        holder.carImageView.setImageResource(item.carImage)
+        holder.priceTextView.text = item.priceText
+        holder.departureTextView.text = item.departureText
+        holder.destinationTextView.text = item.destinationText
+        holder.hourDepartureTextView.text = item.hourDepartureText
+        holder.dateDepartureTextView.text = item.dateDepartureText
+        // TODO: set onClickListener for editButton?
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val idView: TextView = view.findViewById(R.id.item_number)
-        val contentView: TextView = view.findViewById(R.id.content)
+        val carImageView: ImageView = view.findViewById(R.id.car_image)
+        val priceTextView: TextView = view.findViewById(R.id.price_text)
+        val editButton: ImageButton = view.findViewById(R.id.edit_button)
+        val departureTextView: TextView = view.findViewById(R.id.departure_text)
+        val destinationTextView: TextView = view.findViewById(R.id.destination_text)
+        val hourDepartureTextView: TextView = view.findViewById(R.id.hour_departure_text)
+        val dateDepartureTextView: TextView = view.findViewById(R.id.date_departure_text)
 
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+//        override fun toString(): String {
+//            return super.toString()
+//        }
     }
 }
