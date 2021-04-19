@@ -6,11 +6,12 @@ import androidx.fragment.app.Fragment
 import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-open class ProfileFragment(resId:Int): Fragment(resId){
+open class ProfileFragment(resId:Int, optionsMenuId: Int): BaseFragmentWithToolbar(resId, optionsMenuId){
 
     fun getProfile(): Profile? {
         var profile: Profile? = null

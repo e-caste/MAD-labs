@@ -2,11 +2,20 @@ package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
+import it.polito.mad.group27.carpooling.MainActivity
 
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
 
-class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment) {
+class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.menu.edit_profile_menu) {
 
     private lateinit var viewModel: EditProfileViewModel
 
@@ -15,5 +24,7 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment) {
         viewModel = ViewModelProvider(this).get(EditProfileViewModel::class.java)
         // TODO: Use the ViewModel
     }
+
+
 
 }
