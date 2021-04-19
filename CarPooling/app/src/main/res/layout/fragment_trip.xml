@@ -167,8 +167,7 @@
                     style="@style/trip_card_text_style" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/date_departure_text"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -176,11 +175,23 @@
                 android:paddingLeft="8dp"
                 android:paddingEnd="8dp"
                 android:paddingRight="8dp"
-                android:text="17/04/2021"
-                style="@style/trip_card_text_style"
-                app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24"
-                app:drawableLeftCompat="@drawable/ic_baseline_calendar_today_24"
-                android:drawableTint="@color/white" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/calendar_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:contentDescription="calendar icon"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/date_departure_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="17/04/2021"
+                    style="@style/trip_card_text_style" />
+            </LinearLayout>
 
             <!-- needed empty view for centering purposes -->
             <View
