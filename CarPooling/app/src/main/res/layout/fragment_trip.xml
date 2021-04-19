@@ -13,7 +13,9 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     >
+    <!-- USE THE BLUEPRINT WHEN EDITING THIS LAYOUT -->
 
+    <!-- this ImageView spans the whole card - the image is cropped while keeping its proportions -->
     <ImageView
         android:id="@+id/car_image"
         android:layout_width="match_parent"
@@ -25,11 +27,13 @@
         android:src="@drawable/ic_baseline_directions_car_24"
         android:foreground="@drawable/trip_card_gradient" />
 
+    <!-- main layout - vertical -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- price + edit button horizontal layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -73,6 +77,7 @@
             </FrameLayout>
         </LinearLayout>
 
+        <!-- departure + destination texts horizontal layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -117,6 +122,7 @@
                 style="@style/trip_card_text_style"/>
         </LinearLayout>
 
+        <!-- hour + date horizontal layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -127,11 +133,14 @@
             android:paddingEnd="8dp"
             android:baselineAligned="false">
 
+            <!-- this empty view is used to center horizontally hour and date together -->
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <!-- this could be a TextView with a drawable(Start|Left)Compat, but the tint doesn't work on old APIs -->
+            <!-- also, here the drawable will align to the start of the view, not to the start of the text -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -173,6 +182,7 @@
                 app:drawableLeftCompat="@drawable/ic_baseline_calendar_today_24"
                 android:drawableTint="@color/white" />
 
+            <!-- needed empty view for centering purposes -->
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
