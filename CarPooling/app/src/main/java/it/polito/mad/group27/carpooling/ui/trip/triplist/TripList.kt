@@ -45,10 +45,16 @@ class TripList : Fragment(R.layout.fragment_trip_list) {
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
-                // TODO: fix this + override onConfigurationChanged in Activity - see https://www.tutorialspoint.com/how-to-detect-orientation-change-in-layout-in-android-using-kotlin
+                // TODO: when is this called?
                 layoutManager = when (resources.configuration.orientation) {
-                    Configuration.ORIENTATION_LANDSCAPE -> GridLayoutManager(context, 2)
-                    else -> LinearLayoutManager(context)
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        Log.d(getLogTag(), "orientation is landscape, using grid layout...")
+                        GridLayoutManager(context, 2)
+                    }
+                    else -> {
+                        Log.d(getLogTag(), "orientation is portrait, using linear layout...")
+                        LinearLayoutManager(context)
+                    }
                 }
                 adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
             }
@@ -60,7 +66,17 @@ class TripList : Fragment(R.layout.fragment_trip_list) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Log.d(getLogTag(), "orientation is landscape, using grid layout...")
+                // TODO: select number of columns based on screen width
+                GridLayoutManager(context, 2)
+            }
+            else -> {
+                Log.d(getLogTag(), "orientation is portrait, using linear layout...")
+                LinearLayoutManager(context)
+            }
+        }
         recyclerView.adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
