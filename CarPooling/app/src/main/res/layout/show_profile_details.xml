@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ScrollingActivity"
-    android:padding="@dimen/margin_16dp">
+    android:padding="@dimen/margin_16dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/paddingFullBottom">
+
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
@@ -32,18 +31,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
-                android:rating="@string/default_rating"
-                android:numStars="5" />
+                android:numStars="5"
+                android:rating="@string/default_rating" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/since"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:gravity="end"
-                android:paddingRight="4sp"/>
+                android:paddingRight="4sp"
+                android:text="@string/since"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
                 android:id="@+id/registrationDateView"
