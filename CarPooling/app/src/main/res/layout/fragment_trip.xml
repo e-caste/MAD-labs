@@ -130,10 +130,14 @@
                 android:paddingEnd="8dp"
                 android:baselineAligned="false">
 
-                <LinearLayout
+                <View
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="end|center_vertical"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
@@ -159,9 +163,8 @@
 
                 <TextView
                     android:id="@+id/date_departure_text"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="start|center_vertical"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
@@ -172,6 +175,11 @@
                     app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24"
                     app:drawableLeftCompat="@drawable/ic_baseline_calendar_today_24"
                     android:drawableTint="@color/white" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             </LinearLayout>
         </LinearLayout>
