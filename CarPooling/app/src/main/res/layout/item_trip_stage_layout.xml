@@ -4,18 +4,27 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:layout_height="wrap_content"
-    android:padding="@dimen/paddingFullBottom">
+    android:paddingStart="@dimen/paddingFullBottom"
+    android:paddingEnd="@dimen/paddingFullBottom"
+    android:paddingLeft="@dimen/paddingFullBottom"
+    android:paddingRight="@dimen/paddingFullBottom">
 
     <TextView
+        android:id="@+id/tripStageTime"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:padding="4sp"
+        android:gravity="end"
+        android:paddingTop="8sp"
+        android:paddingStart="0sp"
+        android:paddingEnd="4sp"
+        android:paddingLeft="0sp"
+        android:paddingRight="4sp"
         android:text="12:06" />
 
     <TextView
-        android:id="@+id/endTripTextView"
+        android:id="@+id/tripStageName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="5"
@@ -23,7 +32,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:text="Milano Centrale" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@null"
