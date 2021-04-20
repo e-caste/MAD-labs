@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/paddingFullBottom"
+    android:paddingEnd="@dimen/paddingFullBottom"
+    android:paddingLeft="@dimen/paddingFullBottom"
+    android:paddingRight="@dimen/paddingFullBottom">
+
+    <TextView
+        android:id="@+id/tripStageTime"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="end"
+        android:paddingTop="8sp"
+        android:paddingStart="0sp"
+        android:paddingEnd="4sp"
+        android:paddingLeft="0sp"
+        android:paddingRight="4sp"
+        android:text="12:06" />
+
+    <TextView
+        android:id="@+id/tripStageName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:padding="4sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="Milano Centrale" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24" />
+</LinearLayout>
