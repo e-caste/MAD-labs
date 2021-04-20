@@ -3,17 +3,31 @@ package it.polito.mad.group27.carpooling.ui.trip
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 import java.util.*
 
 @Serializable
 @Parcelize
 data class Trip(
-    val date: Date,
-    val startHour: Hour,
-    val from: String,
-    val to: String,
-    val stops: Map<String, Hour>,
-    val options: List<Option>
+    val date: Date =
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+            Date(
+            LocalDateTime.now().dayOfMonth ,
+            LocalDateTime.now().monthValue,
+            LocalDateTime.now().year)
+        else
+            Date(java.util.Calendar.getInstance()),
+    val startHour: Hour =
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+            Hour(
+                LocalDateTime.now().hour ,
+                LocalDateTime.now().minute,)
+        else
+            Hour(java.util.Calendar.getInstance()),
+    val from: String = "",
+    val to: String = "",
+    val stops: Map<String, Hour> = mutableMapOf(),
+    val options: List<Option> = mutableListOf()
 ): Parcelable
 
 @Serializable
@@ -65,7 +79,12 @@ data class Date(var day: Int, var month: Int, var year: Int): Parcelable{
 
 @Serializable
 @Parcelize
-data class Hour(var hour: Int, var minute: Int): Parcelable
+data class Hour(var hour: Int, var minute: Int): Parcelable{
+    constructor(calendar: Calendar) : this(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+    override fun toString(): String {
+        return "${hour}:${minute}"
+    }
+}
 
 enum class Option{
     ANIMALS, LUGGAGE, NO_SMOKE, OTHER
