@@ -25,4 +25,5 @@
     <string name="toast_storage_permission_info">Il permesso di accedere alla galleria è necessario per ottenere una nuova foto per il tuo profilo.</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_trips">Trips</string>
+    <string name="route">Percorso:</string>
 </resources>
