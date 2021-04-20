@@ -9,17 +9,22 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var appBarConfiguration: AppBarConfiguration
+    lateinit var navView:NavigationView
+    lateinit var drawerLayout:DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        drawerLayout = findViewById(R.id.drawer_layout)
+
+
+        navView = findViewById(R.id.nav_view)
         val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!.findNavController()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

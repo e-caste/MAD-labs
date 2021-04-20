@@ -1,17 +1,19 @@
 package it.polito.mad.group27.carpooling.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.util.Log
+import android.view.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.getLogTag
 
-open class BaseFragmentWithToolbar(resId:Int, private val optionsMenuId:Int ): Fragment(resId) {
+
+open class BaseFragmentWithToolbar(resId: Int, private val optionsMenuId: Int): Fragment(resId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,16 @@ open class BaseFragmentWithToolbar(resId:Int, private val optionsMenuId:Int ): F
         act.setSupportActionBar(toolbar)
         act.setupActionBarWithNavController(findNavController(), act.appBarConfiguration)
         act.supportActionBar?.title =  null
+    }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle presses on the action bar items
+        val mDrawerLayout = (activity as MainActivity).drawerLayout
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT); //CLOSE Nav Drawer!
+        }else{
+            mDrawerLayout.openDrawer(Gravity.LEFT); //OPEN Nav Drawer!
+        }
+        return true
     }
 }
