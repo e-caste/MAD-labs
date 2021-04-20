@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/paddingFullBottom">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:padding="4sp"
+        android:text="12:06" />
+
+    <TextView
+        android:id="@+id/endTripTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:padding="4sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="Milano Centrale" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24" />
+</LinearLayout>
