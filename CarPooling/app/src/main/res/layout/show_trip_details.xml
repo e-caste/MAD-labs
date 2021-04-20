@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ScrollingActivity"
+    tools:context=".MainActivity"
     android:padding="@dimen/margin_16dp">
 
     <LinearLayout
@@ -77,9 +77,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:paddingStart="4sp"
-                android:paddingEnd="4sp"
                 android:paddingTop="8sp"
+                android:paddingStart="0sp"
+                android:paddingEnd="4sp"
+                android:paddingLeft="0sp"
+                android:paddingRight="4sp"
                 android:text="10:55" />
 
             <TextView
@@ -90,24 +92,23 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="Torino Porta Nuova stazione ferroviaria" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/expandButton"
                 app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@null"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
-        <!--androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fullTripList"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tripStageList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/
-        -->
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:visibility="gone"
+            android:overScrollMode="never"/>
 
 
         <include layout="@layout/item_trip_stage_layout"/>
-
 
     </LinearLayout>
 
