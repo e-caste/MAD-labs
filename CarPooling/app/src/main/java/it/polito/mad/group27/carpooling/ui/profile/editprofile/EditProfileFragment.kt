@@ -45,6 +45,8 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
                 //TODO save
                 findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
             }
+            else ->
+                return super.onOptionsItemSelected(item)
         }
         return true
     }

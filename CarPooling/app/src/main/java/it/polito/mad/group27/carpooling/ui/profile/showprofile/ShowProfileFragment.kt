@@ -31,7 +31,7 @@ class ShowProfileFragment : ProfileFragment(
             R.id.edit_profile ->
                 findNavController().navigate(R.id.action_showProfileFragment_to_editProfileFragment)
             else -> {
-                super.onOptionsItemSelected(item)
+               return super.onOptionsItemSelected(item)
             }
 
         }

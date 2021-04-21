@@ -35,14 +35,4 @@ open class BaseFragmentWithToolbar(resId: Int, private val optionsMenuId: Int): 
         act.supportActionBar?.title =  null
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle presses on the action bar items
-        val mDrawerLayout = (activity as MainActivity).drawerLayout
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(Gravity.LEFT); //CLOSE Nav Drawer!
-        }else{
-            mDrawerLayout.openDrawer(Gravity.LEFT); //OPEN Nav Drawer!
-        }
-        return true
-    }
 }
