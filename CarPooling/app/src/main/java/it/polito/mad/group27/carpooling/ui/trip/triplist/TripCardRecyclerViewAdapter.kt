@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
 
 import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent.DummyItem
@@ -15,7 +16,8 @@ import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent.Dumm
  * [RecyclerView.Adapter] that can display a [DummyItem].
  */
 class TripCardRecyclerViewAdapter(
-    private val values: List<DummyItem>
+    private val values: List<DummyItem>,
+    private val navController: NavController,
 ) : RecyclerView.Adapter<TripCardRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,6 +28,7 @@ class TripCardRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
+        holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment) }
         holder.carImageView.setImageResource(item.carImage)
         holder.priceTextView.text = item.priceText
         holder.departureTextView.text = item.departureText

@@ -57,7 +57,7 @@ class TripList : Fragment(R.layout.fragment_trip_list) {
                         LinearLayoutManager(context)
                     }
                 }
-                adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
+                adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS, findNavController())
             }
         }
         return view
@@ -78,7 +78,7 @@ class TripList : Fragment(R.layout.fragment_trip_list) {
                 LinearLayoutManager(context)
             }
         }
-        recyclerView.adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS)
+        recyclerView.adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS, findNavController())
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { view ->
