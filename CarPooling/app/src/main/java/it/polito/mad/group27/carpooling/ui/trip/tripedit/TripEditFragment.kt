@@ -1,27 +1,40 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
-import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.fragment.app.commit
+import androidx.core.view.children
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
-import it.polito.mad.group27.carpooling.ui.trip.Date
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import java.time.LocalDateTime
-import java.util.Locale
+import java.text.DateFormat
+import java.util.*
 
 class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
 
     private lateinit var viewModel: TripEditViewModel
+
+    private val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+    private val newTrip = trip.copy()
+    private var datePicker: MaterialDatePicker<Long>
+
+    val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+
+    init {
+        datePicker = getDatePicker()
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -32,8 +45,36 @@ class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        val date = view.findViewById<TextView>(R.id.editDateText)
+        date.text = df.format(newTrip.date)
+        date.setOnClickListener {
+            if(!datePicker.isVisible)
+                datePicker.show(requireActivity().supportFragmentManager, "datePickerTag")
+        }
 
+        val from = view.findViewById<LinearLayout>(R.id.editFrom)
+        (from.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "From"
+        val timePickerFrom = getTimePicker(
+            from.findViewWithTag<TextInputEditText>("editHour"),
+            newTrip.startHour){
+            newTrip.startHour = Hour(it.hour, it.minute)
+            newTrip.startHour
+        }
+        from.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.from)
+        from.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.startHour.toString())
+        from.findViewWithTag<TextInputEditText>("editHour").setOnClickListener {
+            if(!timePickerFrom.isVisible)
+                timePickerFrom.show(requireActivity().supportFragmentManager, "timePickerTag")
+        }
+
+        val to = view.findViewById<LinearLayout>(R.id.editTo)
+        (to.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "To"
+        to.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.to)
+        to.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.endHour.toString())
+
+    }
+
+    private fun getDatePicker() : MaterialDatePicker<Long> {
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.now())
@@ -44,37 +85,29 @@ class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
         datePicker.addOnPositiveButtonClickListener {
-            Log.d(getLogTag(), "positive")
-            Log.d(getLogTag(), "${datePicker.selection.toString()}")
+            newTrip.date = Date(datePicker.selection!!)
+            this.view?.findViewById<TextView>(R.id.editDateText)?.text = df.format(newTrip.date)
+            Log.d(getLogTag(), newTrip.date.toString())
+        }
+        return datePicker
+    }
 
+    private fun getTimePicker(view: TextView, hour: Hour, update: (MaterialTimePicker) -> Hour): MaterialTimePicker{
+        val timePicker =
+            MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setHour(hour.hour)
+                .setMinute(hour.minute)
+                .build()
+        timePicker.addOnPositiveButtonClickListener {
+            val newHour: Hour = update(timePicker)
+            view.text = newHour.toString()
         }
-        datePicker.addOnNegativeButtonClickListener {
-            Log.d(getLogTag(), "negative")
-        }
-        datePicker.addOnCancelListener {
-            Log.d(getLogTag(), "cancel")
-        }
-        datePicker.addOnDismissListener {
-            Log.d(getLogTag(), "dismiss")
-        }
+        return timePicker
+    }
 
-        val date = view.findViewById<TextView>(R.id.editDateText)
-        date.text = trip.date.toString(Locale.getDefault())
-        date.setOnClickListener {
-            if(!datePicker.isVisible)
-                datePicker.show(requireActivity().supportFragmentManager, "tag")
-        }
-
-        val from = PlaceHourFragment("From")
-        activity?.supportFragmentManager?.commit {
-            add(R.id.editFrom, from)
-        }
-
-        val to = PlaceHourFragment("To")
-        activity?.supportFragmentManager?.commit {
-            add(R.id.editTo, to)
-        }
-
+    fun saveTrip(){
+        // check id, if -1 take counter and increment
     }
 
 }
