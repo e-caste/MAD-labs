@@ -11,7 +11,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-open class ProfileFragment(resId:Int, optionsMenuId: Int): BaseFragmentWithToolbar(resId, optionsMenuId){
+open class ProfileFragment(resId:Int, optionsMenuId: Int, titleId: Int?):
+    BaseFragmentWithToolbar(resId, optionsMenuId, titleId){
 
     fun getProfile(): Profile? {
         var profile: Profile? = null

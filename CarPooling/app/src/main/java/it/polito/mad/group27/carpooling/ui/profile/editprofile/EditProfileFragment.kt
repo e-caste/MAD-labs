@@ -5,24 +5,18 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import it.polito.mad.group27.carpooling.*
 
 import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
 
-class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.menu.edit_profile_menu) {
-
+class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
+    R.string.profile_edit_title) {
     private lateinit var viewModel: EditProfileViewModel
 
     private lateinit var imageProfileView: ImageView
@@ -41,7 +35,7 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.save_profile ->{
+            R.id.save_menu_button ->{
                 //TODO save
                 findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
             }
@@ -53,7 +47,7 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu!!.findItem(R.id.save_profile).isEnabled = validateFields()
+        menu!!.findItem(R.id.save_menu_button).isEnabled = validateFields()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
