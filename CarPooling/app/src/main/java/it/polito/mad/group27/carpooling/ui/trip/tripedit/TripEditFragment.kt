@@ -24,6 +24,7 @@ import java.util.Locale
 class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
     R.menu.edit_menu,
     R.string.trip_edit_title) {
+    //TODO change title to add (?)
 
     private lateinit var viewModel: TripEditViewModel
 
