@@ -14,8 +14,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 class MainActivity : AppCompatActivity() {
 
     lateinit var appBarConfiguration: AppBarConfiguration
-    lateinit var navView:NavigationView
-    lateinit var drawerLayout:DrawerLayout
+    lateinit var navView: NavigationView
+    lateinit var drawerLayout: DrawerLayout
+    lateinit var profile: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
