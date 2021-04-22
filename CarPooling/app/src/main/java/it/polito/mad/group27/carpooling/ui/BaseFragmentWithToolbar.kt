@@ -13,7 +13,9 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 
 
-open class BaseFragmentWithToolbar(resId: Int, private val optionsMenuId: Int): Fragment(resId) {
+open class BaseFragmentWithToolbar(layoutId: Int,
+                                   private val optionsMenuId: Int,
+                                   private val titleId: Int?): Fragment(layoutId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ open class BaseFragmentWithToolbar(resId: Int, private val optionsMenuId: Int): 
         val act = activity as MainActivity
         act.setSupportActionBar(toolbar)
         act.setupActionBarWithNavController(findNavController(), act.appBarConfiguration)
-        act.supportActionBar?.title =  null
+        act.supportActionBar?.title =  if (titleId!=null) getString(titleId) else null
     }
 
 }
