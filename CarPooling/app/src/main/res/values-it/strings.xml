@@ -26,4 +26,6 @@
     <string name="nav_profile">Profile</string>
     <string name="nav_trips">Trips</string>
     <string name="route">Percorso:</string>
+    <string name="trip_edit_title">Modifica viaggio</string>
+    <string name="profile_edit_title">Modifica profile</string>
 </resources>
