@@ -27,6 +27,7 @@
         android:name="it.polito.mad.group27.carpooling.ui.triplist.TripList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.trip.triplist.TripList"
         tools:layout_editor_absoluteX="16dp"
