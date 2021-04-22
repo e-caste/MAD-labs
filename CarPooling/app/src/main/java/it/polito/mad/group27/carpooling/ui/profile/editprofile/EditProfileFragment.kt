@@ -12,10 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import it.polito.mad.group27.carpooling.*
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 
-import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
-
-class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
+class EditProfileFragment : BaseFragmentWithToolbar(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
     private lateinit var viewModel: EditProfileViewModel
 

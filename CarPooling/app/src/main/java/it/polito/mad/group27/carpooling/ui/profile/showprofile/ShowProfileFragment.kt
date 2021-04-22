@@ -2,13 +2,17 @@ package it.polito.mad.group27.carpooling.ui.profile.showprofile
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 
 
-class ShowProfileFragment : ProfileFragment(
+class ShowProfileFragment : BaseFragmentWithToolbar(
     R.layout.show_profile_fragment,
     R.menu.show_menu, null
 ) {
