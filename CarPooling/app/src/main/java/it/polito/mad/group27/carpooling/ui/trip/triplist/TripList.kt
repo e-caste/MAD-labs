@@ -16,13 +16,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent
 
 
 /**
  * A fragment representing a list of Items.
  */
-class TripList : Fragment(R.layout.fragment_trip_list) {
+class TripList :  BaseFragmentWithToolbar(R.layout.fragment_trip_list,
+    R.menu.trip_list_menu,
+    R.string.app_name){
 
     private var columnCount = 1
 
