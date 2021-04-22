@@ -85,8 +85,8 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
+                        android:cursorVisible="false"
                         />
-                    <!--                        android:cursorVisible="false"-->
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <include
