@@ -1,6 +1,5 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +7,6 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.tripdetails.dummy.DummyStageContent
-import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent
 
-class TripDetailsFragment : Fragment(R.layout.trip_details_fragment) {
-
+class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
+    R.menu.show_menu, null) {
+    // TODO insert title customized (Trip to .... ) (?)
     private lateinit var viewModel: TripDetailsViewModel
     private lateinit var dropdownListButton : LinearLayout
 
@@ -36,11 +34,6 @@ class TripDetailsFragment : Fragment(R.layout.trip_details_fragment) {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.show_profile_menu, menu)
-        Log.d(getLogTag(),"Toolbar displayed")
-    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -59,13 +52,9 @@ class TripDetailsFragment : Fragment(R.layout.trip_details_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+
         dropdownListButton = view.findViewById(R.id.startTripView)
 
-        val activity = activity as MainActivity
-        activity.setSupportActionBar(toolbar)
-        activity.setupActionBarWithNavController(findNavController(), activity.appBarConfiguration)
-        activity.supportActionBar?.title = "Trip details"
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.tripStageList)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -90,6 +79,16 @@ class TripDetailsFragment : Fragment(R.layout.trip_details_fragment) {
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.edit_menu_button -> {
+                //TODO
+            }
+            else-> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 }

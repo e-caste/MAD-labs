@@ -2,6 +2,7 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,12 +18,16 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
 import java.util.*
 
-class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
+class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
+    R.menu.edit_menu,
+    R.string.trip_edit_title) {
+    //TODO change title to add (?)
 
     private lateinit var viewModel: TripEditViewModel
 
@@ -108,6 +113,16 @@ class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
 
     fun saveTrip(){
         // check id, if -1 take counter and increment
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_menu_button->{
+                //TODO
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 }

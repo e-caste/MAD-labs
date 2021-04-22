@@ -1,17 +1,21 @@
 package it.polito.mad.group27.carpooling.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.util.Log
+import android.view.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.getLogTag
 
-open class BaseFragmentWithToolbar(resId:Int, private val optionsMenuId:Int ): Fragment(resId) {
+
+open class BaseFragmentWithToolbar(layoutId: Int,
+                                   private val optionsMenuId: Int,
+                                   private val titleId: Int?): Fragment(layoutId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +34,7 @@ open class BaseFragmentWithToolbar(resId:Int, private val optionsMenuId:Int ): F
         val act = activity as MainActivity
         act.setSupportActionBar(toolbar)
         act.setupActionBarWithNavController(findNavController(), act.appBarConfiguration)
-        act.supportActionBar?.title =  null
-
-
+        act.supportActionBar?.title =  if (titleId!=null) getString(titleId) else null
     }
+
 }

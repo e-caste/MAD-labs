@@ -125,14 +125,14 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.edit_profile_menu, menu)
+        inflater.inflate(R.menu.edit_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
-            R.id.save_profile -> {
+            R.id.save_menu_button -> {
                 saveProfile()
                 true
             }
@@ -159,7 +159,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         super.onPrepareOptionsMenu(menu)
-        menu!!.findItem(R.id.save_profile).isEnabled = validateFields()
+        menu!!.findItem(R.id.save_menu_button).isEnabled = validateFields()
         return true
     }
 
