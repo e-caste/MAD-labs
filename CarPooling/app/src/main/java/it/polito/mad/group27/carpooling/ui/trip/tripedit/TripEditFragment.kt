@@ -34,6 +34,8 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
     private val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
     private val newTrip = trip.copy()
     private var datePicker: MaterialDatePicker<Long>
+    private var timePickerFrom: MaterialTimePicker? = null
+    private var timePickerTo: MaterialTimePicker? = null
 
     val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
 
@@ -59,23 +61,43 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         (from.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "From"
-        val timePickerFrom = getTimePicker(
-            from.findViewWithTag<TextInputEditText>("editHour"),
-            newTrip.startHour){
-            newTrip.startHour = Hour(it.hour, it.minute)
-            newTrip.startHour
-        }
         from.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.from)
         from.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.startHour.toString())
         from.findViewWithTag<TextInputEditText>("editHour").setOnClickListener {
-            if(!timePickerFrom.isVisible)
-                timePickerFrom.show(requireActivity().supportFragmentManager, "timePickerTag")
+            if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
+                timePickerFrom = getTimePicker(
+                    from.findViewWithTag<TextInputEditText>("editHour"),
+                    newTrip.startHour){
+                    Log.d(getLogTag(), newTrip.startHour.toString())
+                    newTrip.startHour.hour = it.hour
+                    newTrip.startHour.minute = it.minute
+                    newTrip.startHour
+                }
+                timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
+                Log.d(getLogTag(), "show time picker $timePickerFrom")
+            }
+
         }
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
         (to.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "To"
         to.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.to)
         to.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.endHour.toString())
+        to.findViewWithTag<TextInputEditText>("editHour").setOnClickListener {
+            if(timePickerTo == null || !timePickerTo?.isVisible!!) {
+                timePickerTo = getTimePicker(
+                    to.findViewWithTag<TextInputEditText>("editHour"),
+                    newTrip.endHour){
+                    Log.d(getLogTag(), newTrip.endHour.toString())
+                    newTrip.endHour.hour = it.hour
+                    newTrip.endHour.minute = it.minute
+                    newTrip.endHour
+                }
+                timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
+                Log.d(getLogTag(), "show time picker $timePickerTo")
+            }
+
+        }
 
     }
 
@@ -106,7 +128,11 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
                 .build()
         timePicker.addOnPositiveButtonClickListener {
             val newHour: Hour = update(timePicker)
+            Log.d(getLogTag(), "updated hour with $newHour")
             view.text = newHour.toString()
+        }
+        timePicker.addOnDismissListener {
+            timePicker.dismiss()
         }
         return timePicker
     }
