@@ -57,7 +57,8 @@
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:paddingStart="@dimen/margin_16dp"
-            android:paddingEnd="@dimen/margin_16dp">
+            android:paddingEnd="@dimen/margin_16dp"
+            android:paddingTop="@dimen/margin_16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,6 +72,7 @@
 <!--                    android:calendarViewShown="false"/>-->
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
@@ -87,18 +89,20 @@
                     <!--                        android:cursorVisible="false"-->
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.fragment.app.FragmentContainerView
-                    tools:layout="@layout/place_hour_fragment"
+                <include
+                    layout="@layout/place_hour"
                     android:id="@+id/editFrom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"/>
-                <androidx.fragment.app.FragmentContainerView
-                    tools:layout="@layout/place_hour_fragment"
+                    android:layout_margin="8dp"
+                    />
+
+                <include
+                    layout="@layout/place_hour"
                     android:id="@+id/editTo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"/>
+                    android:layout_margin="8dp" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
