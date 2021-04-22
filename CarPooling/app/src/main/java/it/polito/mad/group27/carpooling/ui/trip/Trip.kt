@@ -9,7 +9,7 @@ import java.util.*
 @Serializable
 @Parcelize
 data class Trip(
-    val date: Date =
+    var date: Date =
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
             Date(
             LocalDateTime.now().dayOfMonth ,
@@ -17,15 +17,25 @@ data class Trip(
             LocalDateTime.now().year)
         else
             Date(java.util.Calendar.getInstance()),
-    val startHour: Hour =
+    var startHour: Hour =
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
             Hour(
                 LocalDateTime.now().hour ,
                 LocalDateTime.now().minute,)
         else
             Hour(java.util.Calendar.getInstance()),
-    val from: String = "",
-    val to: String = "",
+    var endHour: Hour =
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+            Hour(
+                LocalDateTime.now().plusHours(1).hour ,
+                LocalDateTime.now().plusHours(1).minute,)
+        else{
+            val calendar = java.util.Calendar.getInstance()
+            calendar.add(Calendar.HOUR_OF_DAY, +1)
+            Hour(calendar)
+        },
+    var from: String = "",
+    var to: String = "",
     val stops: Map<String, Hour> = mutableMapOf(),
     val options: List<Option> = mutableListOf()
 ): Parcelable
@@ -35,7 +45,7 @@ data class Trip(
 data class Date(var day: Int, var month: Int, var year: Int): Parcelable{
     constructor(calendar: Calendar) : this(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR))
 
-    companion object pippo{
+    companion object Months{
         val it_months = listOf<String>(
             "Gennaio",
             "Febbraio",
@@ -68,11 +78,11 @@ data class Date(var day: Int, var month: Int, var year: Int): Parcelable{
     fun toString(l: Locale): String {
         val locale = l.toString()
         if (locale == "it_IT")
-            return "$day ${pippo.it_months[month-1]} $year"
+            return "$day ${Months.it_months[month]} $year"
         else if (locale == "en_UK")
-            return  "$day ${pippo.en_months[month-1]} $year"
+            return  "$day ${Months.en_months[month]} $year"
         else
-            return "${pippo.en_months[month-1]} $day, $year"
+            return "${Months.en_months[month]} $day, $year"
     }
 
 }
