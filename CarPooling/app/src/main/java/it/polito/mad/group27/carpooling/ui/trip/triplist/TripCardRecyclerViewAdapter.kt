@@ -31,11 +31,11 @@ class TripCardRecyclerViewAdapter(
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment) }
         holder.carImageView.setImageResource(item.carImage)
         holder.priceTextView.text = item.priceText
+        holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment) }
         holder.departureTextView.text = item.departureText
         holder.destinationTextView.text = item.destinationText
         holder.hourDepartureTextView.text = item.hourDepartureText
         holder.dateDepartureTextView.text = item.dateDepartureText
-        // TODO: set onClickListener for editButton?
     }
 
     override fun getItemCount(): Int = values.size
