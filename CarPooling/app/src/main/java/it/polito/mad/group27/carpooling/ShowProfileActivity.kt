@@ -2,7 +2,6 @@ package it.polito.mad.group27.carpooling
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.OutputStream
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -63,14 +61,14 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.show_profile_menu, menu)
+        inflater.inflate(R.menu.show_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
-            R.id.edit_profile -> {
+            R.id.edit_menu_button -> {
                 editProfile()
                 true
             }
