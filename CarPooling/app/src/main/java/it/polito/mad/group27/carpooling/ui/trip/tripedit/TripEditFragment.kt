@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -14,12 +15,15 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Date
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.time.LocalDateTime
 import java.util.Locale
 
-class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
+class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
+    R.menu.edit_menu,
+    R.string.trip_edit_title) {
 
     private lateinit var viewModel: TripEditViewModel
 
@@ -75,6 +79,16 @@ class TripEditFragment : Fragment(R.layout.trip_edit_fragment) {
             add(R.id.editTo, to)
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_menu_button->{
+                //TODO
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 }
