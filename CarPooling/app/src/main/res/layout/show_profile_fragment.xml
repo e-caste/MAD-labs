@@ -24,8 +24,9 @@
             <ImageView
                 android:id="@+id/imageProfileView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
+                android:foreground="@drawable/user_profile_gradient"
                 android:src="@drawable/ford_fiesta"
                 android:visibility="visible"
                 app:layout_collapseMode="parallax" />
