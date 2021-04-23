@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
@@ -22,6 +23,7 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
+import java.text.NumberFormat
 import java.util.*
 
 class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
@@ -36,6 +38,7 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
     private var datePicker: MaterialDatePicker<Long>
     private var timePickerFrom: MaterialTimePicker? = null
     private var timePickerTo: MaterialTimePicker? = null
+    lateinit var estimated_time: TextView
 
     val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
 
@@ -68,13 +71,9 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
                 timePickerFrom = getTimePicker(
                     from.findViewWithTag<TextInputEditText>("editHour"),
                     newTrip.startHour){
-                    Log.d(getLogTag(), newTrip.startHour.toString())
-                    newTrip.startHour.hour = it.hour
-                    newTrip.startHour.minute = it.minute
-                    newTrip.startHour
+                    newTrip.startHour.updateTime(it)
                 }
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
-                Log.d(getLogTag(), "show time picker $timePickerFrom")
             }
 
         }
@@ -88,17 +87,22 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
                 timePickerTo = getTimePicker(
                     to.findViewWithTag<TextInputEditText>("editHour"),
                     newTrip.endHour){
-                    Log.d(getLogTag(), newTrip.endHour.toString())
-                    newTrip.endHour.hour = it.hour
-                    newTrip.endHour.minute = it.minute
-                    newTrip.endHour
+                    newTrip.endHour.updateTime(it)
                 }
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
-                Log.d(getLogTag(), "show time picker $timePickerTo")
             }
 
         }
 
+        val passengers = view.findViewById<TextInputEditText>(R.id.editPeopleText)
+        trip.tot_places?.let { passengers.setText(it) }
+
+        val price = view.findViewById<TextInputEditText>(R.id.editPriceText)
+        val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
+        trip.price?.let { price.setText(price_format.format(it)) }
+
+        estimated_time =  view.findViewById<EditText>(R.id.estimated_time)
+        setEstimatedTime()
     }
 
     private fun getDatePicker() : MaterialDatePicker<Long> {
@@ -120,9 +124,10 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
     }
 
     private fun getTimePicker(view: TextView, hour: Hour, update: (MaterialTimePicker) -> Hour): MaterialTimePicker{
+        // TODO select 12H or 24H basing on Locale.getDefault()
         val timePicker =
             MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setTimeFormat(TimeFormat.CLOCK_12H)
                 .setHour(hour.hour)
                 .setMinute(hour.minute)
                 .build()
@@ -130,11 +135,34 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
             val newHour: Hour = update(timePicker)
             Log.d(getLogTag(), "updated hour with $newHour")
             view.text = newHour.toString()
+            setEstimatedTime()
         }
         timePicker.addOnDismissListener {
             timePicker.dismiss()
         }
         return timePicker
+    }
+
+    private fun Hour.updateTime(timePicker: MaterialTimePicker): Hour{
+        Log.d(getLogTag(), newTrip.startHour.toString())
+        this.hour = timePicker.hour
+        this.minute = timePicker.minute
+        return this
+    }
+
+    private fun getEstimatedTime(start: Hour, end: Hour): Hour {
+        val start_minutes = start.minute + start.hour*60
+        val end_minutes = end.minute + end.hour*60
+        val hours = ((end_minutes-start_minutes)/60)
+        val minutes = (end_minutes-start_minutes)%60
+        return Hour(hours, minutes)
+    }
+
+    private fun setEstimatedTime(){
+        val time = getEstimatedTime(newTrip.startHour, newTrip.endHour)
+        val hours = if (time.hour != 0) "${time.hour} h" else ""
+        val minutes = if (time.minute != 0) "${time.minute} min" else ""
+        estimated_time.setText( "Estimated travel time : ${hours} ${minutes}" )
     }
 
     fun saveTrip(){
