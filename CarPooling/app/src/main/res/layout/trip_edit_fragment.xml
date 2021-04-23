@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
-                    android:padding="@dimen/padding_16dp"
+                    android:padding="16dp"
                     app:srcCompat="@drawable/ic_baseline_directions_car_24"/>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -56,9 +56,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingStart="@dimen/margin_16dp"
-            android:paddingEnd="@dimen/margin_16dp"
-            android:paddingTop="@dimen/margin_16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
