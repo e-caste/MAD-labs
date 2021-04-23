@@ -25,11 +25,11 @@
                 android:id="@+id/imageProfileView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
                 android:foreground="@drawable/user_profile_gradient"
-                app:srcCompat="@drawable/ic_baseline_person_24"
+                android:scaleType="centerCrop"
                 android:visibility="visible"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"
+                app:srcCompat="@drawable/ic_baseline_person_24" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -64,81 +64,81 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="32dp"
             android:orientation="vertical">
 
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:startIconDrawable="@drawable/ic_baseline_person_24"
+                android:hint="@string/hint_fullname">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullNameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/fullNameEdit"
                     android:focusable="true"
-                    android:layout_margin="8dp"
-                    android:hint="@string/hint_fullname"
                     android:imeOptions="actionNext"
                     android:inputType="textCapWords"
-                    android:nextFocusDown="@id/nicknameEdit"
-                    android:paddingBottom="@dimen/textBottom"
-                    android:text="@string/default_fullname"
-                    android:autofillHints="name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                    android:nextFocusDown="@id/nicknameEdit" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:startIconDrawable="@drawable/ic_baseline_tag_faces_24"
+                android:hint="@string/hint_nickname">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nicknameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:autofillHints="username"
                     android:focusable="true"
-                    android:hint="@string/hint_nickname"
                     android:imeOptions="actionNext"
                     android:inputType="textShortMessage"
-                    android:nextFocusDown="@id/emailEdit"
-                    android:paddingBottom="@dimen/textBottom"
-                    android:text="@string/default_nickname"
-                    android:autofillHints="username"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                    android:nextFocusDown="@id/emailEdit" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:startIconDrawable="@drawable/ic_baseline_email_24"
+                android:layout_margin="8dp"
+                android:hint="@string/hint_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:autofillHints="email"
                     android:focusable="true"
-                    android:hint="@string/hint_email"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
-                    android:nextFocusDown="@id/locationEdit"
-                    android:paddingBottom="@dimen/textBottom"
-                    android:text="@string/default_email"
-                    android:autofillHints="email"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                    android:nextFocusDown="@id/locationEdit" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:startIconDrawable="@drawable/ic_baseline_place_24"
+                android:hint="@string/hint_address">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/locationEdit"
-                    android:layout_margin="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="true"
-                    android:hint="@string/hint_address"
-                    android:inputType="textShortMessage"
-                    android:text="@string/default_location"
                     android:autofillHints="addressLocality"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                    android:focusable="true"
+                    android:inputType="textShortMessage" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
