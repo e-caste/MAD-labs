@@ -13,6 +13,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalTime
@@ -40,6 +41,9 @@ data class Trip(
     var id: Long = -1,
     var uri: Uri? = null,
     var date: Date = Date(),
+    var tot_places: Int? = null,
+    var available_places: Int? = null,
+    var price: BigDecimal? = null,
     var startHour: Hour =
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
             Hour(LocalTime.now())
@@ -68,7 +72,8 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
     @RequiresApi(Build.VERSION_CODES.O)
     constructor(dateTime: LocalTime) : this(dateTime.hour , dateTime.minute)
     override fun toString(): String {
-        return "${hour}:${minute}"
+        val add_zero = if (minute < 10) '0' else ""
+        return "${hour}:${add_zero}${minute}"
     }
 }
 

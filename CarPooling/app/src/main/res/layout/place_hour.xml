@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editPlace"
-            android:maxLines="1"/>
+            android:inputType="textCapWords"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -33,7 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editHour"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

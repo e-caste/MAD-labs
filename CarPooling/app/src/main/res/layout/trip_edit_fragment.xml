@@ -64,12 +64,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-<!--                <DatePicker-->
-<!--                    android:id="@+id/datePicker1"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:datePickerMode="spinner"-->
-<!--                    android:calendarViewShown="false"/>-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -85,9 +79,63 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
+                        android:cursorVisible="false"
                         />
-                    <!--                        android:cursorVisible="false"-->
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_margin="8dp"
+                        android:text="Number of passengers : "
+                        android:gravity="center_vertical|right"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_weight="2"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        app:startIconDrawable="@drawable/ic_baseline_people_24"
+                        android:layout_margin="8dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editPeopleText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_margin="8dp"
+                        android:text="Price for each passenger : "
+                        android:gravity="center_vertical|right"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_weight="2"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        app:startIconDrawable="@drawable/ic_baseline_euro_symbol_24">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editPriceText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
 
                 <include
                     layout="@layout/place_hour"
@@ -103,6 +151,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp" />
+                <TextView
+                    android:id="@+id/estimated_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
