@@ -1,29 +1,31 @@
 package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.EditFragment
 
-class EditProfileFragment : BaseFragmentWithToolbar(R.layout.edit_profile_fragment, R.menu.edit_menu,
+class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
     private lateinit var viewModel: EditProfileViewModel
 
-    private lateinit var imageProfileView: ImageView
     private lateinit var imageButton: FloatingActionButton
     private lateinit var fullNameEdit: TextInputEditText
     private lateinit var nickNameEdit: TextInputEditText
     private lateinit var emailEdit: TextInputEditText
     private lateinit var locationEdit: TextInputEditText
+
+    private lateinit var profileImage:Bitmap
+    private lateinit var profileTmp: Profile
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -46,23 +48,33 @@ class EditProfileFragment : BaseFragmentWithToolbar(R.layout.edit_profile_fragme
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu!!.findItem(R.id.save_menu_button).isEnabled = validateFields()
+        menu.findItem(R.id.save_menu_button).isEnabled = validateFields()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imageProfileView = view.findViewById(R.id.imageProfileView)
+        imageView = view.findViewById(R.id.imageProfileView)
         imageButton = view.findViewById(R.id.fab)
         fullNameEdit = view.findViewById(R.id.fullNameEdit)
         nickNameEdit = view.findViewById(R.id.nicknameEdit)
         emailEdit = view.findViewById(R.id.emailEdit)
         locationEdit = view.findViewById(R.id.locationEdit)
 
+        profileTmp = act.profile.copy()
+        profileImage = act.profileImage
+
+        imageView.setImageBitmap(profileImage)
+        fullNameEdit.setText(profileTmp.fullName)
+        nickNameEdit.setText(profileTmp.nickName)
+        emailEdit.setText(profileTmp.email)
+        locationEdit.setText(profileTmp.location)
+
+
         registerForContextMenu(imageButton)
         imageButton.setOnClickListener {
             Log.d(getLogTag(), "image button clicked")
-//            openContextMenu(imageButton)
+            act.openContextMenu(imageButton)
         }
 
         fullNameEdit.addTextChangedListener(Watcher(
@@ -112,9 +124,51 @@ class EditProfileFragment : BaseFragmentWithToolbar(R.layout.edit_profile_fragme
                 && fullNameEdit.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 >= 2
                 && nickNameEdit.text?.length ?: 0 >= 4
                 && emailEdit.text?.isNotEmpty() ?: false
-                && android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text!!).matches()
+                && Patterns.EMAIL_ADDRESS.matcher(emailEdit.text!!).matches()
                 && locationEdit.text?.isNotEmpty() ?: false
     }
+
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = act.menuInflater
+        inflater.inflate(R.menu.select_image_source_menu, menu)
+        if (profileImage != null) {
+            var deleteItem = menu?.findItem(R.id.delete)
+            if (deleteItem != null) {
+                deleteItem.isVisible = true
+            }
+        }
+        Log.d(getLogTag(), "context menu created")
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.camera -> {
+                Log.d(getLogTag(), "taking picture...")
+                checkCameraPermissionAndTakePhoto()
+                return true
+            }
+            R.id.gallery -> {
+                Log.d(getLogTag(), "choosing picture from gallery...")
+                checkStoragePermissionAndGetPhoto()
+                return true
+            }
+            R.id.delete -> {
+                Log.d(getLogTag(), "deleting picture...")
+                imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                image = null
+                imageChanged = true
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
 
 }
