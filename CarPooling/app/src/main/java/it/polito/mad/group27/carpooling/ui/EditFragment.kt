@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.provider.MediaStore
@@ -34,8 +36,8 @@ open class EditFragment(layoutId: Int,
                         titleId: Int?): BaseFragmentWithToolbar(layoutId, optionsMenuId, titleId) {
 
     private var imageUri: Uri? = null
-    private var image: Bitmap? = null
     private var imageChanged: Boolean = false
+    protected var image: Bitmap? = null
     protected lateinit var imageView: ImageView
 
 
@@ -46,7 +48,7 @@ open class EditFragment(layoutId: Int,
         SELECT_IMAGE_IN_ALBUM
     }
 
-    protected fun checkCameraPermissionAndTakePhoto() {
+    private fun checkCameraPermissionAndTakePhoto() {
         val cameraPermission = ContextCompat.checkSelfPermission(act, Manifest.permission.CAMERA)
         val writePermission =
             ContextCompat.checkSelfPermission(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -244,6 +246,8 @@ open class EditFragment(layoutId: Int,
             } else{
                 File(act.filesDir, fileName).delete()
             }
+            //TODO substitute string here
+            File(act.filesDir, "saving_tmp")
         }
     }
 
@@ -252,6 +256,34 @@ open class EditFragment(layoutId: Int,
         with(sharedPref.edit()) {
             putString(name, Json.encodeToString(parcelable))
             apply()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // TODO create strings
+        outState.putBoolean("imageChanged", imageChanged)
+        Log.d(getLogTag(), "saved to bundle: $imageChanged")
+        if(imageChanged && image!=null)
+            act.openFileOutput("saving_tmp", Context.MODE_PRIVATE).use {
+                it.writeBitmap(image!!)
+            }
+    }
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        imageChanged = savedInstanceState?.getBoolean("imageChanged") ?: false
+        Log.d(getLogTag(), "got from bundle: $imageChanged")
+        if (imageChanged) {
+            val imageFile = File(act.filesDir, "saving_tmp")
+            image = if(imageFile.exists()) {
+                BitmapFactory.decodeFile(imageFile.absolutePath)
+            }else{
+                null
+            }
+
+            imageView.setImageBitmap(image)
         }
     }
 }
