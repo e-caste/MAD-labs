@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -13,6 +14,9 @@ import com.google.android.material.textfield.TextInputEditText
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
 class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
@@ -37,7 +41,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button ->{
-                //TODO save
+                saveProfile()
                 findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
             }
             else ->
@@ -128,46 +132,19 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
                 && locationEdit.text?.isNotEmpty() ?: false
     }
 
+    private fun saveProfile() {
+        saveImg(getString(R.string.profile_image))
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater: MenuInflater = act.menuInflater
-        inflater.inflate(R.menu.select_image_source_menu, menu)
-        if (profileImage != null) {
-            var deleteItem = menu?.findItem(R.id.delete)
-            if (deleteItem != null) {
-                deleteItem.isVisible = true
-            }
-        }
-        Log.d(getLogTag(), "context menu created")
+        profileTmp.fullName = fullNameEdit.text.toString()
+        profileTmp.nickName = nickNameEdit.text.toString()
+        profileTmp.email = emailEdit.text.toString()
+        profileTmp.location = locationEdit.text.toString()
+
+
+        writeParcelable(profileTmp, getString(R.string.saved_profile_preference))
+        act.loadProfile(profileTmp)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.camera -> {
-                Log.d(getLogTag(), "taking picture...")
-                checkCameraPermissionAndTakePhoto()
-                return true
-            }
-            R.id.gallery -> {
-                Log.d(getLogTag(), "choosing picture from gallery...")
-                checkStoragePermissionAndGetPhoto()
-                return true
-            }
-            R.id.delete -> {
-                Log.d(getLogTag(), "deleting picture...")
-                imageView.setImageResource(R.drawable.ic_baseline_person_24)
-                image = null
-                imageChanged = true
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
 
 
