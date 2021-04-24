@@ -26,6 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_baseline_person_24"
                 android:foreground="@drawable/user_profile_gradient"
                 android:visibility="visible"
                 app:layout_collapseMode="parallax" />

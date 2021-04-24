@@ -67,7 +67,8 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         profileTmp = act.profile.copy()
         image = act.profileImage
 
-        imageView.setImageBitmap(image)
+        if(image!=null)
+            imageView.setImageBitmap(image)
         fullNameEdit.setText(profileTmp.fullName)
         nickNameEdit.setText(profileTmp.nickName)
         emailEdit.setText(profileTmp.email)

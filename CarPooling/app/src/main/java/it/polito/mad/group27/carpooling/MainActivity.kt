@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navView: NavigationView
     lateinit var drawerLayout: DrawerLayout
     lateinit var profile: Profile
-    lateinit var profileImage: Bitmap
+    var profileImage: Bitmap?= null
     lateinit var navHeader: View
     lateinit var profileImageView: ImageView
     lateinit var profileNameTextView: TextView
@@ -61,7 +61,10 @@ class MainActivity : AppCompatActivity() {
         profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
 
         loadProfile()
-        profileImageView.setImageBitmap(profileImage)
+        if (profileImage!=null)
+            profileImageView.setImageBitmap(profileImage)
+        else
+            profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
         profileNameTextView.text = profile.fullName
         profileEmailTextView.text = profile.email
     }
@@ -94,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             Log.d(getLogTag(), "image is set, using user selected image...")
         } else {
-            profileImage =getBitmapFromVectorDrawable(this, R.drawable.ic_baseline_person_72)!!
+            profileImage = null
             Log.d(getLogTag(), "image is removed, setting default icon...")
         }
     }
