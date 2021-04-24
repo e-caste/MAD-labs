@@ -62,18 +62,21 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    fun loadProfile(){
-        // if something in storage -> set it
-        val savedProfileJson = getPreferences(MODE_PRIVATE)
-            ?.getString(getString(R.string.saved_profile_preference), null)
-        if (savedProfileJson != null) {
-            try {
-                profile = Json.decodeFromString(savedProfileJson)
-            } catch (e: SerializationException) {
-                Log.d(getLogTag(), "Cannot parse saved preference profile")
+    fun loadProfile(_profile: Profile? = null){
+        if(_profile!=null){
+            profile = _profile
+        }else {        // if something in storage -> set it
+            val savedProfileJson = getPreferences(MODE_PRIVATE)
+                ?.getString(getString(R.string.saved_profile_preference), null)
+            if (savedProfileJson != null) {
+                try {
+                    profile = Json.decodeFromString(savedProfileJson)
+                } catch (e: SerializationException) {
+                    Log.d(getLogTag(), "Cannot parse saved preference profile")
+                }
+            } else {
+                profile = Profile()
             }
-        }else{
-            profile = Profile()
         }
 
 
