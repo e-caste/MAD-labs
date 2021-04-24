@@ -61,8 +61,8 @@ data class Trip(
         },
     var from: String = "",
     var to: String = "",
-    val stops: Map<String, Hour> = mutableMapOf(),
-    val options: List<Option> = mutableListOf()
+    val stops: MutableList<Stop> = mutableListOf(),
+    val options: MutableList<Option> = mutableListOf()
 ): Parcelable
 
 @Serializable
@@ -76,6 +76,10 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
         return "${hour}:${add_zero}${minute}"
     }
 }
+
+@Serializable
+@Parcelize
+data class Stop(val place: String, val hour: Hour): Parcelable
 
 enum class Option{
     ANIMALS, LUGGAGE, NO_SMOKE, OTHER
