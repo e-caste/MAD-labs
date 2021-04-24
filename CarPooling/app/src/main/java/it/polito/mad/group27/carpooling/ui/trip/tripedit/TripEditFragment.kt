@@ -112,10 +112,21 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
         stops_rv.layoutManager = LinearLayoutManager(this.context)
         stops_rv.adapter = StopRecyclerViewAdapter(newTrip.stops, this.requireContext())
 
-        val button = view.findViewById<Button>(R.id.add_button)
-        button.setOnClickListener {
+        val remove_button = view.findViewById<Button>(R.id.remove_button)
+        remove_button.visibility = View.INVISIBLE
+        remove_button.setOnClickListener {
+            val new = newTrip.stops.size + 1
+            (stops_rv.adapter as StopRecyclerViewAdapter).remove()
+            if (newTrip.stops.size == 0)
+                remove_button.visibility = View.INVISIBLE
+        }
+
+        val add_button = view.findViewById<Button>(R.id.add_button)
+        add_button.setOnClickListener {
             val new = newTrip.stops.size + 1
             (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0,0)))
+            if (newTrip.stops.size > 0)
+                remove_button.visibility = View.VISIBLE
         }
 
     }

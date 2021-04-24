@@ -62,4 +62,9 @@ class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context
         this.notifyItemInserted(stops.size - 1)
     }
 
+    fun remove(){
+        stops.removeAt(stops.size-1)
+        this.notifyItemRemoved(stops.size)
+    }
+
 }
