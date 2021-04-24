@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_margin="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:id="@+id/editPlace"
         android:layout_weight="3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,6 +16,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp">
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/stop_place"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editPlace"
@@ -31,6 +32,7 @@
         app:startIconDrawable="@drawable/ic_round_access_time_24"
         >
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/stop_hour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editHour"

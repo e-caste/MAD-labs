@@ -158,6 +158,11 @@
                     android:layout_margin="8dp"
                     />
 
+                <include
+                    android:id="@+id/stop_list_rv"
+                    layout="@layout/stop_list"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
