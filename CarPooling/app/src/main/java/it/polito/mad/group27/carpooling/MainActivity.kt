@@ -1,24 +1,31 @@
 package it.polito.mad.group27.carpooling
 
+import android.R.drawable
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
+import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.findNavController
+import com.google.android.material.navigation.NavigationView
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,7 +49,10 @@ class MainActivity : AppCompatActivity() {
         val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!.findNavController()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_trips, R.id.nav_profile), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.nav_trips, R.id.nav_profile),
+            drawerLayout
+        )
         navView.setupWithNavController(navController)
 
         navHeader = navView.getHeaderView(0)
@@ -51,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
 
         loadProfile()
-
         profileImageView.setImageBitmap(profileImage)
         profileNameTextView.text = profile.fullName
         profileEmailTextView.text = profile.email
@@ -85,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
             Log.d(getLogTag(), "image is set, using user selected image...")
         } else {
-            profileImage = BitmapFactory.decodeResource(resources, R.drawable.ic_baseline_person_24)
+            profileImage =getBitmapFromVectorDrawable(this, R.drawable.ic_baseline_person_72)!!
             Log.d(getLogTag(), "image is removed, setting default icon...")
         }
     }
