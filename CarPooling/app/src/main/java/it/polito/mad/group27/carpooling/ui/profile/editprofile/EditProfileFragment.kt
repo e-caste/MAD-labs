@@ -83,7 +83,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         }
 
         fullNameEdit.editText!!.addTextChangedListener(Watcher(
-            { fullNameEdit.editText!!.text?.isEmpty() ?: false  || fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
+            { fullNameEdit.editText!!.text?.isEmpty() ?: true  || fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
             { fullNameEdit.error = getString(R.string.validation_fullname)
                 activity?.invalidateOptionsMenu()
             },
@@ -103,7 +103,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         ))
 
         emailEdit.editText!!.addTextChangedListener(Watcher(
-            { emailEdit.editText!!.text?.isEmpty() ?: false || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text).matches() },
+            { emailEdit.editText!!.text?.isEmpty() ?: true || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text).matches() },
             { emailEdit.error = getString(R.string.validation_email)
                 activity?.invalidateOptionsMenu()
             },
@@ -114,7 +114,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
         locationEdit.editText!!.addTextChangedListener(Watcher(
             //TODO check location format
-            { locationEdit.editText!!.text?.isEmpty() ?: false },
+            { locationEdit.editText!!.text?.isEmpty() ?: true },
             { locationEdit.error = getString(R.string.validation_location)
                 activity?.invalidateOptionsMenu()
             },
