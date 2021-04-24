@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -16,7 +15,6 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -48,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         navHeader = navView.getHeaderView(0)
-        profileImageView = navHeader.findViewById(R.id.drawerProfileImageView)
-        profileNameTextView = navHeader.findViewById(R.id.drawerProfileNameTextView)
-        profileEmailTextView = navHeader.findViewById(R.id.drawerProfileEmailTextView)
+        profileImageView = navHeader.findViewById(R.id.drawer_profile_image_view)
+        profileNameTextView = navHeader.findViewById(R.id.drawer_profile_name_text_view)
+        profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
 
         loadProfile()
 
