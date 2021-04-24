@@ -14,8 +14,8 @@
     android:id="@+id/nav_header">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="0dp"
         app:cardBackgroundColor="#00000000"
