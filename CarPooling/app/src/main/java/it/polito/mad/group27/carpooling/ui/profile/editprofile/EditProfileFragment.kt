@@ -28,7 +28,6 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     private lateinit var emailEdit: TextInputEditText
     private lateinit var locationEdit: TextInputEditText
 
-    private lateinit var profileImage:Bitmap
     private lateinit var profileTmp: Profile
 
 
@@ -66,9 +65,9 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         locationEdit = view.findViewById(R.id.locationEdit)
 
         profileTmp = act.profile.copy()
-        profileImage = act.profileImage
+        image = act.profileImage
 
-        imageView.setImageBitmap(profileImage)
+        imageView.setImageBitmap(image)
         fullNameEdit.setText(profileTmp.fullName)
         nickNameEdit.setText(profileTmp.nickName)
         emailEdit.setText(profileTmp.email)
