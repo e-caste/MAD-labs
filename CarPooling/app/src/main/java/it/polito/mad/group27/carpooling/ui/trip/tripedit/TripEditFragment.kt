@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -21,6 +24,7 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
+import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -103,6 +107,17 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
 
         estimated_time =  view.findViewById<EditText>(R.id.estimated_time)
         setEstimatedTime()
+
+        val stops_rv = view.findViewById<RecyclerView>(R.id.stop_list_rv)
+        stops_rv.layoutManager = LinearLayoutManager(this.context)
+        stops_rv.adapter = StopRecyclerViewAdapter(newTrip.stops, this.requireContext())
+
+        val button = view.findViewById<Button>(R.id.add_button)
+        button.setOnClickListener {
+            val new = newTrip.stops.size + 1
+            (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0,0)))
+        }
+
     }
 
     private fun getDatePicker() : MaterialDatePicker<Long> {
@@ -121,33 +136,6 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
             Log.d(getLogTag(), newTrip.date.toString())
         }
         return datePicker
-    }
-
-    private fun getTimePicker(view: TextView, hour: Hour, update: (MaterialTimePicker) -> Hour): MaterialTimePicker{
-        // TODO select 12H or 24H basing on Locale.getDefault()
-        val timePicker =
-            MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_12H)
-                .setHour(hour.hour)
-                .setMinute(hour.minute)
-                .build()
-        timePicker.addOnPositiveButtonClickListener {
-            val newHour: Hour = update(timePicker)
-            Log.d(getLogTag(), "updated hour with $newHour")
-            view.text = newHour.toString()
-            setEstimatedTime()
-        }
-        timePicker.addOnDismissListener {
-            timePicker.dismiss()
-        }
-        return timePicker
-    }
-
-    private fun Hour.updateTime(timePicker: MaterialTimePicker): Hour{
-        Log.d(getLogTag(), newTrip.startHour.toString())
-        this.hour = timePicker.hour
-        this.minute = timePicker.minute
-        return this
     }
 
     private fun getEstimatedTime(start: Hour, end: Hour): Hour {
