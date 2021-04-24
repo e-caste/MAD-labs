@@ -55,8 +55,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         val profileImage = act.profileImage
 
         updateTitle(profile.fullName)
-
-        profileImageView.setImageBitmap(profileImage)
+        if(profileImage!=null)
+            profileImageView.setImageBitmap(profileImage)
         nickNameView.text = profile.nickName
         emailView.text = profile.email
         locationView.text = profile.location

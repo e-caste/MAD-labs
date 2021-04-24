@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -23,6 +24,7 @@ import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
@@ -30,7 +32,7 @@ import java.text.DateFormat
 import java.text.NumberFormat
 import java.util.*
 
-class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
+class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     R.menu.edit_menu,
     R.string.trip_edit_title) {
     //TODO change title to add (?)
@@ -58,6 +60,16 @@ class TripEditFragment : BaseFragmentWithToolbar(R.layout.trip_edit_fragment,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fab = view.findViewById<FloatingActionButton>(R.id.fab)
+
+        registerForContextMenu(fab)
+        fab.setOnClickListener {
+            Log.d(getLogTag(), "image button clicked")
+            act.openContextMenu(fab)
+        }
+
+        imageView= view.findViewById(R.id.car_image)
 
         val date = view.findViewById<TextView>(R.id.editDateText)
         date.text = df.format(newTrip.date)

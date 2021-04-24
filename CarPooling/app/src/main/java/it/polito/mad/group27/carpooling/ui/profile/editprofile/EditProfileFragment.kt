@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -10,21 +11,24 @@ import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
 class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
     private lateinit var viewModel: EditProfileViewModel
 
     private lateinit var imageButton: FloatingActionButton
-    private lateinit var fullNameEdit: TextInputEditText
-    private lateinit var nickNameEdit: TextInputEditText
-    private lateinit var emailEdit: TextInputEditText
-    private lateinit var locationEdit: TextInputEditText
+    private lateinit var fullNameEdit: TextInputLayout
+    private lateinit var nickNameEdit: TextInputLayout
+    private lateinit var emailEdit: TextInputLayout
+    private lateinit var locationEdit: TextInputLayout
 
-    private lateinit var profileImage:Bitmap
     private lateinit var profileTmp: Profile
 
 
@@ -37,7 +41,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button ->{
-                //TODO save
+                saveProfile()
                 findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
             }
             else ->
@@ -62,13 +66,14 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         locationEdit = view.findViewById(R.id.locationEdit)
 
         profileTmp = act.profile.copy()
-        profileImage = act.profileImage
+        image = act.profileImage
 
-        imageView.setImageBitmap(profileImage)
-        fullNameEdit.setText(profileTmp.fullName)
-        nickNameEdit.setText(profileTmp.nickName)
-        emailEdit.setText(profileTmp.email)
-        locationEdit.setText(profileTmp.location)
+        if(image!=null)
+            imageView.setImageBitmap(image)
+        fullNameEdit.editText!!.setText(profileTmp.fullName)
+        nickNameEdit.editText!!.setText(profileTmp.nickName)
+        emailEdit.editText!!.setText(profileTmp.email)
+        locationEdit.editText!!.setText(profileTmp.location)
 
 
         registerForContextMenu(imageButton)
@@ -77,8 +82,8 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
             act.openContextMenu(imageButton)
         }
 
-        fullNameEdit.addTextChangedListener(Watcher(
-            { fullNameEdit.text?.isEmpty() ?: false  || fullNameEdit.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
+        fullNameEdit.editText!!.addTextChangedListener(Watcher(
+            { fullNameEdit.editText!!.text?.isEmpty() ?: false  || fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
             { fullNameEdit.error = getString(R.string.validation_fullname)
                 activity?.invalidateOptionsMenu()
             },
@@ -87,8 +92,8 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
             }
         ))
 
-        nickNameEdit.addTextChangedListener(Watcher(
-            { nickNameEdit.text?.length ?:0  < 4 },
+        nickNameEdit.editText!!.addTextChangedListener(Watcher(
+            { nickNameEdit.editText!!.text?.length ?:0  < 4 },
             { nickNameEdit.error = getString(R.string.validation_nickname)
                 activity?.invalidateOptionsMenu()
             },
@@ -97,8 +102,8 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
             }
         ))
 
-        emailEdit.addTextChangedListener(Watcher(
-            { emailEdit.text?.isEmpty() ?: false || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches() },
+        emailEdit.editText!!.addTextChangedListener(Watcher(
+            { emailEdit.editText!!.text?.isEmpty() ?: false || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text).matches() },
             { emailEdit.error = getString(R.string.validation_email)
                 activity?.invalidateOptionsMenu()
             },
@@ -107,9 +112,9 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
             }
         ))
 
-        locationEdit.addTextChangedListener(Watcher(
+        locationEdit.editText!!.addTextChangedListener(Watcher(
             //TODO check location format
-            { locationEdit.text?.isEmpty() ?: false },
+            { locationEdit.editText!!.text?.isEmpty() ?: false },
             { locationEdit.error = getString(R.string.validation_location)
                 activity?.invalidateOptionsMenu()
             },
@@ -120,54 +125,27 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     }
 
     private fun validateFields() : Boolean {
-        return fullNameEdit.text?.isNotEmpty() ?: false
-                && fullNameEdit.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 >= 2
-                && nickNameEdit.text?.length ?: 0 >= 4
-                && emailEdit.text?.isNotEmpty() ?: false
-                && Patterns.EMAIL_ADDRESS.matcher(emailEdit.text!!).matches()
-                && locationEdit.text?.isNotEmpty() ?: false
+        return fullNameEdit.editText!!.text?.isNotEmpty() ?: false
+                && fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 >= 2
+                && nickNameEdit.editText!!.text?.length ?: 0 >= 4
+                && emailEdit.editText!!.text?.isNotEmpty() ?: false
+                && Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text!!).matches()
+                && locationEdit.editText!!.text?.isNotEmpty() ?: false
     }
 
+    private fun saveProfile() {
+        saveImg(getString(R.string.profile_image))
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater: MenuInflater = act.menuInflater
-        inflater.inflate(R.menu.select_image_source_menu, menu)
-        if (profileImage != null) {
-            var deleteItem = menu?.findItem(R.id.delete)
-            if (deleteItem != null) {
-                deleteItem.isVisible = true
-            }
-        }
-        Log.d(getLogTag(), "context menu created")
+        profileTmp.fullName = fullNameEdit.editText!!.text.toString()
+        profileTmp.nickName = nickNameEdit.editText!!.text.toString()
+        profileTmp.email = emailEdit.editText!!.text.toString()
+        profileTmp.location = locationEdit.editText!!.text.toString()
+
+
+        writeParcelable(profileTmp, getString(R.string.saved_profile_preference))
+        act.loadProfile(profileTmp)
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.camera -> {
-                Log.d(getLogTag(), "taking picture...")
-                checkCameraPermissionAndTakePhoto()
-                return true
-            }
-            R.id.gallery -> {
-                Log.d(getLogTag(), "choosing picture from gallery...")
-                checkStoragePermissionAndGetPhoto()
-                return true
-            }
-            R.id.delete -> {
-                Log.d(getLogTag(), "deleting picture...")
-                imageView.setImageResource(R.drawable.ic_baseline_person_24)
-                image = null
-                imageChanged = true
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
 
 

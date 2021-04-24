@@ -3,13 +3,22 @@ package it.polito.mad.group27.carpooling.ui
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -17,15 +26,19 @@ import androidx.core.content.ContextCompat
 import com.canhub.cropper.CropImage
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.writeBitmap
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
 open class EditFragment(layoutId: Int,
                         optionsMenuId: Int,
                         titleId: Int?): BaseFragmentWithToolbar(layoutId, optionsMenuId, titleId) {
 
-    protected var imageUri: Uri? = null
+    private var imageUri: Uri? = null
+    private var imageChanged: Boolean = false
     protected var image: Bitmap? = null
     protected lateinit var imageView: ImageView
-    protected var imageChanged: Boolean = false
 
 
     private enum class RequestCodes {
@@ -35,7 +48,7 @@ open class EditFragment(layoutId: Int,
         SELECT_IMAGE_IN_ALBUM
     }
 
-    protected fun checkCameraPermissionAndTakePhoto() {
+    private fun checkCameraPermissionAndTakePhoto() {
         val cameraPermission = ContextCompat.checkSelfPermission(act, Manifest.permission.CAMERA)
         val writePermission =
             ContextCompat.checkSelfPermission(act, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -171,7 +184,7 @@ open class EditFragment(layoutId: Int,
                 val result = CropImage.getActivityResult(data)
                 if (resultCode == Activity.RESULT_OK) {
                     val resultUri: Uri? = result?.uriContent
-                    image = MediaStore.Images.Media.getBitmap(act.contentResolver, result?.uriContent)
+                    image = MediaStore.Images.Media.getBitmap(act.contentResolver, resultUri)
                     imageView.setImageURI(result?.uriContent)
                     imageChanged = true
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -180,6 +193,97 @@ open class EditFragment(layoutId: Int,
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = act.menuInflater
+        inflater.inflate(R.menu.select_image_source_menu, menu)
+        if (image != null) {
+            var deleteItem = menu?.findItem(R.id.delete)
+            if (deleteItem != null) {
+                deleteItem.isVisible = true
+            }
+        }
+        Log.d(getLogTag(), "context menu created")
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.camera -> {
+                Log.d(getLogTag(), "taking picture...")
+                checkCameraPermissionAndTakePhoto()
+                return true
+            }
+            R.id.gallery -> {
+                Log.d(getLogTag(), "choosing picture from gallery...")
+                checkStoragePermissionAndGetPhoto()
+                return true
+            }
+            R.id.delete -> {
+                Log.d(getLogTag(), "deleting picture...")
+                imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                image = null
+                imageChanged = true
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    protected fun saveImg(fileName: String){
+        if (imageChanged) {
+            if (image != null) {
+                act.openFileOutput(fileName, Context.MODE_PRIVATE).use {
+                    it.writeBitmap(image!!)
+                }
+            } else{
+                File(act.filesDir, fileName).delete()
+            }
+            //TODO substitute string here
+            File(act.filesDir, "saving_tmp")
+        }
+    }
+
+    protected inline fun <reified T> writeParcelable(parcelable: T, name: String){
+        val sharedPref = act.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString(name, Json.encodeToString(parcelable))
+            apply()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // TODO create strings
+        outState.putBoolean("imageChanged", imageChanged)
+        Log.d(getLogTag(), "saved to bundle: $imageChanged")
+        if(imageChanged && image!=null)
+            act.openFileOutput("saving_tmp", Context.MODE_PRIVATE).use {
+                it.writeBitmap(image!!)
+            }
+    }
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        imageChanged = savedInstanceState?.getBoolean("imageChanged") ?: false
+        Log.d(getLogTag(), "got from bundle: $imageChanged")
+        if (imageChanged) {
+            val imageFile = File(act.filesDir, "saving_tmp")
+            image = if(imageFile.exists()) {
+                BitmapFactory.decodeFile(imageFile.absolutePath)
+            }else{
+                null
+            }
+
+            imageView.setImageBitmap(image)
         }
     }
 }
