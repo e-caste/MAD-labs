@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,7 +15,6 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -25,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
     lateinit var profile: Profile
     lateinit var profileImage: Bitmap
+    lateinit var navHeader: View
+    lateinit var profileImageView: ImageView
+    lateinit var profileNameTextView: TextView
+    lateinit var profileEmailTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +38,23 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
 
-
         navView = findViewById(R.id.nav_view)
         val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!.findNavController()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_trips, R.id.nav_profile ), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_trips, R.id.nav_profile), drawerLayout)
         navView.setupWithNavController(navController)
 
+        navHeader = navView.getHeaderView(0)
+        profileImageView = navHeader.findViewById(R.id.drawer_profile_image_view)
+        profileNameTextView = navHeader.findViewById(R.id.drawer_profile_name_text_view)
+        profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
+
         loadProfile()
+
+        profileImageView.setImageBitmap(profileImage)
+        profileNameTextView.text = profile.fullName
+        profileEmailTextView.text = profile.email
     }
 
     override fun onSupportNavigateUp(): Boolean {
