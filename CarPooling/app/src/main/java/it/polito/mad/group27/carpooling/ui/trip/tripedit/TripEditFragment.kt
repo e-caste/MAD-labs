@@ -111,7 +111,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         val passengers = view.findViewById<TextInputEditText>(R.id.editPeopleText)
-        trip.tot_places?.let { passengers.setText(it) }
+        trip.totalSeats?.let { passengers.setText(it) }
 
         val price = view.findViewById<TextInputEditText>(R.id.editPriceText)
         val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
