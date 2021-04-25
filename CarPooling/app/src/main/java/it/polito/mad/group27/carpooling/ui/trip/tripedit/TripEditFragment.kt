@@ -13,8 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.core.view.children
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,15 +21,11 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
 import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.getLogTag
-import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
@@ -134,6 +128,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { to_place?.error = null
                 act.invalidateOptionsMenu() }
         ))
+        to_place?.editText?.addTextChangedListener(Watcher(
+            { to_place?.editText?.text == from_place?.editText?.text },
+            { to_place?.error = "Invalid destination"
+                act.invalidateOptionsMenu() },
+            { to_place?.error = null
+                act.invalidateOptionsMenu() }
+        ))
         to_hour.editText?.setText(newTrip.endHour.toString())
         to_hour.editText?.setOnClickListener {
             if(timePickerTo == null || !timePickerTo?.isVisible!!) {
@@ -156,6 +157,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
         trip.tot_places?.let { passengers?.editText?.setText(it) }
+        passengers?.editText?.addTextChangedListener(Watcher(
+            { passengers?.editText?.text?.isEmpty() ?: true },
+            { passengers?.error = "Insert passengers"
+            act.invalidateOptionsMenu() },
+            { passengers?.error = null
+                act.invalidateOptionsMenu() }
+        ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
         val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
@@ -177,26 +185,32 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val stops_rv = view.findViewById<RecyclerView>(R.id.stop_list_rv)
         stops_rv.layoutManager = LinearLayoutManager(this.context)
-        stops_rv.adapter = StopRecyclerViewAdapter(newTrip.stops, this.requireContext())
+        stops_rv.adapter = StopRecyclerViewAdapter(newTrip, this.requireContext())
 
         val remove_button = view.findViewById<Button>(R.id.remove_button)
         remove_button.visibility = View.INVISIBLE
         remove_button.setOnClickListener {
             (stops_rv.adapter as StopRecyclerViewAdapter).remove()
             if (newTrip.stops.size == 0)
-                remove_button.visibility = View.INVISIBLE
+                remove_button.visibility = View.GONE
         }
 
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
-            (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0,0)))
-            if (newTrip.stops.size > 0)
-                remove_button.visibility = View.VISIBLE
+            val lastStop = newTrip.stops.size -1
+            if (newTrip.stops[lastStop].place.trim() != ""
+                && if (lastStop > 0)
+                        newTrip.stops[lastStop].hour.toString() > newTrip.stops[lastStop-1].hour.toString()
+                    else true) {
+                (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0, 0)))
+                if (newTrip.stops.size > 0)
+                    remove_button.visibility = View.VISIBLE
+            }else{
+                
+            }
         }
 
-        //TODO swappare add e remove buttons
-        // TODO aggiungere colori sensati ai bottoni
-        //TODO check prima di aggiungere una fermata che le altre abbiano i campi e mettere errore sotto il bottone
+        // TODO check prima di aggiungere una fermata che le altre abbiano i campi e mettere errore sotto il bottone
 
     }
 
@@ -281,8 +295,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
          *
          */
 
-        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
-        saveImg(imageName)
+//        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
+//        saveImg(imageName)
     }
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
