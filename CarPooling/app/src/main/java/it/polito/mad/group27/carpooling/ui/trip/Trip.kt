@@ -5,14 +5,13 @@ import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
+import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.io.File
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -34,15 +33,48 @@ object DateSerializer: KSerializer<Date> {
     }
 }
 
+@Serializer(forClass = Uri::class)
+object UriSerializer: KSerializer<Uri> {
 
-@Serializable(with = DateSerializer::class)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Uri) {
+        encoder.encodeString(value.path ?:"")
+    }
+
+    override fun deserialize(decoder: Decoder): Uri {
+        return Uri.fromFile(File(decoder.decodeString()))
+    }
+}
+
+@Serializer(forClass = BigDecimal::class)
+object BigDecimalSerializer: KSerializer<BigDecimal> {
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value:BigDecimal) {
+        encoder.encodeString(value.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): BigDecimal {
+        return BigDecimal(decoder.decodeString())
+    }
+}
+
+
+
+
+@Serializable
 @Parcelize
 data class Trip(
     var id: Long = -1,
+    @Serializable(with=UriSerializer::class)
     var uri: Uri? = null,
+    @Serializable(with=DateSerializer::class)
     var date: Date = Date(),
     var tot_places: Int? = null,
     var available_places: Int? = null,
+    @Serializable(with=BigDecimalSerializer::class)
     var price: BigDecimal? = null,
     var startHour: Hour =
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
@@ -63,7 +95,7 @@ data class Trip(
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
-    val otherInformation: String? = null
+    var otherInformation: String? = null
 ): Parcelable
 
 @Serializable
