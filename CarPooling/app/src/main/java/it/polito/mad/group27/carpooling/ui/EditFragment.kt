@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.canhub.cropper.CropImage
+import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.writeBitmap
@@ -59,14 +60,12 @@ open class EditFragment(layoutId: Int,
         } else {
             Log.d(getLogTag(), "asking user for permission to use camera...")
             if (Build.VERSION.SDK_INT > 28)
-                ActivityCompat.requestPermissions(
-                    act,
+                requestPermissions(
                     arrayOf(Manifest.permission.CAMERA),
                     RequestCodes.PERMISSION_CAMERA.ordinal
                 )
             else
-                ActivityCompat.requestPermissions(
-                    act,
+                requestPermissions(
                     arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     RequestCodes.PERMISSION_CAMERA.ordinal
                 )
@@ -81,8 +80,7 @@ open class EditFragment(layoutId: Int,
             selectImageInAlbum()
         } else {
             Log.d(getLogTag(), "asking user for permission to access storage...")
-            ActivityCompat.requestPermissions(
-                act,
+            requestPermissions(
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 RequestCodes.PERMISSION_STORAGE.ordinal
             )
@@ -94,17 +92,19 @@ open class EditFragment(layoutId: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        Log.d(getLogTag(), "Permissions handler")
         when (requestCode) {
             RequestCodes.PERMISSION_CAMERA.ordinal -> {
                 if (grantResults.isEmpty() || grantResults.filter { it != PackageManager.PERMISSION_GRANTED }
                         .count() > 0) {
                     Log.d(getLogTag(), "camera permission has been denied by user")
-                    //TODO change to material
-                    Toast.makeText(
-                        act,
-                        getString(R.string.toast_camera_permission_settings),
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    Snackbar.make(requireView(),  getString(R.string.toast_camera_permission_settings), Snackbar.LENGTH_LONG)
+                        .setAction("Retry") {
+                            // Responds to click on the action
+                            checkCameraPermissionAndTakePhoto()
+                        }
+                        .show()
                 } else {
                     Log.d(getLogTag(), "camera permission has been granted by user")
                     takePhoto()
@@ -113,12 +113,14 @@ open class EditFragment(layoutId: Int,
             RequestCodes.PERMISSION_STORAGE.ordinal -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.d(getLogTag(), "storage permission has been denied by user")
-                    // TODO change to material
-                    Toast.makeText(
-                        act,
-                        getString(R.string.toast_storage_permission_settings),
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    Snackbar.make(requireView(),  getString(R.string.toast_storage_permission_settings), Snackbar.LENGTH_LONG)
+                        //TODO set retry as string
+                        .setAction("Retry") {
+                            // Responds to click on the action
+                            checkStoragePermissionAndGetPhoto()
+                        }
+                        .show()
                 } else {
                     Log.d(getLogTag(), "storage permission has been granted by user")
                     selectImageInAlbum()
@@ -188,8 +190,10 @@ open class EditFragment(layoutId: Int,
                     imageView.setImageURI(result?.uriContent)
                     imageChanged = true
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    val error = result!!.error
-                    //TODO set toast
+                    // TODO string
+                    Snackbar.make(requireView(), "An error occurred while cropping the data, please try again",
+                        Snackbar.LENGTH_LONG)
+                        .show()
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
