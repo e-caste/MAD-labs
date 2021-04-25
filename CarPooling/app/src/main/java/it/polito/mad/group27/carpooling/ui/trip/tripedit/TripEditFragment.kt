@@ -2,6 +2,7 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -19,9 +20,11 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
@@ -41,6 +44,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
     private val newTrip = trip.copy()
+
+    var price: TextInputLayout? = null
+    var to_place: TextInputLayout? = null
+    var from_place: TextInputLayout? = null
+    var passengers: TextInputLayout? = null
+
     private var datePicker: MaterialDatePicker<Long>
     private var timePickerFrom: MaterialTimePicker? = null
     private var timePickerTo: MaterialTimePicker? = null
@@ -83,6 +92,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
         from_place?.hint = "From"
         from_place?.editText?.setText(newTrip.from)
+        from_place?.editText?.addTextChangedListener(Watcher(
+            { from_place?.editText?.text?.isEmpty() ?: true },
+            { from_place?.error = "Departure can not be empty"
+                act.invalidateOptionsMenu() },
+            { from_place?.error = null
+                act.invalidateOptionsMenu() }
+        ))
         from_hour.editText?.setText(newTrip.startHour.toString())
         from_hour.editText?.setOnClickListener {
             if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
@@ -120,15 +136,32 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 }
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
-
         }
+        to_hour.editText?.addTextChangedListener(Watcher(
+            { to_hour.editText?.text.toString() <= from_hour?.editText?.text.toString() },
+            { to_hour.error = "Invalid arrival time"
+                act.invalidateOptionsMenu() },
+            { to_hour.error = null
+                act.invalidateOptionsMenu() }
+        ))
 
-        val passengers = view.findViewById<TextInputEditText>(R.id.editPeopleText)
-        trip.tot_places?.let { passengers.setText(it) }
+        passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
+        trip.tot_places?.let { passengers?.editText?.setText(it) }
 
-        val price = view.findViewById<TextInputEditText>(R.id.editPriceText)
+        price = view.findViewById<TextInputLayout>(R.id.editPriceText)
         val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
         trip.price?.let { price?.editText?.setText(price_format.format(it)) }
+        price?.editText?.addTextChangedListener(Watcher(
+            { price?.editText?.text?.isEmpty() ?: true
+                    || price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
+                    || if(price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 0 == 2)
+                            price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
+                        else false},
+            { price?.error = "Invalid price"
+                act.invalidateOptionsMenu() },
+            { price?.error = null
+                act.invalidateOptionsMenu() }
+        ))
 
         estimated_time =  view.findViewById<EditText>(R.id.estimated_time)
         setEstimatedTime()
@@ -151,6 +184,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             if (newTrip.stops.size > 0)
                 remove_button.visibility = View.VISIBLE
         }
+
+        //TODO swappare add e remove buttons
+        // TODO aggiungere colori sensati ai bottoni
+        //TODO check prima di aggiungere una fermata che le altre abbiano i campi e mettere errore sotto il bottone
 
     }
 
@@ -182,14 +219,31 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun setEstimatedTime(){
         val time = getEstimatedTime(newTrip.startHour, newTrip.endHour)
-        val hours = if (time.hour != 0) "${time.hour} h" else ""
-        val minutes = if (time.minute != 0) "${time.minute} min" else ""
+        val hours = if (time.hour > 0) "${time.hour} h" else ""
+        val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimated_time.setText( "Estimated travel time : ${hours} ${minutes}" )
+    }
+
+    private fun Hour.updateTime(timePicker: MaterialTimePicker): Hour {
+        this.hour = timePicker.hour
+        this.minute = timePicker.minute
+        setEstimatedTime()
+        return this
     }
 
     fun saveTrip(){
         // check id, if -1 take counter and increment
     }
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+//        menu.findItem(R.id.save_menu_button).isEnabled = validateFields()
+    // TODO
+    }
+
+    private fun validateFields(){
+
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
