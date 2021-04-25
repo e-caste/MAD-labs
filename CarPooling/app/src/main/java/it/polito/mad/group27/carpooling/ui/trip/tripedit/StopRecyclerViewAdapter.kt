@@ -10,12 +10,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.ui.trip.Stop
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 
 
-class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context) :
+class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
-    class ItemViewHolder(v: View, val context: Context) : RecyclerView.ViewHolder(v) {
+    class ItemViewHolder(v: View, val context: Context, val trip: Trip) : RecyclerView.ViewHolder(v) {
         private val placeView = v.findViewById<TextInputLayout>(R.id.stop_place)
         private val hourView = v.findViewById<TextInputLayout>(R.id.stop_hour)
         private var timePicker: MaterialTimePicker? = null
@@ -23,6 +25,13 @@ class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context
         fun bind(stop: Stop, position: Int) {
             placeView.editText?.setText(stop.place)
             placeView.hint = "Stop ${position+1}"
+            placeView?.editText?.addTextChangedListener(Watcher(
+                { placeView.editText?.text?.isEmpty() ?: true },
+                { placeView.error = "Destination can not be empty"
+                    (context as AppCompatActivity).invalidateOptionsMenu() },
+                { placeView.error = null
+                    (context as AppCompatActivity).invalidateOptionsMenu() }
+            ))
             hourView.editText?.setText(stop.hour.toString())
             hourView.editText?.setOnClickListener {
                 if (timePicker == null || !timePicker?.isVisible!!) {
@@ -39,6 +48,20 @@ class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context
                     )
                 }
             }
+            hourView.editText?.addTextChangedListener(Watcher(
+                { hourView.editText?.text.toString() <= trip.startHour.toString()
+                        || hourView.editText?.text.toString() >= trip.endHour.toString()
+                        || (if (position > 0)
+                            hourView.editText?.text.toString() <= trip.stops[position-1].hour.toString()
+                            else false)
+                        || (if (position < trip.stops.size - 1)
+                                hourView.editText?.text.toString() >= trip.stops[position+1].hour.toString()
+                            else false)},
+                { hourView.error = "Invalid stop time"
+                    (context as AppCompatActivity).invalidateOptionsMenu() },
+                { hourView.error = null
+                    (context as AppCompatActivity).invalidateOptionsMenu() }
+            ))
         }
 
     }
@@ -46,25 +69,25 @@ class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layout = LayoutInflater.from(parent.context)
             .inflate(R.layout.place_hour, parent, false)
-        return ItemViewHolder(layout, context)
+        return ItemViewHolder(layout, context, trip)
     }
 
     override fun getItemCount(): Int {
-        return stops.size
+        return trip.stops.size
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(stops[position], position)
+        holder.bind(trip.stops[position], position)
     }
 
     fun add(stop: Stop) {
-        stops.add(stop)
-        this.notifyItemInserted(stops.size - 1)
+        trip.stops.add(stop)
+        this.notifyItemInserted(trip.stops.size - 1)
     }
 
     fun remove() {
-        stops.removeAt(stops.size - 1)
-        this.notifyItemRemoved(stops.size)
+        trip.stops.removeAt(trip.stops.size - 1)
+        this.notifyItemRemoved(trip.stops.size)
     }
 
 }
