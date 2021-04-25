@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Stop
@@ -15,19 +16,20 @@ import it.polito.mad.group27.carpooling.ui.trip.Stop
 class StopRecyclerViewAdapter(val stops: MutableList<Stop>, val context: Context) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(v: View, val context: Context) : RecyclerView.ViewHolder(v) {
-        private val placeView = v.findViewById<TextInputEditText>(R.id.stop_place)
-        private val hourView = v.findViewById<TextInputEditText>(R.id.stop_hour)
+        private val placeView = v.findViewById<TextInputLayout>(R.id.stop_place)
+        private val hourView = v.findViewById<TextInputLayout>(R.id.stop_hour)
         private var timePicker: MaterialTimePicker? = null
 
         fun bind(stop: Stop, position: Int) {
-            placeView.setText(stop.place)
+            placeView.editText?.setText(stop.place)
             placeView.hint = "Stop ${position+1}"
-            hourView.setText(stop.hour.toString())
-            hourView.setOnClickListener {
+            hourView.editText?.setText(stop.hour.toString())
+            hourView.editText?.setOnClickListener {
                 if (timePicker == null || !timePicker?.isVisible!!) {
                     timePicker = getTimePicker(
-                        hourView,
-                        stop.hour
+                        hourView.editText!!,
+                        stop.hour,
+                        context
                     ) {
                         stop.hour.updateTime(it)
                     }

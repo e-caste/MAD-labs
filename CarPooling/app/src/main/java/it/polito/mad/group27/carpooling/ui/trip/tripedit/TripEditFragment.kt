@@ -79,14 +79,17 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
-        (from.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "From"
-        from.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.from)
-        from.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.startHour.toString())
-        from.findViewWithTag<TextInputEditText>("editHour").setOnClickListener {
+        from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
+        val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
+        from_place?.hint = "From"
+        from_place?.editText?.setText(newTrip.from)
+        from_hour.editText?.setText(newTrip.startHour.toString())
+        from_hour.editText?.setOnClickListener {
             if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
                 timePickerFrom = getTimePicker(
-                    from.findViewWithTag<TextInputEditText>("editHour"),
-                    newTrip.startHour){
+                    from_hour.editText!!,
+                    newTrip.startHour,
+                    this.requireContext()){
                     newTrip.startHour.updateTime(it)
                 }
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
@@ -95,14 +98,24 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
-        (to.children.filter { it is TextInputLayout }.first() as TextInputLayout).hint = "To"
-        to.findViewWithTag<TextInputEditText>("editPlace").setText(newTrip.to)
-        to.findViewWithTag<TextInputEditText>("editHour").setText(newTrip.endHour.toString())
-        to.findViewWithTag<TextInputEditText>("editHour").setOnClickListener {
+        to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
+        val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
+        to_place?.hint = "To"
+        to_place?.editText?.setText(newTrip.to)
+        to_place?.editText?.addTextChangedListener(Watcher(
+            { to_place?.editText?.text?.isEmpty() ?: true },
+            { to_place?.error = "Destination can not be empty"
+                act.invalidateOptionsMenu() },
+            { to_place?.error = null
+                act.invalidateOptionsMenu() }
+        ))
+        to_hour.editText?.setText(newTrip.endHour.toString())
+        to_hour.editText?.setOnClickListener {
             if(timePickerTo == null || !timePickerTo?.isVisible!!) {
                 timePickerTo = getTimePicker(
-                    to.findViewWithTag<TextInputEditText>("editHour"),
-                    newTrip.endHour){
+                    to_hour.editText!!,
+                    newTrip.endHour,
+                    this.requireContext()){
                     newTrip.endHour.updateTime(it)
                 }
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
@@ -115,7 +128,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val price = view.findViewById<TextInputEditText>(R.id.editPriceText)
         val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        trip.price?.let { price.setText(price_format.format(it)) }
+        trip.price?.let { price?.editText?.setText(price_format.format(it)) }
 
         estimated_time =  view.findViewById<EditText>(R.id.estimated_time)
         setEstimatedTime()
@@ -127,7 +140,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val remove_button = view.findViewById<Button>(R.id.remove_button)
         remove_button.visibility = View.INVISIBLE
         remove_button.setOnClickListener {
-            val new = newTrip.stops.size + 1
             (stops_rv.adapter as StopRecyclerViewAdapter).remove()
             if (newTrip.stops.size == 0)
                 remove_button.visibility = View.INVISIBLE
@@ -135,7 +147,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
-            val new = newTrip.stops.size + 1
             (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0,0)))
             if (newTrip.stops.size > 0)
                 remove_button.visibility = View.VISIBLE

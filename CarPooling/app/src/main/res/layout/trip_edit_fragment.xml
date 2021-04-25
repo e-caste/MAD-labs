@@ -98,19 +98,19 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
+                        android:layout_weight="1"
                         android:layout_margin="8dp"
                         android:text="Number of passengers : "
                         android:gravity="center_vertical|right"/>
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/editPeopleText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         app:startIconDrawable="@drawable/ic_baseline_people_24"
                         android:layout_margin="8dp">
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editPeopleText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -124,19 +124,20 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
+                        android:layout_weight="1"
                         android:layout_margin="8dp"
                         android:text="Price for each passenger : "
                         android:gravity="center_vertical|right"/>
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_weight="2"
+                        android:layout_weight="1"
+                        android:id="@+id/editPriceText"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="8dp"
+                        app:endIconMode="none"
                         app:startIconDrawable="@drawable/ic_baseline_euro_symbol_24">
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editPriceText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
@@ -217,6 +218,7 @@
                         android:scaleType="center"
                         app:srcCompat="@drawable/ic_baseline_luggage_24"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/luggageSwitch"
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:layout_height="wrap_content"
@@ -234,6 +236,7 @@
                         android:scaleType="center"
                         app:srcCompat="@drawable/ic_baseline_pets_24"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/animalSwitch"
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:layout_height="wrap_content"
@@ -251,6 +254,7 @@
                         android:scaleType="center"
                         app:srcCompat="@drawable/ic_baseline_smoking_rooms_24"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/smokeSwitch"
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:layout_height="wrap_content"

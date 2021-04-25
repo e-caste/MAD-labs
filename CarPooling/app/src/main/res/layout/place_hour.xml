@@ -9,14 +9,14 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_weight="3"
+        android:id="@+id/stop_place"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_baseline_place_24"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/stop_place"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editPlace"
@@ -26,13 +26,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_weight="2"
+        android:id="@+id/stop_hour"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_round_access_time_24"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/stop_hour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:tag="editHour"
