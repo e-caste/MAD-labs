@@ -39,30 +39,23 @@ object DateSerializer: KSerializer<Date> {
 @Parcelize
 data class Trip(
     var id: Long = -1,
-    var uri: Uri? = null,
+    var carImageUri: Uri? = null,
     var date: Date = Date(),
-    var tot_places: Int? = null,
-    var available_places: Int? = null,
+    var totalSeats: Int? = null,
+    var availableSeats: Int? = null,
     var price: BigDecimal? = null,
-    var startHour: Hour =
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-            Hour(LocalTime.now())
-        else{
-            val calendar = java.util.Calendar.getInstance()
-            Hour(calendar)
-        },
-    var endHour: Hour =
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-            Hour(LocalTime.now().plusHours(1))
-        else{
-            val calendar = java.util.Calendar.getInstance()
-            calendar.add(Calendar.HOUR_OF_DAY, +1)
-            Hour(calendar)
-        },
+    var startHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now())
+                          else Hour(Calendar.getInstance()),
+    var endHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now().plusHours(1))
+                        else {
+                            val calendar = Calendar.getInstance()
+                            calendar.add(Calendar.HOUR_OF_DAY, +1)
+                            Hour(calendar)
+                        },
     var from: String = "",
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
-    val options: MutableList<Option> = mutableListOf()
+    val options: MutableList<Option> = mutableListOf(),
 ): Parcelable
 
 @Serializable
@@ -81,6 +74,9 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
 @Parcelize
 data class Stop(val place: String, val hour: Hour): Parcelable
 
-enum class Option{
-    ANIMALS, LUGGAGE, NO_SMOKE, OTHER
+enum class Option {
+    ANIMALS,
+    LUGGAGE,
+    NO_SMOKE,
+    OTHER,
 }
