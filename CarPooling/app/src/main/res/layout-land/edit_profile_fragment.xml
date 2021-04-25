@@ -38,7 +38,7 @@
                 android:visibility="visible"
                 app:layout_collapseMode="parallax"
                 app:srcCompat="@drawable/ic_baseline_person_24"
-                android:layout_marginLeft="16dp" />
+                />
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
