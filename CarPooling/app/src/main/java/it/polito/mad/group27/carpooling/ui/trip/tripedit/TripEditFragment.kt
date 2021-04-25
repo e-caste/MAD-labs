@@ -24,6 +24,7 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
@@ -203,10 +204,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
             val lastStop = newTrip.stops.size -1
-            if (newTrip.stops[lastStop].place.trim() != ""
+            if (lastStop < 0
+                || ( newTrip.stops[lastStop].place.trim() != ""
                 && if (lastStop > 0)
                         newTrip.stops[lastStop].hour.toString() > newTrip.stops[lastStop-1].hour.toString()
-                    else true) {
+                    else true) ) {
                 (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0, 0)))
                 if (newTrip.stops.size > 0)
                     remove_button.visibility = View.VISIBLE
