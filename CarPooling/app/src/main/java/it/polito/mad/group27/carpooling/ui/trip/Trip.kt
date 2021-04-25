@@ -64,10 +64,7 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
     constructor(calendar: Calendar) : this(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
     @RequiresApi(Build.VERSION_CODES.O)
     constructor(dateTime: LocalTime) : this(dateTime.hour , dateTime.minute)
-    override fun toString(): String {
-        val add_zero = if (minute < 10) '0' else ""
-        return "${hour}:${add_zero}${minute}"
-    }
+    override fun toString() = "${if (hour < 10) "0" else ""}$hour:${if (minute < 10) "0" else ""}$minute"
 }
 
 @Serializable
