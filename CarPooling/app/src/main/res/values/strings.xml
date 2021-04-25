@@ -135,4 +135,5 @@
     </string>
     <string name="trip_edit_title">Edit trip</string>
     <string name="profile_edit_title">Edit profile</string>
+    <string name="trip_counter">group27.lab1.trips.id_counter</string>
 </resources>

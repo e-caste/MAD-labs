@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -8,9 +9,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.CalendarConstraints
@@ -28,6 +33,10 @@ import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.net.URI
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.util.*
@@ -177,13 +186,56 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     fun saveTrip(){
+
+        val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
+
         // check id, if -1 take counter and increment
+        if(newTrip.id == null) {
+            val counterKey = getString(R.string.trip_counter)
+            val counter = (sharedPref.getLong(counterKey, 0)).toLong()
+            newTrip.id = counter + 1
+            with(sharedPref.edit()) {
+                putString(counterKey, (counter+1).toString())
+                apply()
+            }
+        }
+        val imageName = "trips/img${newTrip.id}"
+        if (newTrip.uri == null && image!=null){
+            val f = File(act.filesDir, imageName)
+            newTrip.uri = f.toUri()
+        }
+        if(image==null) {
+            if(newTrip.uri != null){
+                //delete old image
+                File(newTrip.uri!!.path!!).delete()
+            }
+            newTrip.uri = null
+        }
+
+
+        /**
+         * - create id if -1 (and update counter)
+         * - generate image profile name if not present
+         * - start and end location
+         * - number passengers and price
+         * - options
+         * - available places
+         *
+         * - persist profile
+         * - persist image
+         *
+         */
+
+        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
+        saveImg(imageName)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button->{
-                //TODO
+                saveTrip()
+                findNavController().navigate(R.id.action_tripEditFragment_to_tripDetailsFragment,
+                    bundleOf(  "trip" to newTrip))
             }
             else -> return super.onOptionsItemSelected(item)
         }
