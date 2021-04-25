@@ -108,5 +108,5 @@ data class Stop(val place: String, val hour: Hour): Parcelable
 enum class Option {
     ANIMALS,
     LUGGAGE,
-    NO_SMOKE,
+    SMOKE,
 }

@@ -161,7 +161,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.totalSeats?.let { passengers.setText(it) }
+        trip.totalSeats?.let { passengers?.editText?.setText(it) }
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = "Insert passengers"
@@ -274,26 +274,26 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             }
         }
         val imageName = "trips/img${newTrip.id}"
-        if (newTrip.uri == null && image!=null){
+        if (newTrip.carImageUri == null && image!=null){
             val f = File(act.filesDir, imageName)
-            newTrip.uri = f.toUri()
+            newTrip.carImageUri = f.toUri()
         }
         if(image==null) {
-            if(newTrip.uri != null){
+            if(newTrip.carImageUri != null){
                 //delete old image
-                File(newTrip.uri!!.path!!).delete()
+                File(newTrip.carImageUri!!.path!!).delete()
             }
-            newTrip.uri = null
+            newTrip.carImageUri = null
         }
 
         // TODO change fields to lateinit var
         newTrip.from = from_place!!.editText!!.text!!.toString()
         newTrip.to = to_place!!.editText!!.text!!.toString()
 
-        newTrip.tot_places = passengers!!.editText!!.text!!.toString().toInt()
+        newTrip.totalSeats = passengers!!.editText!!.text!!.toString().toInt()
 
         // TODO make not stubbed when adding some logic
-        newTrip.available_places = (0 .. newTrip.tot_places!!).random()
+        newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
 
         newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
 
