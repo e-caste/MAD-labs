@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,27 +52,105 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/nicknameView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/textBottom"
-            android:text="@string/default_nickname"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Nickname"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_marginLeft="8dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_tag_faces_24"/>
+            <TextView
+                android:id="@+id/nicknameView"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_nickname"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/emailView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/textBottom"
-            android:text="@string/default_email"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Email"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_marginLeft="8dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
-        <TextView
-            android:id="@+id/locationView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/default_location"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_email_24"/>
+            <TextView
+                android:id="@+id/emailView"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_email"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Location"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_marginLeft="8dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_place_24"/>
+            <TextView
+                android:id="@+id/locationView"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/textBottom"
+                android:text="@string/default_location"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
