@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.profile.showprofile
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -25,6 +26,7 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     private lateinit var locationView: TextView
     private lateinit var registrationDateView: TextView
     private lateinit var reputationBar: RatingBar
+    private var fullNameView : TextView? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -46,6 +48,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         registrationDateView = view.findViewById(R.id.registrationDateView)
         reputationBar = view.findViewById(R.id.ratingBar)
 
+        fullNameView = view.findViewById(R.id.nameView)
+
         updateFields()
     }
 
@@ -54,7 +58,11 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         val profile = act.profile
         val profileImage = act.profileImage
 
-        updateTitle(profile.fullName)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            updateTitle(profile.fullName)
+        else{
+            fullNameView?.text = profile.fullName
+        }
         if(profileImage!=null)
             profileImageView.setImageBitmap(profileImage)
         nickNameView.text = profile.nickName
