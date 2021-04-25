@@ -11,8 +11,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextMenu
@@ -20,8 +18,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
@@ -159,6 +155,8 @@ open class EditFragment(layoutId: Int,
     private fun runCropper(sourceUri: Uri) {
         CropImage
             .activity(sourceUri)
+            .setAspectRatio(4, 3)
+            .setRequestedSize(800, 600)
             .start(requireContext(), this)
     }
 
