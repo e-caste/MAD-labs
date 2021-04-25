@@ -156,7 +156,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.tot_places?.let { passengers?.editText?.setText(it) }
+        trip.totalSeats?.let { passengers.setText(it) }
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = "Insert passengers"

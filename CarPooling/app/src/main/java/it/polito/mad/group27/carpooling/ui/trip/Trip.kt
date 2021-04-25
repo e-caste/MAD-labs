@@ -39,26 +39,19 @@ object DateSerializer: KSerializer<Date> {
 @Parcelize
 data class Trip(
     var id: Long = -1,
-    var uri: Uri? = null,
+    var carImageUri: Uri? = null,
     var date: Date = Date(),
-    var tot_places: Int? = null,
-    var available_places: Int? = null,
+    var totalSeats: Int? = null,
+    var availableSeats: Int? = null,
     var price: BigDecimal? = null,
-    var startHour: Hour =
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-            Hour(LocalTime.now())
-        else{
-            val calendar = java.util.Calendar.getInstance()
-            Hour(calendar)
-        },
-    var endHour: Hour =
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-            Hour(LocalTime.now().plusHours(1))
-        else{
-            val calendar = java.util.Calendar.getInstance()
-            calendar.add(Calendar.HOUR_OF_DAY, +1)
-            Hour(calendar)
-        },
+    var startHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now())
+                          else Hour(Calendar.getInstance()),
+    var endHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now().plusHours(1))
+                        else {
+                            val calendar = Calendar.getInstance()
+                            calendar.add(Calendar.HOUR_OF_DAY, +1)
+                            Hour(calendar)
+                        },
     var from: String = "",
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
@@ -72,17 +65,16 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
     constructor(calendar: Calendar) : this(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
     @RequiresApi(Build.VERSION_CODES.O)
     constructor(dateTime: LocalTime) : this(dateTime.hour , dateTime.minute)
-    override fun toString(): String {
-        val add_zero_hour = if (hour < 10) '0' else ""
-        val add_zero_minute = if (minute < 10) '0' else ""
-        return "${add_zero_hour}${hour}:${add_zero_minute}${minute}"
-    }
+    override fun toString() = "${if (hour < 10) "0" else ""}$hour:${if (minute < 10) "0" else ""}$minute"
+
 }
 
 @Serializable
 @Parcelize
 data class Stop(val place: String, val hour: Hour): Parcelable
 
-enum class Option{
-    ANIMALS, LUGGAGE, SMOKE
+enum class Option {
+    ANIMALS,
+    LUGGAGE,
+    NO_SMOKE,
 }
