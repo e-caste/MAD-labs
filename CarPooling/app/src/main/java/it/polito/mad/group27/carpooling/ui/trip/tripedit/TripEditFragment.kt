@@ -23,6 +23,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
@@ -34,11 +35,13 @@ import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
+import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.math.BigDecimal
 import java.net.URI
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -247,7 +250,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // check id, if -1 take counter and increment
         if(newTrip.id == null) {
             val counterKey = getString(R.string.trip_counter)
-            val counter = (sharedPref.getLong(counterKey, 0)).toLong()
+            val counter = sharedPref.getLong(counterKey, 0)
             newTrip.id = counter + 1
             with(sharedPref.edit()) {
                 putString(counterKey, (counter+1).toString())
@@ -267,19 +270,28 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             newTrip.uri = null
         }
 
+        // TODO change fields to lateinit var
+        newTrip.from = from_place!!.editText!!.text!!.toString()
+        newTrip.to = to_place!!.editText!!.text!!.toString()
 
-        /**
-         * - create id if -1 (and update counter)
-         * - generate image profile name if not present
-         * - start and end location
-         * - number passengers and price
-         * - options
-         * - available places
-         *
-         * - persist profile
-         * - persist image
-         *
-         */
+        newTrip.tot_places = passengers!!.editText!!.text!!.toString().toInt()
+
+        // TODO make not stubbed when adding some logic
+        newTrip.available_places = (0 .. newTrip.tot_places!!).random()
+
+        newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
+
+        val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
+            Option.SMOKE to R.id.smokers_switch,
+            Option.ANIMALS to R.id.animal_switch)
+        for ((option, switchId) in optionToSwitch.entries){
+            val switch = requireView().findViewById<SwitchMaterial>(switchId)
+            if(switch.isChecked)
+                newTrip.options.add(option)
+        }
+
+        val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
+        newTrip.otherInformation = info.text?.toString() ?: null
 
         writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
         saveImg(imageName)
@@ -299,6 +311,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         when(item.itemId){
             R.id.save_menu_button->{
                 saveTrip()
+                // detect where to go if added or modified
                 findNavController().navigate(R.id.action_tripEditFragment_to_tripDetailsFragment,
                     bundleOf(  "trip" to newTrip))
             }
