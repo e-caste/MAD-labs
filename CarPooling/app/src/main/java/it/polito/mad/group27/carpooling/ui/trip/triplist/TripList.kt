@@ -1,9 +1,9 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,30 +13,59 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
+import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.createSampleDataIfNotPresent
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 
 /**
  * A fragment representing a list of Items.
  */
-class TripList :  BaseFragmentWithToolbar(R.layout.fragment_trip_list,
+class TripList: BaseFragmentWithToolbar(
+    R.layout.fragment_trip_list,
     R.menu.trip_list_menu,
-    R.string.app_name){
+    R.string.app_name
+){
 
-    private var columnCount = 1
+    private lateinit var trips: MutableList<Trip>
+    val counterName = "group27.lab2.trips.id_counter"
+    val tripPrefix = "group27.lab2.trips."
+    val carImagePrefix = "group27.lab2.car_img."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        createSampleDataIfNotPresent()
+        loadTrips()
+    }
 
-
-//        arguments?.let {
-//            columnCount = it.getInt(ARG_COLUMN_COUNT)
-//        }
+    private fun loadTrips() {
+        trips = mutableListOf()
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val savedTripsCounter = prefs?.getString(counterName, null)?.toInt()
+        if (savedTripsCounter != null) {
+            for (i in 0 until savedTripsCounter) {
+                try {
+                    val savedTripJson = prefs.getString("$tripPrefix$i", null)
+                    if (savedTripJson != null) {
+                        val tmpTrip: Trip = Json.decodeFromString(savedTripJson)
+                        trips.add(tmpTrip)
+                        Log.d(getLogTag(), "decoded $tripPrefix$i from JSON with data: $tmpTrip")
+                    } else {
+                        Log.d(getLogTag(), "$tripPrefix$i contains null, not decoding from JSON")
+                    }
+                } catch (e: SerializationException) {
+                    Log.d(getLogTag(), "cannot parse saved preference $tripPrefix$i")
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -60,7 +89,7 @@ class TripList :  BaseFragmentWithToolbar(R.layout.fragment_trip_list,
                         LinearLayoutManager(context)
                     }
                 }
-                adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS, findNavController())
+                adapter = TripCardRecyclerViewAdapter(trips, findNavController())
             }
         }
         return view
@@ -81,7 +110,7 @@ class TripList :  BaseFragmentWithToolbar(R.layout.fragment_trip_list,
                 LinearLayoutManager(context)
             }
         }
-        recyclerView.adapter = TripCardRecyclerViewAdapter(DummyContent.ITEMS, findNavController())
+        recyclerView.adapter = TripCardRecyclerViewAdapter(trips, findNavController())
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { view ->
