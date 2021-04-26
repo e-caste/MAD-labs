@@ -313,10 +313,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
         saveImg(imageName)
     }
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.save_menu_button).isEnabled = validateFields()
-    }
+
 
     private fun validateFields(): Boolean{
         var valid = true
@@ -390,10 +387,16 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button->{
-                saveTrip()
-                // detect where to go if added or modified
-                findNavController().navigate(R.id.action_tripEditFragment_to_tripDetailsFragment,
-                    bundleOf(  "trip" to newTrip))
+                if(validateFields()) {
+                    saveTrip()
+                    // detect where to go if added or modified
+                    findNavController().navigate(
+                        R.id.action_tripEditFragment_to_tripDetailsFragment,
+                        bundleOf("trip" to newTrip)
+                    )
+                }else{
+                    Snackbar.make(requireView(),"PLEASE FIX ERRORS", Snackbar.LENGTH_LONG).show()
+                }
             }
             else -> return super.onOptionsItemSelected(item)
         }
