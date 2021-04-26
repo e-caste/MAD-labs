@@ -128,15 +128,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_place?.hint = "To"
         to_place?.editText?.setText(newTrip.to)
         to_place?.editText?.addTextChangedListener(Watcher(
-            { to_place?.editText?.text?.isEmpty() ?: true },
-            { to_place?.error = "Destination can not be empty"
-                act.invalidateOptionsMenu() },
-            { to_place?.error = null
-                act.invalidateOptionsMenu() }
-        ))
-        to_place?.editText?.addTextChangedListener(Watcher(
-            { to_place?.editText?.text == from_place?.editText?.text },
-            { to_place?.error = "Invalid destination"
+            { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
+            { if(to_place?.editText?.text?.isEmpty() ?: true)
+                    to_place?.error = "Destination can not be empty"
+                else
+                    to_place?.error = "Invalid destination"
                 act.invalidateOptionsMenu() },
             { to_place?.error = null
                 act.invalidateOptionsMenu() }
@@ -206,9 +202,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             val lastStop = newTrip.stops.size -1
             if (lastStop < 0
                 || ( newTrip.stops[lastStop].place.trim() != ""
-                && if (lastStop > 0)
-                        newTrip.stops[lastStop].hour.toString() > newTrip.stops[lastStop-1].hour.toString()
-                    else true) ) {
+                && (if (lastStop > 0) {
+                    newTrip.stops[lastStop].hour.toString() > newTrip.stops[lastStop - 1].hour.toString()
+                }
+                    else true)
+                        &&  newTrip.stops[lastStop].hour.toString() < newTrip.endHour.toString()
+                        && newTrip.stops[lastStop].hour.toString() > newTrip.startHour.toString()) ) {
                 (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0, 0)))
                 if (newTrip.stops.size > 0)
                     remove_button.visibility = View.VISIBLE
@@ -216,8 +215,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 
             }
         }
-
-        // TODO check prima di aggiungere una fermata che le altre abbiano i campi e mettere errore sotto il bottone
 
     }
 
