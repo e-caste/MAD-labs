@@ -61,12 +61,6 @@ class MainActivity : AppCompatActivity() {
         profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
 
         loadProfile()
-        if (profileImage!=null)
-            profileImageView.setImageBitmap(profileImage)
-        else
-            profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
-        profileNameTextView.text = profile.fullName
-        profileEmailTextView.text = profile.email
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -100,5 +94,13 @@ class MainActivity : AppCompatActivity() {
             profileImage = null
             Log.d(getLogTag(), "image is removed, setting default icon...")
         }
+
+        // updating drawer informations
+        if (profileImage!=null)
+            profileImageView.setImageBitmap(profileImage)
+        else
+            profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
+        profileNameTextView.text = profile.fullName
+        profileEmailTextView.text = profile.email
     }
 }
