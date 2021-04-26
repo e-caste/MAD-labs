@@ -106,6 +106,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { from_place?.error = "Departure can not be empty"
                 act.invalidateOptionsMenu() },
             { from_place?.error = null
+                newTrip.from = from_place?.editText?.text.toString()
                 act.invalidateOptionsMenu() }
         ))
         from_hour.editText?.setText(newTrip.startHour.toString())
@@ -119,7 +120,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 }
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
-
         }
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
@@ -135,6 +135,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     to_place?.error = "Invalid destination"
                 act.invalidateOptionsMenu() },
             { to_place?.error = null
+                newTrip.to = to_place?.editText?.text.toString()
                 act.invalidateOptionsMenu() }
         ))
         to_hour.editText?.setText(newTrip.endHour.toString())
@@ -164,6 +165,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { passengers?.error = "Insert passengers"
             act.invalidateOptionsMenu() },
             { passengers?.error = null
+                newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
+                // TODO make not stubbed when adding some logic
+                newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
                 act.invalidateOptionsMenu() }
         ))
 
@@ -179,6 +183,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { price?.error = "Invalid price"
                 act.invalidateOptionsMenu() },
             { price?.error = null
+                newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
                 act.invalidateOptionsMenu() }
         ))
 
@@ -284,17 +289,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             }
             newTrip.carImageUri = null
         }
-
-        // TODO change fields to lateinit var
-        newTrip.from = from_place!!.editText!!.text!!.toString()
-        newTrip.to = to_place!!.editText!!.text!!.toString()
-
-        newTrip.totalSeats = passengers!!.editText!!.text!!.toString().toInt()
-
-        // TODO make not stubbed when adding some logic
-        newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
-
-        newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
 
         val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
             Option.SMOKE to R.id.smokers_switch,
