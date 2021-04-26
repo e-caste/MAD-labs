@@ -136,4 +136,15 @@
     <string name="trip_edit_title">Edit trip</string>
     <string name="profile_edit_title">Edit profile</string>
     <string name="trip_counter">group27.lab1.trips.id_counter</string>
+    <string name="toast_complete_previous_stop">Please complete previous stops before adding a new one</string>
+    <string name="edit_from_error">Invalid departure</string>
+    <string name="edit_to_error">Invalid destination</string>
+    <string name="edit_to_hour_error">Invalid arrival time</string>
+    <string name="insert_passengers">Insert available seats</string>
+    <string name="invalid_price">Invalid price</string>
+    <string name="estimated_time">Estimated travel time</string>
+    <string name="stop_place_error">Invalid stopping place</string>
+    <string name="stop_hour_error">Invalid stopping hour</string>
+
+
 </resources>

@@ -28,4 +28,14 @@
     <string name="route">Percorso:</string>
     <string name="trip_edit_title">Modifica viaggio</string>
     <string name="profile_edit_title">Modifica profilo</string>
+    <string name="toast_complete_previous_stop">Completa le altre fermate prima di aggiungerne altre</string>
+    <string name="edit_from_error">Luogo di partenza non valido</string>
+    <string name="edit_to_error">Luogo di destinazione non valido</string>
+    <string name="edit_to_hour_error">Ora di arrivo non valida</string>
+    <string name="insert_passengers">Inserisci i posti disponibili</string>
+    <string name="invalid_price">Prezzo non valido</string>
+    <string name="estimated_time">Tempo stimato di viaggio</string>
+    <string name="stop_place_error">Fermata non valida</string>
+    <string name="stop_hour_error">Orario non valido</string>
+
 </resources>

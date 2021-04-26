@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
@@ -14,7 +13,6 @@ import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-// TODO create string resources
 class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(v: View, val context: Context, val trip: Trip) : RecyclerView.ViewHolder(v) {
@@ -27,7 +25,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
             placeView.hint = "Stop ${position+1}"
             placeView?.editText?.addTextChangedListener(Watcher(
                 { placeView.editText?.text?.isEmpty() ?: true },
-                { placeView.error = "Destination can not be empty"
+                { placeView.error = context.getString(R.string.stop_place_error)
                     stop.place = placeView.editText?.text.toString()
                     (context as AppCompatActivity).invalidateOptionsMenu() },
                 { placeView.error = null
@@ -59,7 +57,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
                         || (if (position < trip.stops.size - 1)
                                 hourView.editText?.text.toString() >= trip.stops[position+1].hour.toString()
                             else false)},
-                { hourView.error = "Invalid stop time"
+                { hourView.error = context.getString(R.string.stop_hour_error)
                     (context as AppCompatActivity).invalidateOptionsMenu() },
                 { hourView.error = null
                     (context as AppCompatActivity).invalidateOptionsMenu() }

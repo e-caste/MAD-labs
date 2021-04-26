@@ -104,7 +104,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_place?.editText?.setText(newTrip.from)
         from_place?.editText?.addTextChangedListener(Watcher(
             { from_place?.editText?.text?.isEmpty() ?: true },
-            { from_place?.error = "Departure can not be empty"
+            { from_place?.error = getString(R.string.edit_from_error)
                 newTrip.from = from_place?.editText?.text.toString()
                  },
             { from_place?.error = null
@@ -131,10 +131,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_place?.editText?.setText(newTrip.to)
         to_place?.editText?.addTextChangedListener(Watcher(
             { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
-            { if(to_place?.editText?.text?.isEmpty() ?: true)
-                    to_place?.error = "Destination can not be empty"
-                else
-                    to_place?.error = "Invalid destination"
+            { to_place?.error = getString(R.string.edit_to_error)
                 newTrip.to = to_place?.editText?.text.toString()
                  },
             { to_place?.error = null
@@ -155,7 +152,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
         to_hour.editText?.addTextChangedListener(Watcher(
             { to_hour.editText?.text.toString() <= from_hour?.editText?.text.toString() },
-            { to_hour.error = "Invalid arrival time"
+            { to_hour.error = getString(R.string.edit_to_hour_error)
                  },
             { to_hour.error = null
                  }
@@ -165,7 +162,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         trip.totalSeats?.let { passengers?.editText?.setText(it) }
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
-            { passengers?.error = "Insert passengers"
+            { passengers?.error = getString(R.string.insert_passengers)
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
                 // TODO make not stubbed when adding some logic
                 newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
@@ -186,7 +183,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     || if(price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 0 == 2)
                             price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
-            { price?.error = "Invalid price"
+            { price?.error = getString(R.string.invalid_price)
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
                  },
             { price?.error = null
@@ -236,7 +233,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 .setValidator(DateValidatorPointForward.now())
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select date")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
@@ -260,7 +256,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val time = getEstimatedTime(newTrip.startHour, newTrip.endHour)
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
-        estimated_time.setText( "Estimated travel time : ${hours} ${minutes}" )
+        estimated_time.setText( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
     }
 
     private fun Hour.updateTime(timePicker: MaterialTimePicker): Hour {
