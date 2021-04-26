@@ -111,8 +111,8 @@ open class EditFragment(layoutId: Int,
                     Log.d(getLogTag(), "storage permission has been denied by user")
 
                     Snackbar.make(requireView(),  getString(R.string.toast_storage_permission_settings), Snackbar.LENGTH_LONG)
-                        //TODO set retry as string
-                        .setAction("Retry") {
+
+                        .setAction(getString(R.string.retry)) {
                             // Responds to click on the action
                             checkStoragePermissionAndGetPhoto()
                         }
@@ -188,8 +188,7 @@ open class EditFragment(layoutId: Int,
                     imageView.setImageURI(result?.uriContent)
                     imageChanged = true
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    // TODO string
-                    Snackbar.make(requireView(), "An error occurred while cropping the data, please try again",
+                    Snackbar.make(requireView(), getString(R.string.crop_error),
                         Snackbar.LENGTH_LONG)
                         .show()
                 }
@@ -248,8 +247,7 @@ open class EditFragment(layoutId: Int,
             } else{
                 File(act.filesDir, fileName).delete()
             }
-            //TODO substitute string here
-            File(act.filesDir, "saving_tmp")
+            File(act.filesDir, getString(R.string.temporary_edit_image_file))
         }
     }
 
@@ -263,11 +261,10 @@ open class EditFragment(layoutId: Int,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // TODO create strings
-        outState.putBoolean("imageChanged", imageChanged)
+        outState.putBoolean(getString(R.string.image_changed_flag), imageChanged)
         Log.d(getLogTag(), "saved to bundle: $imageChanged")
         if(imageChanged && image!=null)
-            act.openFileOutput("saving_tmp", Context.MODE_PRIVATE).use {
+            act.openFileOutput(getString(R.string.temporary_edit_image_file), Context.MODE_PRIVATE).use {
                 it.writeBitmap(image!!)
             }
     }
@@ -275,10 +272,10 @@ open class EditFragment(layoutId: Int,
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        imageChanged = savedInstanceState?.getBoolean("imageChanged") ?: false
+        imageChanged = savedInstanceState?.getBoolean(getString(R.string.image_changed_flag)) ?: false
         Log.d(getLogTag(), "got from bundle: $imageChanged")
         if (imageChanged) {
-            val imageFile = File(act.filesDir, "saving_tmp")
+            val imageFile = File(act.filesDir, getString(R.string.temporary_edit_image_file))
             image = if(imageFile.exists()) {
                 BitmapFactory.decodeFile(imageFile.absolutePath)
             }else{
