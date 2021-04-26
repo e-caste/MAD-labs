@@ -70,7 +70,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    fun getRandomDate() = Date(2021, 5, days.random())
+    fun getRandomDate() = Date(2021 - 1900, 4, days.random())
 
     fun getRandomHour() = Hour(hours.random(), minutes.random())
 
