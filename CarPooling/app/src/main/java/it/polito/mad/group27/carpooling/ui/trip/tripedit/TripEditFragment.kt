@@ -305,27 +305,94 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
         newTrip.otherInformation = info.text?.toString() ?: null
 
-//        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
-//        saveImg(imageName)
-    }
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-//        menu.findItem(R.id.save_menu_button).isEnabled = validateFields()
-    // TODO
+        Log.d(getLogTag(), Json.encodeToString(newTrip))
+        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
+        saveImg(imageName)
     }
 
-    private fun validateFields(){
 
+    private fun validateFields(): Boolean{
+        var valid = true
+        if(newTrip.from.trim() =="") {
+            //from_place.error =
+            valid = false
+        }
+        if(newTrip.to.trim()==""){
+            //to_place.error =
+            valid= false
+        }
+
+        if(newTrip.to == newTrip.from){
+            //to_place.error
+            valid = false
+        }
+
+        if(newTrip.price == null || newTrip.price!! <= BigDecimal(0)){
+//            price.error
+            valid = false
+        }
+
+        if(newTrip.totalSeats == null || newTrip.totalSeats!! < 0 ){
+//            passengers.error
+            valid= false
+        }
+
+        for ((idx, stop) in newTrip.stops.withIndex()){
+            if(idx == 0){
+                if(stop.hour.toString() <= newTrip.startHour.toString()){
+                    // set error
+                    valid = false
+                }
+            }else if(idx== newTrip.stops.size -1){
+                if(stop.hour.toString() >= newTrip.endHour.toString()){
+                    // set error
+                    valid = false
+                }
+            }else{
+                if(stop.hour.toString() <= newTrip.stops[idx-1].hour.toString()){
+                    //set error
+                    valid = false
+                }
+            }
+
+            if(stop.place.trim()==""){
+                //set error
+                valid = false
+            }
+        }
+
+        val places = newTrip.stops.groupingBy{it.place }.eachCount()
+
+        if(places.containsKey(newTrip.from) || places.containsKey(newTrip.to)){
+            // how to deal with it?
+
+            valid = false
+        }
+
+        if(places.filterValues { it >1  }.isNotEmpty()){
+            // how to signal error?
+            valid = false
+        }
+
+
+
+        return valid
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button->{
-                saveTrip()
-                // detect where to go if added or modified
-                findNavController().navigate(R.id.action_tripEditFragment_to_tripDetailsFragment,
-                    bundleOf(  "trip" to newTrip))
+                if(validateFields()) {
+                    saveTrip()
+                    // detect where to go if added or modified
+                    findNavController().navigate(
+                        R.id.action_tripEditFragment_to_tripDetailsFragment,
+                        bundleOf("trip" to newTrip)
+                    )
+                }else{
+                    Snackbar.make(requireView(),"PLEASE FIX ERRORS", Snackbar.LENGTH_LONG).show()
+                }
             }
             else -> return super.onOptionsItemSelected(item)
         }
