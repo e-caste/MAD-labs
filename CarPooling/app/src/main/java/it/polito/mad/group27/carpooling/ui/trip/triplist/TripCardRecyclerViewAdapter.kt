@@ -12,7 +12,9 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
 import java.text.DateFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Trip].
@@ -23,6 +25,7 @@ class TripCardRecyclerViewAdapter(
 ): RecyclerView.Adapter<TripCardRecyclerViewAdapter.ViewHolder>() {
 
     private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+    private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,7 +37,7 @@ class TripCardRecyclerViewAdapter(
         val item = values[position]
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment) }
         holder.carImageView.setImageURI(item.carImageUri)
-        holder.priceTextView.text = item.price.toString()
+        holder.priceTextView.text = priceFormat.format(item.price)
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment) }
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
