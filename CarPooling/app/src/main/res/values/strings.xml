@@ -59,6 +59,7 @@
     <string name="estimated_time">Estimated travel time</string>
     <string name="stop_place_error">Invalid stopping place</string>
     <string name="stop_hour_error">Invalid stopping hour</string>
+    <string name="duplicated_place_error">Duplicated stop</string>
 
 
 </resources>
