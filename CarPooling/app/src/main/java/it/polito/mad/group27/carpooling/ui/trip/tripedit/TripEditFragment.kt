@@ -60,6 +60,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     var price: TextInputLayout? = null
     var to_place: TextInputLayout? = null
     var from_place: TextInputLayout? = null
+    var to_hour: TextInputLayout? = null
+    var from_hour: TextInputLayout? = null
     var passengers: TextInputLayout? = null
 
     private var datePicker: MaterialDatePicker<Long>
@@ -101,8 +103,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
-        val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
-        from_place?.hint = "From"
+        from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
+
+        val to = view.findViewById<LinearLayout>(R.id.editTo)
+        to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
+        to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
+
+        from_place?.hint = getString(R.string.from)
         from_place?.editText?.setText(newTrip.from)
         from_place?.editText?.addTextChangedListener(Watcher(
             { from_place?.editText?.text?.isEmpty() ?: true },
@@ -113,11 +120,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 newTrip.from = from_place?.editText?.text.toString()
                  }
         ))
-        from_hour.editText?.setText(newTrip.startHour.toString())
-        from_hour.editText?.setOnClickListener {
+        from_hour?.editText?.setText(newTrip.startHour.toString())
+        from_hour?.editText?.setOnClickListener {
             if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
                 timePickerFrom = getTimePicker(
-                    from_hour.editText!!,
+                    from_hour?.editText!!,
                     newTrip.startHour,
                     this.requireContext()){
                     newTrip.startHour.updateTime(it)
@@ -125,11 +132,15 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
+        from_hour?.editText?.addTextChangedListener(Watcher(
+            { from_hour?.editText?.text.toString() >= to_hour?.editText?.text.toString() },
+            { to_hour?.error = getString(R.string.edit_to_hour_error)
+            },
+            { to_hour?.error = null
+            }
+        ))
 
-        val to = view.findViewById<LinearLayout>(R.id.editTo)
-        to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
-        val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
-        to_place?.hint = "To"
+        to_place?.hint = getString(R.string.to)
         to_place?.editText?.setText(newTrip.to)
         to_place?.editText?.addTextChangedListener(Watcher(
             { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
@@ -140,11 +151,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 newTrip.to = to_place?.editText?.text.toString()
                  }
         ))
-        to_hour.editText?.setText(newTrip.endHour.toString())
-        to_hour.editText?.setOnClickListener {
+        to_hour?.editText?.setText(newTrip.endHour.toString())
+        to_hour?.editText?.setOnClickListener {
             if(timePickerTo == null || !timePickerTo?.isVisible!!) {
                 timePickerTo = getTimePicker(
-                    to_hour.editText!!,
+                    to_hour?.editText!!,
                     newTrip.endHour,
                     this.requireContext()){
                     newTrip.endHour.updateTime(it)
@@ -152,11 +163,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        to_hour.editText?.addTextChangedListener(Watcher(
-            { to_hour.editText?.text.toString() <= from_hour?.editText?.text.toString() },
-            { to_hour.error = getString(R.string.edit_to_hour_error)
+        to_hour?.editText?.addTextChangedListener(Watcher(
+            { to_hour?.editText?.text.toString() <= from_hour?.editText?.text.toString() },
+            { to_hour?.error = getString(R.string.edit_to_hour_error)
                  },
-            { to_hour.error = null
+            { to_hour?.error = null
                  }
         ))
 
@@ -165,9 +176,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = getString(R.string.insert_passengers)
-                newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
+                newTrip.totalSeats = -1
                 // TODO make not stubbed when adding some logic
-                newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
+                newTrip.availableSeats = -1
              },
             { passengers?.error = null
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
@@ -186,7 +197,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
             { price?.error = getString(R.string.invalid_price)
-                newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
+                newTrip.price = BigDecimal("-1.00").setScale(2)
                  },
             { price?.error = null
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
@@ -335,6 +346,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid= false
         }
 
+        if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
+            to_hour?.editText?.error = getString(R.string.edit_to_hour_error)
+        }
+
         // TODO set as field
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
@@ -403,7 +418,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         bundleOf("trip" to newTrip)
                     )
                 }else{
-                    Snackbar.make(requireView(),"PLEASE FIX ERRORS", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(requireView(),getString(R.string.fix_all_errors), Snackbar.LENGTH_LONG).show()
                 }
             }
             else -> return super.onOptionsItemSelected(item)
