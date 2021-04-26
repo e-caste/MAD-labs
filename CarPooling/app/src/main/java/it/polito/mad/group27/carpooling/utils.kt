@@ -21,7 +21,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
+import kotlin.math.round
 import kotlin.random.Random.Default.nextDouble
 
 
@@ -70,7 +72,11 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
+    // Date is a deprecated class. I can see why...
     fun getRandomDate() = Date(2021 - 1900, 4, days.random())
+
+    // BigDecimals are evil and I'm not sure we need them
+    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil)).replace(",", ".").toDouble()).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomHour() = Hour(hours.random(), minutes.random())
 
@@ -98,7 +104,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boo
         date = getRandomDate(),
         totalSeats = (1..6).random(),
         availableSeats = 1,
-        price = BigDecimal(nextDouble(priceUntil)),
+        price = getRandomPrice(),
         startHour = getRandomHour(),
         endHour = getRandomHour(),
         from = places.random(),
