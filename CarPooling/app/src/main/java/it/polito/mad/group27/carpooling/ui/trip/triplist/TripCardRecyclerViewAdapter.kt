@@ -11,7 +11,8 @@ import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent.DummyItem
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 /**
  * [RecyclerView.Adapter] that can display a [Trip].
@@ -20,6 +21,8 @@ class TripCardRecyclerViewAdapter(
     private val values: MutableList<Trip>,
     private val navController: NavController,
 ): RecyclerView.Adapter<TripCardRecyclerViewAdapter.ViewHolder>() {
+
+    private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -36,7 +39,7 @@ class TripCardRecyclerViewAdapter(
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
         holder.hourDepartureTextView.text = item.startHour.toString()
-        holder.dateDepartureTextView.text = item.date.toString()
+        holder.dateDepartureTextView.text = dateFormat.format(item.date)
     }
 
     override fun getItemCount(): Int = values.size
