@@ -342,17 +342,14 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             var validStopTime = true
             if(idx == 0){
                 if(stop.hour.toString() <= newTrip.startHour.toString()){
-                    // set error
                     validStopTime = false
                 }
             }else if(idx== newTrip.stops.size -1){
                 if(stop.hour.toString() >= newTrip.endHour.toString()){
-                    // set error
                     validStopTime = false
                 }
             }else{
                 if(stop.hour.toString() <= newTrip.stops[idx-1].hour.toString()){
-                    //set error
                     validStopTime = false
                 }
             }
@@ -375,7 +372,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if(places.containsKey(newTrip.from) || places.containsKey(newTrip.to)){
 
             for ((idx, stop) in newTrip.stops.withIndex()){
-                if(stop.place == newTrip.from || stop.place == newTrip.to)
+                if(stop.place.trim()!="" && (stop.place == newTrip.from || stop.place == newTrip.to))
                     stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
             }
             valid = false
@@ -383,7 +380,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val duplicatedStops = places.filterValues { it >1  }.keys
         if(duplicatedStops.isNotEmpty()){
             for ((idx, stop) in newTrip.stops.withIndex()){
-                if(stop.place in duplicatedStops)
+                if(stop.place.trim()!="" && stop.place in duplicatedStops)
                     stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
             }
             valid = false
