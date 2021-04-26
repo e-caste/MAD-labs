@@ -30,6 +30,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
                 { placeView.error = "Destination can not be empty"
                     (context as AppCompatActivity).invalidateOptionsMenu() },
                 { placeView.error = null
+                    stop.place = placeView.editText?.text.toString()
                     (context as AppCompatActivity).invalidateOptionsMenu() }
             ))
             hourView.editText?.setText(stop.hour.toString())
