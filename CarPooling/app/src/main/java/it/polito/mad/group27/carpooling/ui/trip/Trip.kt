@@ -103,7 +103,7 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
 
 @Serializable
 @Parcelize
-data class Stop(val place: String, val hour: Hour): Parcelable
+data class Stop(var place: String, val hour: Hour): Parcelable
 
 enum class Option {
     ANIMALS,

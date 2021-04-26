@@ -14,7 +14,7 @@ import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-
+// TODO create string resources
 class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(v: View, val context: Context, val trip: Trip) : RecyclerView.ViewHolder(v) {
@@ -28,8 +28,10 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
             placeView?.editText?.addTextChangedListener(Watcher(
                 { placeView.editText?.text?.isEmpty() ?: true },
                 { placeView.error = "Destination can not be empty"
+                    stop.place = placeView.editText?.text.toString()
                     (context as AppCompatActivity).invalidateOptionsMenu() },
                 { placeView.error = null
+                    stop.place = placeView.editText?.text.toString()
                     (context as AppCompatActivity).invalidateOptionsMenu() }
             ))
             hourView.editText?.setText(stop.hour.toString())
