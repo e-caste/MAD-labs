@@ -50,10 +50,13 @@ fun OutputStream.writeBitmap(
 fun OutputStream.writeBitmapJPEG(
     bitmap: Bitmap,
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
-    quality: Int = 70
+    quality: Int = 100,
+    targetHeight: Int = 720,
 ) {
     use { out ->
-        bitmap.compress(format, quality, out)
+        Log.d("MAD-group-27", "${bitmap.width}x${bitmap.height} -> ${targetHeight * bitmap.width / bitmap.height}x$targetHeight")
+        val bm = Bitmap.createScaledBitmap(bitmap, targetHeight * bitmap.width / bitmap.height, targetHeight, true)
+        bm.compress(format, quality, out)
         out.flush()
     }
 }
