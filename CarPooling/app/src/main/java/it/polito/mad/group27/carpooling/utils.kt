@@ -73,7 +73,7 @@ fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
     return bitmap
 }
 
-fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boolean = false) {
+fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boolean = false) {
 
     val carImages = listOf(
         R.drawable.audi_a6,
