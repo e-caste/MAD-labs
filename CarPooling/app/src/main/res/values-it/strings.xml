@@ -46,5 +46,20 @@
     <string name="estimated_time">Tempo stimato di viaggio</string>
     <string name="stop_place_error">Fermata non valida</string>
     <string name="stop_hour_error">Orario non valido</string>
-
+    <string name="trip_details">Dettagli del viaggio</string>
+    <string name="trip_date">Data del viaggio</string>
+    <string name="available_seats">"Numbero di posti disponibili : "</string>
+    <string name="stop">Fermata</string>
+    <string name="price_for_each_seat">"Prezzo per ogni posto : "</string>
+    <string name="remove">RIMUOVI</string>
+    <string name="add">AGGIUNGI</string>
+    <string name="intermediate_stops">Fermate intermedie</string>
+    <string name="additional_options">Opzioni aggiuntive</string>
+    <string name="luggage">Bagagli</string>
+    <string name="animals">Animali</string>
+    <string name="smokers">Fumatori</string>
+    <string name="additional_information">Informazioni aggiuntive</string>
+    <string name="from">Da</string>
+    <string name="to">A</string>
+    <string name="fix_all_errors">Completa il form correttamente</string>
 </resources>

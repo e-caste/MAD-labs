@@ -100,7 +100,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
         val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
-        from_place?.hint = "From"
+        from_place?.hint = getString(R.string.from)
         from_place?.editText?.setText(newTrip.from)
         from_place?.editText?.addTextChangedListener(Watcher(
             { from_place?.editText?.text?.isEmpty() ?: true },
@@ -127,7 +127,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val to = view.findViewById<LinearLayout>(R.id.editTo)
         to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
         val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
-        to_place?.hint = "To"
+        to_place?.hint = getString(R.string.to)
         to_place?.editText?.setText(newTrip.to)
         to_place?.editText?.addTextChangedListener(Watcher(
             { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
@@ -391,7 +391,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         bundleOf("trip" to newTrip)
                     )
                 }else{
-                    Snackbar.make(requireView(),"PLEASE FIX ERRORS", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(requireView(),getString(R.string.fix_all_errors), Snackbar.LENGTH_LONG).show()
                 }
             }
             else -> return super.onOptionsItemSelected(item)

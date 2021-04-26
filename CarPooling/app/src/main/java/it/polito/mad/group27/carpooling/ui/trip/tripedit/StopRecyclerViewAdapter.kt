@@ -22,7 +22,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
 
         fun bind(stop: Stop, position: Int) {
             placeView.editText?.setText(stop.place)
-            placeView.hint = "Stop ${position+1}"
+            placeView.hint = context.getString(R.string.stop) + " ${position+1}"
             placeView?.editText?.addTextChangedListener(Watcher(
                 { placeView.editText?.text?.isEmpty() ?: true },
                 { placeView.error = context.getString(R.string.stop_place_error)

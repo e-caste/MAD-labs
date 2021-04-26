@@ -59,6 +59,22 @@
     <string name="estimated_time">Estimated travel time</string>
     <string name="stop_place_error">Invalid stopping place</string>
     <string name="stop_hour_error">Invalid stopping hour</string>
+    <string name="trip_details">Trip details</string>
+    <string name="trip_date">Trip date</string>
+    <string name="available_seats">"Number of available seats : "</string>
+    <string name="stop">Stop</string>
+    <string name="price_for_each_seat">"Price for each seat : "</string>
+    <string name="remove">REMOVE</string>
+    <string name="add">ADD</string>
+    <string name="intermediate_stops">Intermediate stops</string>
+    <string name="additional_options">Additional options</string>
+    <string name="luggage">Luggage</string>
+    <string name="animals">Animals</string>
+    <string name="smokers">Smokers</string>
+    <string name="additional_information">Additional information</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="fix_all_errors">Please complete the form correctly</string>
 
 
 </resources>

@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Trip details"
+            android:text="@string/trip_details"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
-            android:hint="Trip date"
+            android:hint="@string/trip_date"
             android:layout_margin="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +48,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:text="Number of passengers : "
+                android:text="@string/available_seats"
                 android:gravity="center_vertical|right"/>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editPeopleText"
@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:text="Price for each passenger : "
+                android:text="@string/price_for_each_seat"
                 android:gravity="center_vertical|right"/>
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_weight="1"
@@ -114,6 +114,18 @@
             android:layout_margin="8dp"
             />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/intermediate_stops"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
         <include
             android:id="@+id/stop_list_rv"
             layout="@layout/stop_list"
@@ -129,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_baseline_remove_24"
-                android:text="REMOVE"
+                android:text="@string/remove"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_margin="8dp"
                 />
@@ -138,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_baseline_add_24"
-                android:text="ADD"
+                android:text="@string/add"
                 android:layout_margin="8dp"
                 />
         </LinearLayout>
@@ -151,7 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Additional options"
+            android:text="@string/additional_options"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <LinearLayout
@@ -169,7 +181,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
-                android:text="Luggage"
+                android:text="@string/luggage"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
         <LinearLayout
@@ -187,7 +199,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
-                android:text="Animals"
+                android:text="@string/animals"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
         <LinearLayout
@@ -205,7 +217,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
-                android:text="Smokers"
+                android:text="@string/smokers"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
 
@@ -230,7 +242,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:hint="Additional information here"
+                    android:hint="@string/additional_information"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
