@@ -106,10 +106,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { from_place?.editText?.text?.isEmpty() ?: true },
             { from_place?.error = "Departure can not be empty"
                 newTrip.from = from_place?.editText?.text.toString()
-                act.invalidateOptionsMenu() },
+                 },
             { from_place?.error = null
                 newTrip.from = from_place?.editText?.text.toString()
-                act.invalidateOptionsMenu() }
+                 }
         ))
         from_hour.editText?.setText(newTrip.startHour.toString())
         from_hour.editText?.setOnClickListener {
@@ -136,10 +136,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 else
                     to_place?.error = "Invalid destination"
                 newTrip.to = to_place?.editText?.text.toString()
-                act.invalidateOptionsMenu() },
+                 },
             { to_place?.error = null
                 newTrip.to = to_place?.editText?.text.toString()
-                act.invalidateOptionsMenu() }
+                 }
         ))
         to_hour.editText?.setText(newTrip.endHour.toString())
         to_hour.editText?.setOnClickListener {
@@ -156,9 +156,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_hour.editText?.addTextChangedListener(Watcher(
             { to_hour.editText?.text.toString() <= from_hour?.editText?.text.toString() },
             { to_hour.error = "Invalid arrival time"
-                act.invalidateOptionsMenu() },
+                 },
             { to_hour.error = null
-                act.invalidateOptionsMenu() }
+                 }
         ))
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
@@ -169,12 +169,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
                 // TODO make not stubbed when adding some logic
                 newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
-            act.invalidateOptionsMenu() },
+             },
             { passengers?.error = null
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
                 // TODO make not stubbed when adding some logic
                 newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
-                act.invalidateOptionsMenu() }
+                 }
         ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
@@ -188,10 +188,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         else false},
             { price?.error = "Invalid price"
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
-                act.invalidateOptionsMenu() },
+                 },
             { price?.error = null
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
-                act.invalidateOptionsMenu() }
+                 }
         ))
 
         estimated_time =  view.findViewById<EditText>(R.id.estimated_time)
