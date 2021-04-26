@@ -60,6 +60,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     var price: TextInputLayout? = null
     var to_place: TextInputLayout? = null
     var from_place: TextInputLayout? = null
+    var to_hour: TextInputLayout? = null
+    var from_hour: TextInputLayout? = null
     var passengers: TextInputLayout? = null
 
     private var datePicker: MaterialDatePicker<Long>
@@ -101,12 +103,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
-        val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
+        from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
         to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
-        val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
-
+        to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
 
         from_place?.hint = getString(R.string.from)
         from_place?.editText?.setText(newTrip.from)
@@ -119,11 +120,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 newTrip.from = from_place?.editText?.text.toString()
                  }
         ))
-        from_hour.editText?.setText(newTrip.startHour.toString())
-        from_hour.editText?.setOnClickListener {
+        from_hour?.editText?.setText(newTrip.startHour.toString())
+        from_hour?.editText?.setOnClickListener {
             if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
                 timePickerFrom = getTimePicker(
-                    from_hour.editText!!,
+                    from_hour?.editText!!,
                     newTrip.startHour,
                     this.requireContext()){
                     newTrip.startHour.updateTime(it)
@@ -131,11 +132,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        from_hour.editText?.addTextChangedListener(Watcher(
-            { from_hour.editText?.text.toString() >= to_hour?.editText?.text.toString() },
-            { from_hour.error = getString(R.string.edit_from_hour_error)
+        from_hour?.editText?.addTextChangedListener(Watcher(
+            { from_hour?.editText?.text.toString() >= to_hour?.editText?.text.toString() },
+            { to_hour?.error = getString(R.string.edit_to_hour_error)
             },
-            { from_hour.error = null
+            { to_hour?.error = null
             }
         ))
 
@@ -150,11 +151,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 newTrip.to = to_place?.editText?.text.toString()
                  }
         ))
-        to_hour.editText?.setText(newTrip.endHour.toString())
-        to_hour.editText?.setOnClickListener {
+        to_hour?.editText?.setText(newTrip.endHour.toString())
+        to_hour?.editText?.setOnClickListener {
             if(timePickerTo == null || !timePickerTo?.isVisible!!) {
                 timePickerTo = getTimePicker(
-                    to_hour.editText!!,
+                    to_hour?.editText!!,
                     newTrip.endHour,
                     this.requireContext()){
                     newTrip.endHour.updateTime(it)
@@ -162,11 +163,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        to_hour.editText?.addTextChangedListener(Watcher(
-            { to_hour.editText?.text.toString() <= from_hour?.editText?.text.toString() },
-            { to_hour.error = getString(R.string.edit_to_hour_error)
+        to_hour?.editText?.addTextChangedListener(Watcher(
+            { to_hour?.editText?.text.toString() <= from_hour?.editText?.text.toString() },
+            { to_hour?.error = getString(R.string.edit_to_hour_error)
                  },
-            { to_hour.error = null
+            { to_hour?.error = null
                  }
         ))
 
@@ -343,6 +344,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if(newTrip.totalSeats == null || newTrip.totalSeats!! < 0 ){
             passengers?.error = getString(R.string.insert_passengers)
             valid= false
+        }
+
+        if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
+            to_hour?.editText?.error = getString(R.string.edit_to_hour_error)
         }
 
         // TODO set as field
