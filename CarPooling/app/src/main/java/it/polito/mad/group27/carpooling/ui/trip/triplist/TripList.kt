@@ -10,16 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.createSampleDataIfNotPresent
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.triplist.dummy.DummyContent
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -34,7 +31,7 @@ class TripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    private lateinit var trips: MutableList<Trip>
+    private val trips: MutableList<Trip> = mutableListOf()
     val counterName = "group27.lab2.trips.id_counter"
     val tripPrefix = "group27.lab2.trips."
     val carImagePrefix = "group27.lab2.car_img."
@@ -42,12 +39,19 @@ class TripList: BaseFragmentWithToolbar(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createSampleDataIfNotPresent()
-        loadTrips()
+        val tripsCounter = savedInstanceState?.getInt("trips_counter")
+        Log.d(getLogTag(), "tripsCounter is $tripsCounter")
+        if (tripsCounter == null) {
+            createSampleDataIfNotPresent()
+            loadTripsFromStorage()
+        } else {
+            for (i in 0 until tripsCounter) {
+                savedInstanceState.getParcelable<Trip>("trip$i")?.let { trips.add(it) }
+            }
+        }
     }
 
-    private fun loadTrips() {
-        trips = mutableListOf()
+    private fun loadTripsFromStorage() {
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val savedTripsCounter = prefs?.getString(counterName, null)?.toInt()
         if (savedTripsCounter != null) {
@@ -120,5 +124,15 @@ class TripList: BaseFragmentWithToolbar(
         }
 
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("trips_counter", trips.size)
+        Log.d(getLogTag(), "saved to bundle: counter ${trips.size}")
+        for ((i, trip) in trips.withIndex()) {
+            outState.putParcelable("trip$i", trip)
+            Log.d(getLogTag(), "saved to bundle: trip $i")
+        }
     }
 }
