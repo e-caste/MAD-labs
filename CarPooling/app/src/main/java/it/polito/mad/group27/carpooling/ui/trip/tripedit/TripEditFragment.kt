@@ -100,6 +100,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
         val from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
+
+        val to = view.findViewById<LinearLayout>(R.id.editTo)
+        to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
+        val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
+
+
         from_place?.hint = getString(R.string.from)
         from_place?.editText?.setText(newTrip.from)
         from_place?.editText?.addTextChangedListener(Watcher(
@@ -123,10 +129,14 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
+        from_hour.editText?.addTextChangedListener(Watcher(
+            { from_hour.editText?.text.toString() >= to_hour?.editText?.text.toString() },
+            { from_hour.error = getString(R.string.edit_from_hour_error)
+            },
+            { from_hour.error = null
+            }
+        ))
 
-        val to = view.findViewById<LinearLayout>(R.id.editTo)
-        to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
-        val to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
         to_place?.hint = getString(R.string.to)
         to_place?.editText?.setText(newTrip.to)
         to_place?.editText?.addTextChangedListener(Watcher(
@@ -163,9 +173,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = getString(R.string.insert_passengers)
-                newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
+                newTrip.totalSeats = -1
                 // TODO make not stubbed when adding some logic
-                newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
+                newTrip.availableSeats = -1
              },
             { passengers?.error = null
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
@@ -184,7 +194,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
             { price?.error = getString(R.string.invalid_price)
-                newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
+                newTrip.price = BigDecimal("-1.00").setScale(2)
                  },
             { price?.error = null
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
