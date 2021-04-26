@@ -59,10 +59,7 @@ fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
     return bitmap
 }
 
-fun TripList.createSampleData() {
-    val counterName = "group27.lab2.trips.id_counter"
-    val tripPrefix = "group27.lab2.trips."
-    val carImagePrefix = "group27.lab2.car_img."
+fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boolean = false) {
 
     val carImages = listOf(R.drawable.audi_a6, R.drawable.ford_fiesta, R.drawable.tesla_cybertruck)
     val days = (1..31)
@@ -127,14 +124,14 @@ fun TripList.createSampleData() {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val counter = sharedPreferences.getString(counterName, null)?.toInt()
         // first time saving || data has changed
-        if (counter == null || counter != trips.size) {
+        if (counter == null || counter != trips.size || forceReset) {
             // TODO: should use EditFragment.writeParcelable()
             with(sharedPreferences.edit()) {
                 putString(counterName, Json.encodeToString(trips.size))
-                Log.d(getLogTag(), "saved shared preference: $counterName")
+                Log.d(getLogTag(), "saved shared preference: $counterName with data ${trips.size}")
                 for ((i, trip) in trips.withIndex()) {
                     putString("$tripPrefix$i", Json.encodeToString(trip))
-                    Log.d(getLogTag(), "saved shared preference: $tripPrefix$i")
+                    Log.d(getLogTag(), "saved shared preference: $tripPrefix$i with data $trip")
                 }
                 apply()
             }
@@ -142,6 +139,6 @@ fun TripList.createSampleData() {
     }
 
     saveCarImagesToStorage()
-    val trips = (0..10).map { getRandomTrip(it.toLong()) }
+    val trips = (0 until tripsNumber).map { getRandomTrip(it.toLong()) }
     saveTripsToStorage(trips)
 }
