@@ -47,6 +47,7 @@
     <string name="estimated_time">Tempo stimato di viaggio</string>
     <string name="stop_place_error">Fermata non valida</string>
     <string name="stop_hour_error">Orario non valido</string>
+    <string name="duplicated_place_error">Fermata duplicata</string>
     <string name="trip_details">Dettagli del viaggio</string>
     <string name="trip_date">Data del viaggio</string>
     <string name="available_seats">"Numbero di posti disponibili : "</string>

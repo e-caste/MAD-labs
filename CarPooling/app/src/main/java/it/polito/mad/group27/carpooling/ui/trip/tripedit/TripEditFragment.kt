@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.children
+import androidx.core.view.get
+import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -324,63 +326,76 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private fun validateFields(): Boolean{
         var valid = true
         if(newTrip.from.trim() =="") {
-            //from_place.error =
+            from_place?.error = getString(R.string.edit_from_error)
             valid = false
         }
-        if(newTrip.to.trim()==""){
-            //to_place.error =
+        if(newTrip.to.trim()=="" || newTrip.to == newTrip.from){
+            to_place?.error = getString(R.string.edit_to_error)
             valid= false
         }
 
-        if(newTrip.to == newTrip.from){
-            //to_place.error
-            valid = false
-        }
 
         if(newTrip.price == null || newTrip.price!! <= BigDecimal(0)){
-//            price.error
+            price?.error =  getString(R.string.invalid_price)
             valid = false
         }
 
         if(newTrip.totalSeats == null || newTrip.totalSeats!! < 0 ){
-//            passengers.error
+            passengers?.error = getString(R.string.insert_passengers)
             valid= false
         }
 
+        // TODO set as field
+        val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
+
         for ((idx, stop) in newTrip.stops.withIndex()){
+            var validStopTime = true
             if(idx == 0){
                 if(stop.hour.toString() <= newTrip.startHour.toString()){
                     // set error
-                    valid = false
+                    validStopTime = false
                 }
             }else if(idx== newTrip.stops.size -1){
                 if(stop.hour.toString() >= newTrip.endHour.toString()){
                     // set error
-                    valid = false
+                    validStopTime = false
                 }
             }else{
                 if(stop.hour.toString() <= newTrip.stops[idx-1].hour.toString()){
                     //set error
-                    valid = false
+                    validStopTime = false
                 }
             }
 
+            if(!validStopTime){
+                valid = false
+                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_hour).error = getString(R.string.stop_hour_error)
+            }
+
             if(stop.place.trim()==""){
-                //set error
+                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.stop_place_error)
                 valid = false
             }
         }
 
         val places = newTrip.stops.groupingBy{it.place }.eachCount()
 
-        if(places.containsKey(newTrip.from) || places.containsKey(newTrip.to)){
-            // how to deal with it?
 
+
+        if(places.containsKey(newTrip.from) || places.containsKey(newTrip.to)){
+
+            for ((idx, stop) in newTrip.stops.withIndex()){
+                if(stop.place == newTrip.from || stop.place == newTrip.to)
+                    stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
+            }
             valid = false
         }
-
-        if(places.filterValues { it >1  }.isNotEmpty()){
-            // how to signal error?
+        val duplicatedStops = places.filterValues { it >1  }.keys
+        if(duplicatedStops.isNotEmpty()){
+            for ((idx, stop) in newTrip.stops.withIndex()){
+                if(stop.place in duplicatedStops)
+                    stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
+            }
             valid = false
         }
 
