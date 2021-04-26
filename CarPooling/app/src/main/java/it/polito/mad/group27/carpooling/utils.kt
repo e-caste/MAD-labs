@@ -115,7 +115,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boo
 
     // TODO: check for EXTERNAL_STORAGE permission here
     fun saveCarImagesToStorage() {
-        if (!File(activity?.filesDir, "${carImagePrefix}0").exists()) {
+        if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
             for ((i, img) in carImages.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
