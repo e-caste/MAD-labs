@@ -46,6 +46,18 @@ fun OutputStream.writeBitmap(
     }
 }
 
+// used for car images, sine converting to PNG is too slow
+fun OutputStream.writeBitmapJPEG(
+    bitmap: Bitmap,
+    format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
+    quality: Int = 70
+) {
+    use { out ->
+        bitmap.compress(format, quality, out)
+        out.flush()
+    }
+}
+
 fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
     var drawable = ContextCompat.getDrawable(context, drawableId)
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -63,7 +75,28 @@ fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
 
 fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boolean = false) {
 
-    val carImages = listOf(R.drawable.audi_a6, R.drawable.ford_fiesta, R.drawable.tesla_cybertruck)
+    val carImages = listOf(
+        R.drawable.audi_a6,
+        R.drawable.bmw_x6,
+        R.drawable.citroen_c4,
+        R.drawable.dmc_delorean,
+        R.drawable.fiat_500,
+        R.drawable.fiat_500l,
+        R.drawable.fiat_punto,
+        R.drawable.ford_f150,
+        R.drawable.ford_fiesta,
+        R.drawable.ford_focus,
+        R.drawable.lamborghini_urus,
+        R.drawable.lancia_y,
+        R.drawable.mercedes_cla45_amg,
+        R.drawable.mini_cooper,
+        R.drawable.nissan_gt_r,
+        R.drawable.porsche_panamera,
+        R.drawable.smart_fortwo,
+        R.drawable.tesla_cybertruck,
+        R.drawable.tesla_model_3,
+        R.drawable.tesla_model_s,
+    )
     val days = (1..31)
     val hours = (0..23)
     val minutes = (0..59)
@@ -119,8 +152,9 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 10, forceReset: Boo
             for ((i, img) in carImages.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
-                    it?.writeBitmap(bitmap)
+                    it?.writeBitmapJPEG(bitmap)
                 }
+                Log.d(getLogTag(), "saved car image $carImagePrefix$i to storage")
             }
             Log.d(getLogTag(), "saved sample car images to storage with prefix $carImagePrefix")
         }
