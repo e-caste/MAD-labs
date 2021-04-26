@@ -23,6 +23,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -104,6 +105,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_place?.editText?.addTextChangedListener(Watcher(
             { from_place?.editText?.text?.isEmpty() ?: true },
             { from_place?.error = "Departure can not be empty"
+                newTrip.from = from_place?.editText?.text.toString()
                 act.invalidateOptionsMenu() },
             { from_place?.error = null
                 newTrip.from = from_place?.editText?.text.toString()
@@ -133,6 +135,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     to_place?.error = "Destination can not be empty"
                 else
                     to_place?.error = "Invalid destination"
+                newTrip.to = to_place?.editText?.text.toString()
                 act.invalidateOptionsMenu() },
             { to_place?.error = null
                 newTrip.to = to_place?.editText?.text.toString()
@@ -163,6 +166,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = "Insert passengers"
+                newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
+                // TODO make not stubbed when adding some logic
+                newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
             act.invalidateOptionsMenu() },
             { passengers?.error = null
                 newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
@@ -181,6 +187,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
             { price?.error = "Invalid price"
+                newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
                 act.invalidateOptionsMenu() },
             { price?.error = null
                 newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
@@ -217,7 +224,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 if (newTrip.stops.size > 0)
                     remove_button.visibility = View.VISIBLE
             }else{
-                
+                Snackbar.make(requireView(),  getString(R.string.toast_complete_previous_stop), Snackbar.LENGTH_LONG).show()
             }
         }
 
