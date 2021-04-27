@@ -252,12 +252,15 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             if (lastStop < 0
                 || ( newTrip.stops[lastStop].place.trim() != ""
                 && (if (lastStop > 0) {
-                    newTrip.stops[lastStop].hour.toString() > newTrip.stops[lastStop - 1].hour.toString()
+                    newTrip.stops[lastStop].dateTime > newTrip.stops[lastStop - 1].dateTime
                 }
                     else true)
-                        &&  newTrip.stops[lastStop].hour.toString() < newTrip.endHour.toString()
-                        && newTrip.stops[lastStop].hour.toString() > newTrip.startHour.toString()) ) {
-                (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", Hour(0, 0)))
+                        &&  newTrip.stops[lastStop].dateTime < newTrip.endDateTime
+                        && newTrip.stops[lastStop].dateTime > newTrip.startDateTime) ) {
+                            val calendar_init = Calendar.getInstance()
+                            calendar_init.set(Calendar.HOUR, 0)
+                            calendar_init.set(Calendar.MINUTE, 0)
+                (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", calendar_init ))
                 if (newTrip.stops.size > 0)
                     remove_button.visibility = View.VISIBLE
             }else{
@@ -387,8 +390,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid= false
         }
 
-        if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
-            to_hour?.error = getString(R.string.edit_to_hour_error)
+        if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
+            to_date.error = getString(R.string.to_date_error)
+            to_hour.error = null
+            valid = false
+        } else {
+            to_hour.error = getString(R.string.edit_to_hour_error)
+            to_date.error = null
             valid = false
         }
 
