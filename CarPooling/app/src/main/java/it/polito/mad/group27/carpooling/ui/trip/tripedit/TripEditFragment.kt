@@ -299,16 +299,15 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return datePicker
     }
 
-    private fun getEstimatedTime(start: Hour, end: Hour): Hour {
-        val start_minutes = start.minute + start.hour*60
-        val end_minutes = end.minute + end.hour*60
-        val hours = ((end_minutes-start_minutes)/60)
-        val minutes = (end_minutes-start_minutes)%60
+    private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
+        val delta_minutes = (start.getTimeInMillis() - end.getTimeInMillis()) / (1000*60)
+        val hours = ((delta_minutes)/60).toInt()
+        val minutes = ((delta_minutes)%60).toInt()
         return Hour(hours, minutes)
     }
 
     private fun setEstimatedTime(){
-        val time = getEstimatedTime(newTrip.startHour, newTrip.endHour)
+        val time = getEstimatedTime(newTrip.startDateTime, newTrip.endDateTime)
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimated_time.setText( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
