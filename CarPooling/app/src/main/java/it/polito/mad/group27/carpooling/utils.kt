@@ -27,36 +27,26 @@ import kotlin.math.round
 import kotlin.random.Random.Default.nextDouble
 
 
-fun Fragment.getLogTag(): String {
-    return getString(R.string.log_tag)
-}
+fun Fragment.getLogTag() = getString(R.string.log_tag)
 
-fun AppCompatActivity.getLogTag(): String {
-    return getString(R.string.log_tag)
-}
+fun AppCompatActivity.getLogTag() = getString(R.string.log_tag)
+
+fun OutputStream.getLogTag() = "MAD-group-27"
 
 fun OutputStream.writeBitmap(
     bitmap: Bitmap,
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
-    quality: Int = 100
-) {
-    use { out ->
-        bitmap.compress(format, quality, out)
-        out.flush()
-    }
-}
-
-// used for car images, sine converting to PNG is too slow
-fun OutputStream.writeBitmapJPEG(
-    bitmap: Bitmap,
-    format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
     quality: Int = 100,
-    targetHeight: Int = 720,
+    targetHeight: Int? = null,
 ) {
     use { out ->
-        Log.d("MAD-group-27", "${bitmap.width}x${bitmap.height} -> ${targetHeight * bitmap.width / bitmap.height}x$targetHeight")
-        val bm = Bitmap.createScaledBitmap(bitmap, targetHeight * bitmap.width / bitmap.height, targetHeight, true)
-        bm.compress(format, quality, out)
+        if (targetHeight != null) {
+            Log.d(getLogTag(), "scaling bitmap: ${bitmap.width}x${bitmap.height} -> ${targetHeight * bitmap.width / bitmap.height}x$targetHeight")
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetHeight * bitmap.width / bitmap.height, targetHeight, true)
+            scaledBitmap.compress(format, quality, out)
+        } else {
+            bitmap.compress(format, quality, out)
+        }
         out.flush()
     }
 }
@@ -155,7 +145,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
             for ((i, img) in carImages.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
-                    it?.writeBitmapJPEG(bitmap)
+                    it?.writeBitmap(bitmap, Bitmap.CompressFormat.JPEG, 100, 720)
                 }
                 Log.d(getLogTag(), "saved car image $carImagePrefix$i to storage")
             }
