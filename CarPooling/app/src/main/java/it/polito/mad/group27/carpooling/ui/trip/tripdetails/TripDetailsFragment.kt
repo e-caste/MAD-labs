@@ -100,7 +100,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.edit_menu_button -> {
-                //TODO
+                Log.d(getLogTag(),"Passing bundle of $trip")
+                findNavController().navigate(
+                        R.id.action_tripDetailsFragment_to_tripEditFragment,
+                        bundleOf("trip" to trip))
             }
             else-> return super.onOptionsItemSelected(item)
         }
