@@ -45,7 +45,7 @@
 
     <string name="nav_profile">Profile</string>
     <string name="nav_trips">Trips</string>
-    <string name="route">Route:</string>
+    <string name="route">Route</string>
 
 
     <string name="trip_edit_title">Edit trip</string>
@@ -61,10 +61,12 @@
     <string name="stop_hour_error">Invalid stopping hour</string>
     <string name="duplicated_place_error">Duplicated stop</string>
     <string name="trip_details">Trip details</string>
-    <string name="trip_date">Trip date</string>
+    <string name="trip_date">Trip departure date</string>
     <string name="available_seats">"Number of available seats : "</string>
+    <string name="available_seats_display">Number of booked seats</string>
     <string name="stop">Stop</string>
     <string name="price_for_each_seat">"Price for each seat : "</string>
+    <string name="price_for_each_seat_display">Price for each seat</string>
     <string name="remove">REMOVE</string>
     <string name="add">ADD</string>
     <string name="intermediate_stops">Intermediate stops</string>
@@ -78,6 +80,10 @@
     <string name="fix_all_errors">Please complete the form correctly</string>
     <string name="trip_prefix" translatable="false">group27.lab2.trips.</string>
     <string name="car_image_prefix" translatable="false">group27.lab2.car_img.</string>
+    <string name="luggage_details">There is room for luggage</string>
+    <string name="animals_details">Animals are allowed</string>
+    <string name="smokers_details">Smoking allowed</string>
+    <string name="additional_information_details">Extra information</string>
 
 
 </resources>

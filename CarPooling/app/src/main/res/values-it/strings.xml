@@ -34,7 +34,7 @@
     <string name="crop_error">Errore imprevisto nel caricamento dell\'immagine, prego riprovare</string>
     <string name="nav_profile">Profilo</string>
     <string name="nav_trips">Viaggi</string>
-    <string name="route">Percorso:</string>
+    <string name="route">Percorso</string>
     <string name="trip_edit_title">Modifica viaggio</string>
     <string name="profile_edit_title">Modifica profilo</string>
     <string name="toast_complete_previous_stop">Completa le fermate prima di aggiungerne altre</string>
@@ -50,8 +50,10 @@
     <string name="trip_details">Dettagli del viaggio</string>
     <string name="trip_date">Data del viaggio</string>
     <string name="available_seats">"Numbero di posti disponibili : "</string>
+    <string name="available_seats_display">Numero di posti occupati</string>
     <string name="stop">Fermata</string>
     <string name="price_for_each_seat">"Prezzo per ogni posto : "</string>
+    <string name="price_for_each_seat_display">Prezzo per ogni posto</string>
     <string name="remove">RIMUOVI</string>
     <string name="add">AGGIUNGI</string>
     <string name="intermediate_stops">Fermate intermedie</string>
@@ -63,4 +65,8 @@
     <string name="from">Da</string>
     <string name="to">A</string>
     <string name="fix_all_errors">Completa il form correttamente</string>
+    <string name="luggage_details">Spazio per bagagli</string>
+    <string name="animals_details">Animali ammessi</string>
+    <string name="smokers_details">Possibilità di fumare</string>
+    <string name="additional_information_details">Informazioni extra</string>
 </resources>

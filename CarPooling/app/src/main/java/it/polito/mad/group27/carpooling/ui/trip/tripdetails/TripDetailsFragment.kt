@@ -40,6 +40,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var animalsView : LinearLayout
     private lateinit var smokersView : LinearLayout
     private lateinit var additionalInfo: LinearLayout
+    private lateinit var optionsView : LinearLayout
     private lateinit var infoText : TextView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -90,6 +91,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         animalsView = view.findViewById(R.id.animals_details)
         smokersView = view.findViewById(R.id.smokers_details)
         additionalInfo = view.findViewById(R.id.additional_info_details)
+        optionsView = view.findViewById(R.id.trip_options_details)
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
@@ -128,13 +130,17 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         // Display additional info
-        luggageView.visibility = if(trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
-        animalsView.visibility = if(trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
-        smokersView.visibility = if(trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
+        if(trip.options.size > 0 || trip.otherInformation != null){
+            luggageView.visibility = if(trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
+            animalsView.visibility = if(trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
+            smokersView.visibility = if(trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
 
-        if(trip.otherInformation != null) {
-            infoText.text = trip.otherInformation
-            additionalInfo.visibility = View.VISIBLE
+            if(trip.otherInformation != null) {
+                infoText.text = trip.otherInformation
+                additionalInfo.visibility = View.VISIBLE
+            }
+        } else {
+            optionsView.visibility = View.GONE
         }
     }
 
