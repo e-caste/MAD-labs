@@ -105,6 +105,7 @@
             android:padding="@dimen/paddingFullBottom">
 
             <TextView
+                android:id="@+id/departureTimeDetails"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -118,6 +119,7 @@
                 android:paddingLeft="0sp" />
 
             <TextView
+                android:id="@+id/departureNameDetails"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
@@ -133,7 +135,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tripStageList"
+            android:id="@+id/tripStopList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
