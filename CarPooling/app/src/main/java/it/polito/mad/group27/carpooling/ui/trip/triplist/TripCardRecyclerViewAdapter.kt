@@ -1,5 +1,7 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
@@ -38,7 +41,14 @@ class TripCardRecyclerViewAdapter(
         val item = values[position]
         val bundle = bundleOf("trip" to item)
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
-        holder.carImageView.setImageURI(item.carImageUri)
+
+        if(item.carImageUri ==null) {
+            holder.carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+            holder.carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+        } else {
+            holder.carImageView.setImageURI(item.carImageUri)
+            holder.carImageView.colorFilter = null
+        }
         holder.priceTextView.text = priceFormat.format(item.price)
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
@@ -58,8 +68,5 @@ class TripCardRecyclerViewAdapter(
         val hourDepartureTextView: TextView = view.findViewById(R.id.hour_departure_text)
         val dateDepartureTextView: TextView = view.findViewById(R.id.date_departure_text)
 
-        override fun toString(): String {
-            return super.toString()
-        }
     }
 }

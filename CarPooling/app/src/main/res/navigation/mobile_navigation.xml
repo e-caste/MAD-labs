@@ -11,10 +11,14 @@
         tools:layout="@layout/fragment_trip_list" >
         <action
             android:id="@+id/action_tripList_to_tripDetailsFragment"
-            app:destination="@id/tripDetailsFragment" />
+            app:destination="@id/tripDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim" />
         <action
             android:id="@+id/action_tripList_to_tripEditFragment"
-            app:destination="@id/tripEditFragment" />
+            app:destination="@id/tripEditFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_profile"
@@ -38,7 +42,8 @@
         tools:layout="@layout/trip_details_fragment" >
         <action
             android:id="@+id/action_tripDetailsFragment_to_tripEditFragment"
-            app:destination="@id/tripEditFragment" />
+            app:destination="@id/tripEditFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/tripEditFragment"
@@ -46,6 +51,10 @@
         tools:layout="@layout/trip_edit_fragment" >
         <action
             android:id="@+id/action_tripEditFragment_to_tripDetailsFragment"
-            app:destination="@id/tripDetailsFragment" />
+            app:destination="@id/tripDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popUpTo="@id/nav_trips"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
