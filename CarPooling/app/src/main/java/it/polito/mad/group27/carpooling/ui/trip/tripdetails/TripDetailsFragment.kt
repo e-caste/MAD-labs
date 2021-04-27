@@ -51,7 +51,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         if (view is RecyclerView) {
             with(view) {
-                adapter = TripStageViewAdapter(DummyStageContent.ITEMS)
+                adapter = TripStopsViewAdapter(DummyStageContent.ITEMS)
             }
         }
         return view
@@ -74,7 +74,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.tripStageList)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = TripStageViewAdapter(DummyStageContent.ITEMS)
+        recyclerView.adapter = TripStopsViewAdapter(DummyStageContent.ITEMS)
 
 
         dropdownListButton.setOnClickListener {

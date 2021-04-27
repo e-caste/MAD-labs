@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.tripdetails.dummy.DummyStageContent.DummyStage
 
-class TripStageViewAdapter(
+class TripStopsViewAdapter(
         private val values: List<DummyStage>
-) : RecyclerView.Adapter<TripStageViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<TripStopsViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_trip_stage_layout, parent, false)
+                .inflate(R.layout.item_trip_stop_layout, parent, false)
         return ViewHolder(view)
     }
 
