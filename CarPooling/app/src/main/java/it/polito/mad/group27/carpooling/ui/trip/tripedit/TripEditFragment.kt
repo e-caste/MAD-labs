@@ -282,7 +282,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     }
 
-    private fun getDatePicker() : MaterialDatePicker<Long> {
+    private fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicker<Long> {
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.now())
@@ -292,9 +292,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
         datePicker.addOnPositiveButtonClickListener {
-            newTrip.date = Date(datePicker.selection!!)
-            this.view?.findViewById<TextView>(R.id.editDateText)?.text = df.format(newTrip.date)
-            Log.d(getLogTag(), newTrip.date.toString())
+            calendar.timeInMillis = datePicker.selection!!
+            view.editText?.setText(df.format(newTrip.startDateTime))
+            Log.d(getLogTag(), newTrip.startDateTime.toString())
         }
         return datePicker
     }
