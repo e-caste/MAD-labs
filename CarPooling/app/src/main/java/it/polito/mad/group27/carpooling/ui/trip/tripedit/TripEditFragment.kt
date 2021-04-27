@@ -201,8 +201,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
-        val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        trip.price?.let { price?.editText?.setText(price_format.format(it)) }
+
+        trip.price?.let { price?.editText?.setText(it.toString()) }
         price?.editText?.addTextChangedListener(Watcher(
             { price?.editText?.text?.isEmpty() ?: true
                     || price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
