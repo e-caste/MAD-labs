@@ -178,7 +178,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.totalSeats?.let { passengers?.editText?.setText(it) }
+        passengers?.editText?.setText(trip.totalSeats!!.toString())
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = getString(R.string.insert_passengers)
