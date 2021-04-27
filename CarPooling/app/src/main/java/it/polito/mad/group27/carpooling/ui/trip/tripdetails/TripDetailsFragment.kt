@@ -68,7 +68,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
 
-        seatsView.text = "${trip.availableSeats}/5"
+        seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
         dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.date)
         priceView.text = trip.price.toString()
 
