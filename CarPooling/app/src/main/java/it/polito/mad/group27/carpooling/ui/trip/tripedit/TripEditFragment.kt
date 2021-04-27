@@ -75,10 +75,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private lateinit var estimated_time: TextView
 
     val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
-
-    init {
-        datePicker = getDatePicker()
-    }
+    val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -89,12 +86,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // get trip from bundle
         trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
         newTrip = trip.copy()
-
         Log.d(getLogTag(), "got from bundle trip: $trip")
 
-
+        // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
 
         registerForContextMenu(fab)
@@ -103,6 +100,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             act.openContextMenu(fab)
         }
 
+        // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
         if(newTrip.carImageUri != null){
             image = MediaStore.Images.Media.getBitmap(act.contentResolver, newTrip.carImageUri)
@@ -110,12 +108,27 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 imageView.setImageBitmap(image)
         }
 
-        val date = view.findViewById<TextView>(R.id.editDateText)
-        date.text = df.format(newTrip.date)
-        date.setOnClickListener {
-            if(!datePicker.isVisible)
-                datePicker.show(requireActivity().supportFragmentManager, "datePickerTag")
-        }
+        // from and to datetime check
+        val dateTimeWatcher = Watcher(
+            {
+                YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)
+                        || (YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
+                        && from_hour.editText?.text.toString() > to_hour.editText?.text.toString())
+            },
+            {
+                if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
+                    to_date.error = getString(R.string.to_date_error)
+                    to_hour.error = null
+                } else {
+                    to_hour.error = getString(R.string.edit_to_hour_error)
+                    to_date.error = null
+                }
+            },
+            {
+                from_date.error = null
+                to_hour.error = null
+            }
+        )
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
