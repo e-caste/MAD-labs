@@ -313,9 +313,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         estimated_time.setText( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
     }
 
-    private fun Hour.updateTime(timePicker: MaterialTimePicker): Hour {
-        this.hour = timePicker.hour
-        this.minute = timePicker.minute
+    private fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
+        this.set(Calendar.HOUR, timePicker.hour)
+        this.set(Calendar.MINUTE, timePicker.minute)
         setEstimatedTime()
         return this
     }
