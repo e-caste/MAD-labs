@@ -138,6 +138,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             if(trip.otherInformation != null || trip.otherInformation != "" ) {
                 infoText.text = trip.otherInformation
                 additionalInfo.visibility = View.VISIBLE
+            } else {
+                additionalInfo.visibility = View.GONE
             }
         } else {
             optionsView.visibility = View.GONE
