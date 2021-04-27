@@ -15,7 +15,6 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.tripdetails.dummy.DummyStageContent
 import java.text.DateFormat
 import java.util.*
 
@@ -29,6 +28,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var seatsView : TextView
     private lateinit var dateView : TextView
     private lateinit var priceView : TextView
+    private lateinit var departureHour : TextView
+    private lateinit var departureLocation : TextView
+    private lateinit var destinationHour : TextView
+    private lateinit var destinationLocation : TextView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -51,7 +54,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         if (view is RecyclerView) {
             with(view) {
-                adapter = TripStopsViewAdapter(DummyStageContent.ITEMS)
+                adapter = TripStopsViewAdapter(trip.stops)
             }
         }
         return view
@@ -62,24 +65,34 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
 
+        Log.d(getLogTag(),"got from bundle: $trip")
+
         dropdownListButton = view.findViewById(R.id.startTripView)
 
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
+        departureHour = view.findViewById(R.id.departureTimeDetails)
+        departureLocation = view.findViewById(R.id.departureNameDetails)
+        destinationHour = view.findViewById(R.id.tripStopTime)
+        destinationLocation = view.findViewById(R.id.tripStopName)
 
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
         dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.date)
         priceView.text = trip.price.toString()
+        departureHour.text = trip.startHour.toString()
+        departureLocation.text = trip.from
+        destinationHour.text = trip.endHour.toString()
+        destinationLocation.text = trip.to
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.tripStageList)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = TripStopsViewAdapter(DummyStageContent.ITEMS)
+        recyclerView.adapter = TripStopsViewAdapter(trip.stops)
 
 
         dropdownListButton.setOnClickListener {
             val arrowImageView : ImageView = view.findViewById(R.id.expandButton)
-            val recyclerView = view.findViewById<RecyclerView>(R.id.tripStageList)
+            val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
 
             Log.d(getLogTag(),"Touched route list")
 
