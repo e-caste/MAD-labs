@@ -1,24 +1,18 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
-import android.graphics.ColorSpace
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.core.view.get
-import androidx.core.view.iterator
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,9 +38,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.math.BigDecimal
-import java.net.URI
 import java.text.DateFormat
-import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
@@ -93,7 +86,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
-
         registerForContextMenu(fab)
         fab.setOnClickListener {
             Log.d(getLogTag(), "image button clicked")
@@ -147,59 +139,60 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
         to_date = to.findViewById<TextInputLayout>(R.id.stop_date)
 
-        from_place?.hint = getString(R.string.from)
-        from_place?.editText?.setText(newTrip.from)
-        from_place?.editText?.addTextChangedListener(Watcher(
-            { from_place?.editText?.text?.isEmpty() ?: true },
-            { from_place?.error = getString(R.string.edit_from_error)
-                newTrip.from = from_place?.editText?.text.toString()
         datePickerTo = getDatePicker(newTrip.endDateTime, to_date)
         to_date.editText?.setOnClickListener {
             if(!datePickerTo.isVisible)
                 datePickerTo.show(requireActivity().supportFragmentManager, "datePickerTag")
         }
+
+        from_place.hint = getString(R.string.from)
+        from_place.editText?.setText(newTrip.from)
+        from_place.editText?.addTextChangedListener(Watcher(
+            { from_place.editText?.text?.isEmpty() ?: true },
+            { from_place.error = getString(R.string.edit_from_error)
+                newTrip.from = from_place.editText?.text.toString()
                  },
-            { from_place?.error = null
-                newTrip.from = from_place?.editText?.text.toString()
+            { from_place.error = null
+                newTrip.from = from_place.editText?.text.toString()
                  }
         ))
-        from_hour?.editText?.setText(newTrip.startHour.toString())
-        from_hour?.editText?.setOnClickListener {
-            if(timePickerFrom == null || !timePickerFrom?.isVisible!!) {
+        from_hour.editText?.setText(Hour(newTrip.startDateTime).toString())
+        from_hour.editText?.setOnClickListener {
+            if(!timePickerFrom.isVisible) {
                 timePickerFrom = getTimePicker(
-                    from_hour?.editText!!,
-                    newTrip.startHour,
+                    from_hour.editText!!,
+                    newTrip.startDateTime,
                     this.requireContext()){
-                    newTrip.startHour.updateTime(it)
+                    newTrip.startDateTime.updateTime(it)
                 }
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-
-        to_place?.hint = getString(R.string.to)
-        to_place?.editText?.setText(newTrip.to)
-        to_place?.editText?.addTextChangedListener(Watcher(
-            { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
-            { to_place?.error = getString(R.string.edit_to_error)
-                newTrip.to = to_place?.editText?.text.toString()
         from_date.editText?.setText(df.format(newTrip.startDateTime))
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
+
+        to_place.hint = getString(R.string.to)
+        to_place.editText?.setText(newTrip.to)
+        to_place.editText?.addTextChangedListener(Watcher(
+            { to_place.editText?.text?.isEmpty() ?: true || to_place.editText?.text == from_place.editText?.text},
+            { to_place.error = getString(R.string.edit_to_error)
+                newTrip.to = to_place.editText?.text.toString()
                  },
-            { to_place?.error = null
-                newTrip.to = to_place?.editText?.text.toString()
+            { to_place.error = null
+                newTrip.to = to_place.editText?.text.toString()
                  }
         ))
-        to_hour?.editText?.setText(newTrip.endHour.toString())
-        to_hour?.editText?.setOnClickListener {
-            if(timePickerTo == null || !timePickerTo?.isVisible!!) {
+        to_hour.editText?.setText(Hour(newTrip.endDateTime).toString())
+        to_hour.editText?.setOnClickListener {
+            if(!timePickerTo.isVisible) {
                 timePickerTo = getTimePicker(
-                    to_hour?.editText!!,
-                    newTrip.endHour,
+                    to_hour.editText!!,
+                    newTrip.endDateTime,
                     this.requireContext()){
-                    newTrip.endHour.updateTime(it)
+                    newTrip.endDateTime.updateTime(it)
                 }
-                timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
+                timePickerTo.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
         to_date.editText?.setText(df.format(newTrip.endDateTime))
@@ -207,35 +200,34 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.totalSeats?.let { passengers?.editText?.setText(it.toString()) }
-        passengers?.editText?.addTextChangedListener(Watcher(
-            { passengers?.editText?.text?.isEmpty() ?: true },
-            { passengers?.error = getString(R.string.insert_passengers)
+        trip.totalSeats?.let { passengers.editText?.setText(it.toString()) }
+        passengers.editText?.addTextChangedListener(Watcher(
+            { passengers.editText?.text?.isEmpty() ?: true },
+            { passengers.error = getString(R.string.insert_passengers)
                 newTrip.totalSeats = -1
                 // TODO make not stubbed when adding some logic
                 newTrip.availableSeats = -1
              },
-            { passengers?.error = null
-                newTrip.totalSeats = passengers?.editText?.text?.toString()?.toInt()
+            { passengers.error = null
+                newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
                 // TODO make not stubbed when adding some logic
                 newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
                  }
         ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
-
-        trip.price?.let { price?.editText?.setText(it.toString()) }
-        price?.editText?.addTextChangedListener(Watcher(
-            { price?.editText?.text?.isEmpty() ?: true
-                    || price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
-                    || if(price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 0 == 2)
-                            price?.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
+        trip.price?.let { price.editText?.setText(it.toString()) }
+        price.editText?.addTextChangedListener(Watcher(
+            { price.editText?.text?.isEmpty() ?: true
+                    || price.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
+                    || if(price.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 0 == 2)
+                            price.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
-            { price?.error = getString(R.string.invalid_price)
+            { price.error = getString(R.string.invalid_price)
                 newTrip.price = BigDecimal("-1.00").setScale(2)
                  },
-            { price?.error = null
-                newTrip.price = BigDecimal(price!!.editText!!.text!!.toString()).setScale(2)
+            { price.error = null
+                newTrip.price = BigDecimal(price.editText!!.text!!.toString()).setScale(2)
                  }
         ))
 
@@ -377,22 +369,22 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private fun validateFields(): Boolean{
         var valid = true
         if(newTrip.from.trim() =="") {
-            from_place?.error = getString(R.string.edit_from_error)
+            from_place.error = getString(R.string.edit_from_error)
             valid = false
         }
         if(newTrip.to.trim()=="" || newTrip.to == newTrip.from){
-            to_place?.error = getString(R.string.edit_to_error)
+            to_place.error = getString(R.string.edit_to_error)
             valid= false
         }
 
 
         if(newTrip.price == null || newTrip.price!! <= BigDecimal(0)){
-            price?.error =  getString(R.string.invalid_price)
+            price.error =  getString(R.string.invalid_price)
             valid = false
         }
 
         if(newTrip.totalSeats == null || newTrip.totalSeats!! < 0 ){
-            passengers?.error = getString(R.string.insert_passengers)
+            passengers.error = getString(R.string.insert_passengers)
             valid= false
         }
 
