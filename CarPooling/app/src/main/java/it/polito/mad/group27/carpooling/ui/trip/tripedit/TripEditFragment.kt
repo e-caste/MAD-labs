@@ -305,7 +305,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return this
     }
 
-    fun saveTrip(){
+    private fun saveTrip(){
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
@@ -373,7 +373,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
-            to_hour?.editText?.error = getString(R.string.edit_to_hour_error)
+            to_hour?.error = getString(R.string.edit_to_hour_error)
+            valid = false
         }
 
         // TODO set as field
