@@ -138,7 +138,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         return res
     }
 
-    fun getRandomTrip(id: Long) = Trip(
+    fun getRandomTrip(id: Int) = Trip(
         id = id,
         carImageUri = getRandomImageUri(),
         date = getRandomDate(),
@@ -153,7 +153,6 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         options = getRandomOptions(),
     )
 
-    // TODO: check for EXTERNAL_STORAGE permission here
     fun saveCarImagesToStorage() {
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
             for ((i, img) in carImages.withIndex()) {
@@ -169,12 +168,11 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun saveTripsToStorage(trips: List<Trip>) {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        val counter = sharedPreferences.getString(counterName, null)?.toInt()
+        val counter = sharedPreferences.getInt(counterName, 0)
         // first time saving || data has changed
-        if (counter == null || counter != trips.size || forceReset) {
-            // TODO: should use EditFragment.writeParcelable()
+        if (counter == 0 || forceReset) {
             with(sharedPreferences.edit()) {
-                putString(counterName, Json.encodeToString(trips.size))
+                putInt(counterName, trips.size)
                 Log.d(getLogTag(), "saved shared preference: $counterName with data ${trips.size}")
                 for ((i, trip) in trips.withIndex()) {
                     putString("$tripPrefix$i", Json.encodeToString(trip))
@@ -186,6 +184,6 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
     }
 
     saveCarImagesToStorage()
-    val trips = (0 until tripsNumber).map { getRandomTrip(it.toLong()) }
+    val trips = (0 until tripsNumber).map { getRandomTrip(it) }
     saveTripsToStorage(trips)
 }

@@ -312,12 +312,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
         // check id, if -1 take counter and increment
-        if(newTrip.id == null) {
+        if(newTrip.id == -1) {
             val counterKey = getString(R.string.trip_counter)
-            val counter = sharedPref.getLong(counterKey, 0)
-            newTrip.id = counter + 1
+            val counter = sharedPref.getInt(counterKey, 0)
+            newTrip.id = counter
             with(sharedPref.edit()) {
-                putString(counterKey, (counter+1).toString())
+                putInt(counterKey, (counter+1))
                 apply()
             }
         }
@@ -408,6 +408,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 valid = false
             }
         }
+
 
         val places = newTrip.stops.groupingBy{it.place }.eachCount()
 
