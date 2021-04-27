@@ -79,26 +79,7 @@ class TripList: BaseFragmentWithToolbar(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_trip_list, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                // TODO: when is this called?
-                layoutManager = when (resources.configuration.orientation) {
-                    Configuration.ORIENTATION_LANDSCAPE -> {
-                        Log.d(getLogTag(), "orientation is landscape, using grid layout...")
-                        GridLayoutManager(context, 2)
-                    }
-                    else -> {
-                        Log.d(getLogTag(), "orientation is portrait, using linear layout...")
-                        LinearLayoutManager(context)
-                    }
-                }
-                adapter = TripCardRecyclerViewAdapter(trips, findNavController())
-            }
-        }
-        return view
+        return inflater.inflate(R.layout.fragment_trip_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
