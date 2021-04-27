@@ -41,9 +41,14 @@ class TripCardRecyclerViewAdapter(
         val item = values[position]
         val bundle = bundleOf("trip" to item)
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
-        if (item.carImageUri!= null)
+
+        if(item.carImageUri ==null) {
+            holder.carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+            holder.carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+        } else {
             holder.carImageView.setImageURI(item.carImageUri)
-        else holder.carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+            holder.carImageView.colorFilter = null
+        }
         holder.priceTextView.text = priceFormat.format(item.price)
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
@@ -63,8 +68,5 @@ class TripCardRecyclerViewAdapter(
         val hourDepartureTextView: TextView = view.findViewById(R.id.hour_departure_text)
         val dateDepartureTextView: TextView = view.findViewById(R.id.date_departure_text)
 
-        override fun toString(): String {
-            return super.toString()
-        }
     }
 }
