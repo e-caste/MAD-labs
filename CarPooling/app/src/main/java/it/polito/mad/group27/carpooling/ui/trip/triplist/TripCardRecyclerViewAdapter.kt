@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
@@ -35,10 +36,11 @@ class TripCardRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment) }
+        val bundle = bundleOf("trip$position" to item)
+        holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
         holder.carImageView.setImageURI(item.carImageUri)
         holder.priceTextView.text = priceFormat.format(item.price)
-        holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment) }
+        holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
         holder.hourDepartureTextView.text = item.startHour.toString()
