@@ -241,7 +241,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         stops_rv.adapter = StopRecyclerViewAdapter(newTrip, this.requireContext())
 
         val remove_button = view.findViewById<Button>(R.id.remove_button)
-        remove_button.visibility = View.INVISIBLE
+        remove_button.visibility = View.INVISIBLE if(newTrip.stops.size == 0) else View.VISIBLE
         remove_button.setOnClickListener {
             (stops_rv.adapter as StopRecyclerViewAdapter).remove()
             if (newTrip.stops.size == 0)
