@@ -40,6 +40,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import it.polito.mad.group27.carpooling.ui.trip.triplist.TripList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -311,13 +312,15 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
+        var created =  false
         // check id, if -1 take counter and increment
         if(newTrip.id == -1) {
+            created = true
             val counterKey = getString(R.string.trip_counter)
             val counter = sharedPref.getInt(counterKey, 0)
             newTrip.id = counter
             with(sharedPref.edit()) {
-                putInt(counterKey, (counter+1))
+                putInt(counterKey, (counter + 1))
                 apply()
             }
         }
@@ -349,6 +352,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         Log.d(getLogTag(), Json.encodeToString(newTrip))
         writeParcelable(newTrip, "${getString(R.string.trip_prefix)}${newTrip.id}")
         saveImg(imageName)
+
+
+        if(created)
+            TripList.notifyAdded(newTrip)
+        else TripList.notifyModified(newTrip.id, newTrip)
     }
 
 
