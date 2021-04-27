@@ -110,7 +110,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
     val minutes = (0..59)
     val priceUntil = 10000.0
 
-    fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
+    fun getRandomImageUri() = File(activity?.filesDir, "trips/${carImagePrefix}${carImages.indices.random()}").toUri()
 
     // Date is a deprecated class. I can see why...
     fun getRandomDate() = Date(2021 - 1900, 4, days.random())
@@ -158,10 +158,10 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
             for ((i, img) in carImages.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
-                activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
+                activity?.openFileOutput("trips/$carImagePrefix$i", Context.MODE_PRIVATE).use {
                     it?.writeBitmap(bitmap, Bitmap.CompressFormat.JPEG, 100, 720)
                 }
-                Log.d(getLogTag(), "saved car image $carImagePrefix$i to storage")
+                Log.d(getLogTag(), "saved car image trips/$carImagePrefix$i to storage")
             }
             Log.d(getLogTag(), "saved sample car images to storage with prefix $carImagePrefix")
         }
