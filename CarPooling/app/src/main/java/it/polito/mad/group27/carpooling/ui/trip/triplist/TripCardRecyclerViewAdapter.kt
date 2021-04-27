@@ -36,7 +36,7 @@ class TripCardRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        val bundle = bundleOf("trip$position" to item)
+        val bundle = bundleOf("trip" to item)
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
         holder.carImageView.setImageURI(item.carImageUri)
         holder.priceTextView.text = priceFormat.format(item.price)
