@@ -90,11 +90,25 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         R.drawable.tesla_model_3,
         R.drawable.tesla_model_s,
     )
+    val places = listOf(
+        "Torino Centro",
+        "Milano Porta Garibaldi",
+        "Ancona",
+        "La Spezia Manarola",
+        "New New York",
+        "Sacred Heart Hospital",
+        "Springfield",
+        "Marte",
+        "Giza",
+        "Roma Stazione Termini",
+        "Aeroporto Milano Malpensa",
+        "Canicattì",
+        "Museo Oceanografico di San Benedetto del Tronto",
+    )
     val days = (1..31)
     val hours = (0..23)
     val minutes = (0..59)
     val priceUntil = 10000.0
-    val places = listOf("Torino Centro", "Milano Porta Garibaldi", "Ancona", "La Spezia Manarola", "New New York", "Sacred Heart Hospital", "Springfield", "Marte", "Giza")
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
