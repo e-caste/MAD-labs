@@ -130,12 +130,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         // Display additional info
-        if(trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation != "")){
+        if(trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation?.trim() != "")){
             luggageView.visibility = if(trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
             animalsView.visibility = if(trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
             smokersView.visibility = if(trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
 
-            if(trip.otherInformation != null && trip.otherInformation != "" ) {
+            if(trip.otherInformation != null && trip.otherInformation?.trim() != "" ) {
                 infoText.text = trip.otherInformation
                 additionalInfo.visibility = View.VISIBLE
             } else {
