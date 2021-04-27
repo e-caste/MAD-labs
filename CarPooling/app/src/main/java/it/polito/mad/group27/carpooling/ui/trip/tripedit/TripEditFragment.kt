@@ -1,7 +1,9 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
+import android.graphics.ColorSpace
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -54,8 +56,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private lateinit var viewModel: TripEditViewModel
 
-    private val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
-    private val newTrip = trip.copy()
+    private lateinit var trip : Trip
+    private lateinit var newTrip : Trip
 
     var price: TextInputLayout? = null
     var to_place: TextInputLayout? = null
@@ -84,6 +86,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        newTrip = trip.copy()
+
+        Log.d(getLogTag(), "got from bundle trip: $trip")
+
+
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
 
         registerForContextMenu(fab)
@@ -93,6 +101,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         imageView= view.findViewById(R.id.car_image)
+        if(newTrip.carImageUri != null){
+            image = MediaStore.Images.Media.getBitmap(act.contentResolver, newTrip.carImageUri)
+            if(image != null)
+                imageView.setImageBitmap(image)
+        }
 
         val date = view.findViewById<TextView>(R.id.editDateText)
         date.text = df.format(newTrip.date)
@@ -172,7 +185,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.totalSeats?.let { passengers?.editText?.setText(it) }
+        trip.totalSeats?.let { passengers?.editText?.setText(it.toString()) }
         passengers?.editText?.addTextChangedListener(Watcher(
             { passengers?.editText?.text?.isEmpty() ?: true },
             { passengers?.error = getString(R.string.insert_passengers)
@@ -188,8 +201,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
-        val price_format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        trip.price?.let { price?.editText?.setText(price_format.format(it)) }
+
+        trip.price?.let { price?.editText?.setText(it.toString()) }
         price?.editText?.addTextChangedListener(Watcher(
             { price?.editText?.text?.isEmpty() ?: true
                     || price?.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
@@ -238,6 +251,21 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             }
         }
 
+        val option_luggage = view.findViewById<SwitchMaterial>(R.id.luggage_switch)
+        val option_animals = view.findViewById<SwitchMaterial>(R.id.animal_switch)
+        val option_smokers = view.findViewById<SwitchMaterial>(R.id.smokers_switch)
+        option_animals.isChecked = newTrip.options.contains(Option.ANIMALS)
+        option_luggage.isChecked = newTrip.options.contains(Option.LUGGAGE)
+        option_smokers.isChecked = newTrip.options.contains(Option.SMOKE)
+
+        val additional_info = view.findViewById<TextInputEditText>(R.id.additionalInfo)
+        additional_info.setText(newTrip.otherInformation)
+        additional_info.addTextChangedListener(Watcher(
+            { true },
+            { newTrip.otherInformation = additional_info.text.toString() },
+            { newTrip.otherInformation = additional_info.text.toString() }
+        ))
+
     }
 
     private fun getDatePicker() : MaterialDatePicker<Long> {
@@ -279,7 +307,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return this
     }
 
-    fun saveTrip(){
+    private fun saveTrip(){
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
@@ -293,7 +321,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 apply()
             }
         }
-        val imageName = "trips/img${newTrip.id}"
+        val imageName = "${getString(R.string.car_image_prefix)}${newTrip.id}"
         if (newTrip.carImageUri == null && image!=null){
             val f = File(act.filesDir, imageName)
             newTrip.carImageUri = f.toUri()
@@ -319,7 +347,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         newTrip.otherInformation = info.text?.toString() ?: null
 
         Log.d(getLogTag(), Json.encodeToString(newTrip))
-        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
+        writeParcelable(newTrip, "${getString(R.string.trip_prefix)}${newTrip.id}")
         saveImg(imageName)
     }
 
@@ -347,7 +375,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
-            to_hour?.editText?.error = getString(R.string.edit_to_hour_error)
+            to_hour?.error = getString(R.string.edit_to_hour_error)
+            valid = false
         }
 
         // TODO set as field

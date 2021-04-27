@@ -19,17 +19,19 @@ import java.time.LocalTime
 import java.util.*
 
 @Serializer(forClass = Date::class)
-object DateSerializer: KSerializer<Date> {
-    private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+object CalendarSerializer: KSerializer<Calendar> {
+    private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm")
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: Date) {
+    override fun serialize(encoder: Encoder, value: Calendar) {
         encoder.encodeString(df.format(value))
     }
 
-    override fun deserialize(decoder: Decoder): Date {
-        return df.parse(decoder.decodeString())!!
+    override fun deserialize(decoder: Decoder): Calendar {
+        return Calendar.getInstance().also{
+            it.time = df.parse(decoder.decodeString())!!
+        }
     }
 }
 
@@ -70,20 +72,18 @@ data class Trip(
     var id: Long = -1,
     @Serializable(with=UriSerializer::class)
     var carImageUri: Uri? = null,
-    @Serializable(with=DateSerializer::class)
-    var date: Date = Date(),
     var totalSeats: Int? = null,
     var availableSeats: Int? = null,
     @Serializable(with=BigDecimalSerializer::class)
     var price: BigDecimal? = null,
-    var startHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now())
-                          else Hour(Calendar.getInstance()),
-    var endHour: Hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Hour(LocalTime.now().plusHours(1))
-                        else {
+    @Serializable(with=CalendarSerializer::class)
+    var startDateTime: Calendar = Calendar.getInstance(),
+    @Serializable(with=CalendarSerializer::class)
+    var endDateTime: Calendar =  {
                             val calendar = Calendar.getInstance()
-                            calendar.add(Calendar.HOUR_OF_DAY, +1)
-                            Hour(calendar)
-                        },
+                            calendar.add(Calendar.HOUR, +1)
+                            calendar
+                        }(),
     var from: String = "",
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
@@ -103,7 +103,7 @@ data class Hour(var hour: Int, var minute: Int): Parcelable{
 
 @Serializable
 @Parcelize
-data class Stop(var place: String, val hour: Hour): Parcelable
+data class Stop(var place: String, @Serializable(with=CalendarSerializer::class) var dateTime: Calendar): Parcelable
 
 enum class Option {
     ANIMALS,

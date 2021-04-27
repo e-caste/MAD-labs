@@ -37,7 +37,7 @@
     <string name="nickname">Nickname</string>
     <string name="email">Email</string>
     <string name="location">Location</string>
-    <string name="trip_counter" translatable="false">group27.lab1.trips.id_counter</string>
+    <string name="trip_counter" translatable="false">group27.lab2.trips.id_counter</string>
     <string name="crop_error">An error occurred while getting the image, please try again</string>
     <string name="retry">Retry</string>
     <string name="temporary_edit_image_file" translatable="false">saving_tmp</string>
@@ -76,6 +76,8 @@
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="fix_all_errors">Please complete the form correctly</string>
+    <string name="trip_prefix" translatable="false">group27.lab2.trips.</string>
+    <string name="car_image_prefix" translatable="false">group27.lab2.car_img.</string>
 
 
 </resources>

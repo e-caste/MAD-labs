@@ -31,8 +31,8 @@
                     android:layout_height="match_parent"
                     android:foreground="@drawable/user_profile_gradient"
                     android:scaleType="centerCrop"
-                    android:padding="16dp"
                     app:srcCompat="@drawable/ic_baseline_directions_car_24"/>
+                    android:adjustViewBounds="true"
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"

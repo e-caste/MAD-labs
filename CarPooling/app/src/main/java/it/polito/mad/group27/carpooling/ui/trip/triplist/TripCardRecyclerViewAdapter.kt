@@ -26,7 +26,7 @@ class TripCardRecyclerViewAdapter(
 ): RecyclerView.Adapter<TripCardRecyclerViewAdapter.ViewHolder>() {
 
     private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
-    private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
+    private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

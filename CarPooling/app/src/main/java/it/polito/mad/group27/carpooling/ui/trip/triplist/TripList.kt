@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.trip.triplist
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,12 +33,17 @@ class TripList: BaseFragmentWithToolbar(
 ){
 
     private val trips: MutableList<Trip> = mutableListOf()
-    val counterName = "group27.lab2.trips.id_counter"
-    val tripPrefix = "group27.lab2.trips."
-    val carImagePrefix = "group27.lab2.car_img."
+    private val displayMetrics: DisplayMetrics = DisplayMetrics()
+    lateinit var counterName:String
+    lateinit var tripPrefix:String
+    lateinit var carImagePrefix:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        counterName = getString(R.string.trip_counter)
+        tripPrefix = getString(R.string.trip_prefix)
+        carImagePrefix = getString(R.string.car_image_prefix)
 
         val tripsCounter = savedInstanceState?.getInt("trips_counter")
         Log.d(getLogTag(), "tripsCounter is $tripsCounter")
@@ -77,26 +83,7 @@ class TripList: BaseFragmentWithToolbar(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_trip_list, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                // TODO: when is this called?
-                layoutManager = when (resources.configuration.orientation) {
-                    Configuration.ORIENTATION_LANDSCAPE -> {
-                        Log.d(getLogTag(), "orientation is landscape, using grid layout...")
-                        GridLayoutManager(context, 2)
-                    }
-                    else -> {
-                        Log.d(getLogTag(), "orientation is portrait, using linear layout...")
-                        LinearLayoutManager(context)
-                    }
-                }
-                adapter = TripCardRecyclerViewAdapter(trips, findNavController())
-            }
-        }
-        return view
+        return inflater.inflate(R.layout.fragment_trip_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,9 +92,13 @@ class TripList: BaseFragmentWithToolbar(
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView.layoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                Log.d(getLogTag(), "orientation is landscape, using grid layout...")
-                // TODO: select number of columns based on screen width
-                GridLayoutManager(context, 2)
+                if (displayMetrics.ydpi <= 720) {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+                    GridLayoutManager(context, 2)
+                } else {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
+                    GridLayoutManager(context, 3)
+                }
             }
             else -> {
                 Log.d(getLogTag(), "orientation is portrait, using linear layout...")

@@ -116,7 +116,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
     fun getRandomDate() = Date(2021 - 1900, 4, days.random())
 
     // BigDecimals are evil and I'm not sure we need them
-    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil)).replace(",", ".").toDouble()).setScale(2, RoundingMode.HALF_EVEN)
+    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil))).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomHour() = Hour(hours.random(), minutes.random())
 
