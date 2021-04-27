@@ -46,6 +46,8 @@
         tools:layout="@layout/trip_edit_fragment" >
         <action
             android:id="@+id/action_tripEditFragment_to_tripDetailsFragment"
-            app:destination="@id/tripDetailsFragment" />
+            app:destination="@id/tripDetailsFragment"
+            app:popUpTo="@id/nav_trips"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
