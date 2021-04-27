@@ -54,8 +54,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private lateinit var viewModel: TripEditViewModel
 
-    private val trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
-    private val newTrip = trip.copy()
+    private lateinit var trip : Trip
+    private lateinit var newTrip : Trip
 
     var price: TextInputLayout? = null
     var to_place: TextInputLayout? = null
@@ -83,6 +83,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        newTrip = trip.copy()
+
+        Log.d(getLogTag(), "got from bundle trip: $trip")
+
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
 
