@@ -132,11 +132,20 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
+        from_date = from.findViewById<TextInputLayout>(R.id.stop_date)
         from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
+        from_date.editText?.setText(df.format(newTrip.startDateTime))
+
+        datePickerFrom = getDatePicker(newTrip.startDateTime, from_date)
+        from_date.editText?.setOnClickListener {
+            if(!datePickerFrom.isVisible)
+                datePickerFrom.show(requireActivity().supportFragmentManager, "datePickerTag")
+        }
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
         to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
         to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
+        to_date = to.findViewById<TextInputLayout>(R.id.stop_date)
 
         from_place?.hint = getString(R.string.from)
         from_place?.editText?.setText(newTrip.from)
@@ -144,6 +153,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { from_place?.editText?.text?.isEmpty() ?: true },
             { from_place?.error = getString(R.string.edit_from_error)
                 newTrip.from = from_place?.editText?.text.toString()
+        datePickerTo = getDatePicker(newTrip.endDateTime, to_date)
+        to_date.editText?.setOnClickListener {
+            if(!datePickerTo.isVisible)
+                datePickerTo.show(requireActivity().supportFragmentManager, "datePickerTag")
+        }
                  },
             { from_place?.error = null
                 newTrip.from = from_place?.editText?.text.toString()
@@ -161,13 +175,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        from_hour?.editText?.addTextChangedListener(Watcher(
-            { from_hour?.editText?.text.toString() >= to_hour?.editText?.text.toString() },
-            { to_hour?.error = getString(R.string.edit_to_hour_error)
-            },
-            { to_hour?.error = null
-            }
-        ))
 
         to_place?.hint = getString(R.string.to)
         to_place?.editText?.setText(newTrip.to)
@@ -175,6 +182,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { to_place?.editText?.text?.isEmpty() ?: true || to_place?.editText?.text == from_place?.editText?.text},
             { to_place?.error = getString(R.string.edit_to_error)
                 newTrip.to = to_place?.editText?.text.toString()
+        from_date.editText?.setText(df.format(newTrip.startDateTime))
+        from_date.editText?.addTextChangedListener(dateTimeWatcher)
+        from_hour.editText?.addTextChangedListener(dateTimeWatcher)
                  },
             { to_place?.error = null
                 newTrip.to = to_place?.editText?.text.toString()
@@ -192,13 +202,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        to_hour?.editText?.addTextChangedListener(Watcher(
-            { to_hour?.editText?.text.toString() <= from_hour?.editText?.text.toString() },
-            { to_hour?.error = getString(R.string.edit_to_hour_error)
-                 },
-            { to_hour?.error = null
-                 }
-        ))
+        to_date.editText?.setText(df.format(newTrip.endDateTime))
+        to_hour.editText?.addTextChangedListener(dateTimeWatcher)
+        to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
         trip.totalSeats?.let { passengers?.editText?.setText(it.toString()) }
