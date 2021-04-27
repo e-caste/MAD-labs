@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 import android.content.Context
 import android.graphics.ColorSpace
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -100,6 +101,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         imageView= view.findViewById(R.id.car_image)
+        image = MediaStore.Images.Media.getBitmap(act.contentResolver, newTrip.carImageUri)
+        if(image != null)
+            imageView.setImageBitmap(image)
 
         val date = view.findViewById<TextView>(R.id.editDateText)
         date.text = df.format(newTrip.date)
@@ -301,7 +305,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return this
     }
 
-    fun saveTrip(){
+    private fun saveTrip(){
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
@@ -369,7 +373,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         if(newTrip.startHour.toString() >= newTrip.endHour.toString()){
-            to_hour?.editText?.error = getString(R.string.edit_to_hour_error)
+            to_hour?.error = getString(R.string.edit_to_hour_error)
+            valid = false
         }
 
         // TODO set as field
