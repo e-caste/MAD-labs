@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    android:padding="@dimen/margin_16dp">
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -136,7 +136,7 @@
             android:id="@+id/tripStageList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginBottom="8dp"
             android:visibility="gone"
             android:overScrollMode="never"/>
 

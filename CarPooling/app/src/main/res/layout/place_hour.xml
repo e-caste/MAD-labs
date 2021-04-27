@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_margin="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editPlace"
-        android:layout_weight="3"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/stop_place"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_baseline_place_24"
@@ -16,18 +18,28 @@
         android:layout_marginRight="16dp">
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:tag="editPlace"
+            android:inputType="textCapWords"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_weight="2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/stop_hour"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:startIconDrawable="@drawable/ic_round_access_time_24"
-        android:hint="At">
+        >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:tag="editHour"
+            android:maxLines="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

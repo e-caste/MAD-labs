@@ -1,30 +1,35 @@
 package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
+import android.content.Context.MODE_PRIVATE
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.*
+import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.EditFragment
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
-import it.polito.mad.group27.carpooling.ui.profile.ProfileFragment
-
-class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
+class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
     private lateinit var viewModel: EditProfileViewModel
 
-    private lateinit var imageProfileView: ImageView
     private lateinit var imageButton: FloatingActionButton
-    private lateinit var fullNameEdit: TextInputEditText
-    private lateinit var nickNameEdit: TextInputEditText
-    private lateinit var emailEdit: TextInputEditText
-    private lateinit var locationEdit: TextInputEditText
+    private lateinit var fullNameEdit: TextInputLayout
+    private lateinit var nickNameEdit: TextInputLayout
+    private lateinit var emailEdit: TextInputLayout
+    private lateinit var locationEdit: TextInputLayout
+
+    private lateinit var profileTmp: Profile
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -36,7 +41,7 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save_menu_button ->{
-                //TODO save
+                saveProfile()
                 findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
             }
             else ->
@@ -47,27 +52,38 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu!!.findItem(R.id.save_menu_button).isEnabled = validateFields()
+        menu.findItem(R.id.save_menu_button).isEnabled = validateFields()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imageProfileView = view.findViewById(R.id.imageProfileView)
+        imageView = view.findViewById(R.id.imageProfileView)
         imageButton = view.findViewById(R.id.fab)
         fullNameEdit = view.findViewById(R.id.fullNameEdit)
         nickNameEdit = view.findViewById(R.id.nicknameEdit)
         emailEdit = view.findViewById(R.id.emailEdit)
         locationEdit = view.findViewById(R.id.locationEdit)
 
+        profileTmp = act.profile.copy()
+        image = act.profileImage
+
+        if(image!=null)
+            imageView.setImageBitmap(image)
+        fullNameEdit.editText!!.setText(profileTmp.fullName)
+        nickNameEdit.editText!!.setText(profileTmp.nickName)
+        emailEdit.editText!!.setText(profileTmp.email)
+        locationEdit.editText!!.setText(profileTmp.location)
+
+
         registerForContextMenu(imageButton)
         imageButton.setOnClickListener {
             Log.d(getLogTag(), "image button clicked")
-//            openContextMenu(imageButton)
+            act.openContextMenu(imageButton)
         }
 
-        fullNameEdit.addTextChangedListener(Watcher(
-            { fullNameEdit.text?.isEmpty() ?: false  || fullNameEdit.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
+        fullNameEdit.editText!!.addTextChangedListener(Watcher(
+            { fullNameEdit.editText!!.text?.isEmpty() ?: true  || fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 < 2 },
             { fullNameEdit.error = getString(R.string.validation_fullname)
                 activity?.invalidateOptionsMenu()
             },
@@ -76,8 +92,8 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
             }
         ))
 
-        nickNameEdit.addTextChangedListener(Watcher(
-            { nickNameEdit.text?.length ?:0  < 4 },
+        nickNameEdit.editText!!.addTextChangedListener(Watcher(
+            { nickNameEdit.editText!!.text?.length ?:0  < 4 },
             { nickNameEdit.error = getString(R.string.validation_nickname)
                 activity?.invalidateOptionsMenu()
             },
@@ -86,8 +102,8 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
             }
         ))
 
-        emailEdit.addTextChangedListener(Watcher(
-            { emailEdit.text?.isEmpty() ?: false || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches() },
+        emailEdit.editText!!.addTextChangedListener(Watcher(
+            { emailEdit.editText!!.text?.isEmpty() ?: true || !Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text).matches() },
             { emailEdit.error = getString(R.string.validation_email)
                 activity?.invalidateOptionsMenu()
             },
@@ -96,9 +112,9 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
             }
         ))
 
-        locationEdit.addTextChangedListener(Watcher(
+        locationEdit.editText!!.addTextChangedListener(Watcher(
             //TODO check location format
-            { locationEdit.text?.isEmpty() ?: false },
+            { locationEdit.editText!!.text?.isEmpty() ?: true },
             { locationEdit.error = getString(R.string.validation_location)
                 activity?.invalidateOptionsMenu()
             },
@@ -109,13 +125,28 @@ class EditProfileFragment : ProfileFragment(R.layout.edit_profile_fragment, R.me
     }
 
     private fun validateFields() : Boolean {
-        return fullNameEdit.text?.isNotEmpty() ?: false
-                && fullNameEdit.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 >= 2
-                && nickNameEdit.text?.length ?: 0 >= 4
-                && emailEdit.text?.isNotEmpty() ?: false
-                && android.util.Patterns.EMAIL_ADDRESS.matcher(emailEdit.text!!).matches()
-                && locationEdit.text?.isNotEmpty() ?: false
+        return fullNameEdit.editText!!.text?.isNotEmpty() ?: false
+                && fullNameEdit.editText!!.text?.trim()?.split("\\s+".toRegex())?.size ?: 0 >= 2
+                && nickNameEdit.editText!!.text?.length ?: 0 >= 4
+                && emailEdit.editText!!.text?.isNotEmpty() ?: false
+                && Patterns.EMAIL_ADDRESS.matcher(emailEdit.editText!!.text!!).matches()
+                && locationEdit.editText!!.text?.isNotEmpty() ?: false
     }
+
+    private fun saveProfile() {
+        saveImg(getString(R.string.profile_image))
+
+        profileTmp.fullName = fullNameEdit.editText!!.text.toString()
+        profileTmp.nickName = nickNameEdit.editText!!.text.toString()
+        profileTmp.email = emailEdit.editText!!.text.toString()
+        profileTmp.location = locationEdit.editText!!.text.toString()
+
+
+        writeParcelable(profileTmp, getString(R.string.saved_profile_preference))
+        act.loadProfile(profileTmp)
+    }
+
+
 
 
 }
