@@ -14,11 +14,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:paddingStart="8sp"
+            android:paddingEnd="4sp"
+            android:paddingRight="4sp"
+            android:paddingLeft="8sp"
+            android:text="@string/available_seats_display" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -38,11 +54,27 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:paddingStart="8sp"
+            android:paddingEnd="4sp"
+            android:paddingRight="4sp"
+            android:paddingLeft="8sp"
+            android:text="@string/trip_date" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -61,12 +93,27 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:paddingStart="8sp"
+            android:paddingEnd="4sp"
+            android:paddingRight="4sp"
+            android:paddingLeft="8sp"
+            android:text="@string/price_for_each_seat_display" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginBottom="32dp">
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -89,12 +136,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:paddingStart="8sp"
             android:paddingEnd="4sp"
             android:paddingRight="4sp"
             android:paddingLeft="8sp"
             android:text="@string/route" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <LinearLayout
             android:id="@+id/startTripView"
@@ -122,7 +173,7 @@
                 android:id="@+id/departureNameDetails"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="4"
                 android:padding="4sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="Torino Porta Nuova stazione ferroviaria" />
@@ -145,6 +196,127 @@
 
         <include layout="@layout/item_trip_stop_layout"/>
 
+        <LinearLayout
+            android:id="@+id/trip_options_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:layout_marginTop="16dp"
+                android:paddingStart="8sp"
+                android:paddingEnd="4sp"
+                android:paddingRight="4sp"
+                android:paddingLeft="8sp"
+                android:text="@string/additional_information" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <LinearLayout
+                android:id="@+id/luggage_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_baseline_luggage_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="8sp"
+                    android:paddingEnd="8sp"
+                    android:text="@string/luggage_details"
+                    android:textColor="#636363"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/animals_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_baseline_pets_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="8sp"
+                    android:paddingEnd="8sp"
+                    android:text="@string/animals_details"
+                    android:textColor="#636363"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/smokers_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_baseline_smoking_rooms_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="8sp"
+                    android:paddingEnd="8sp"
+                    android:text="@string/smokers_details"
+                    android:textColor="#636363"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/additional_info_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_baseline_info_24" />
+
+                <TextView
+                    android:id="@+id/extra_info_text_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="8sp"
+                    android:paddingEnd="8sp"
+                    android:text="@string/additional_information_details"
+                    android:textColor="#636363"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            </LinearLayout>
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
