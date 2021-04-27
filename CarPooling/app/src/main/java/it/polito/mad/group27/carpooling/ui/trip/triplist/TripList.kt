@@ -92,13 +92,16 @@ class TripList: BaseFragmentWithToolbar(
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView.layoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (displayMetrics.ydpi <= 720) {
-                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
-                    GridLayoutManager(context, 2)
-                } else {
-                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
-                    GridLayoutManager(context, 3)
-                }
+//                displayMetrics .xdpi .ydpi .width .height are all 0, so it is not usable for our purpose
+//                if (displayMetrics.ydpi <= 720) {
+//                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+//                    GridLayoutManager(context, 2)
+//                } else {
+//                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
+//                    GridLayoutManager(context, 3)
+//                }
+                Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+                GridLayoutManager(context, 2)
             }
             else -> {
                 Log.d(getLogTag(), "orientation is portrait, using linear layout...")
