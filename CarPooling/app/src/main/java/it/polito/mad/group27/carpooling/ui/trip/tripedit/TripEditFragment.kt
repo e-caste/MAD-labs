@@ -59,17 +59,20 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private lateinit var trip : Trip
     private lateinit var newTrip : Trip
 
-    var price: TextInputLayout? = null
-    var to_place: TextInputLayout? = null
-    var from_place: TextInputLayout? = null
-    var to_hour: TextInputLayout? = null
-    var from_hour: TextInputLayout? = null
-    var passengers: TextInputLayout? = null
+    lateinit var price: TextInputLayout
+    lateinit var to_place: TextInputLayout
+    lateinit var to_date: TextInputLayout
+    lateinit var to_hour: TextInputLayout
+    lateinit var from_place: TextInputLayout
+    lateinit var from_date: TextInputLayout
+    lateinit var from_hour: TextInputLayout
+    lateinit var passengers: TextInputLayout
 
-    private var datePicker: MaterialDatePicker<Long>
-    private var timePickerFrom: MaterialTimePicker? = null
-    private var timePickerTo: MaterialTimePicker? = null
-    lateinit var estimated_time: TextView
+    private lateinit var datePickerFrom: MaterialDatePicker<Long>
+    private lateinit var datePickerTo: MaterialDatePicker<Long>
+    private lateinit var timePickerFrom: MaterialTimePicker
+    private lateinit var timePickerTo: MaterialTimePicker
+    private lateinit var estimated_time: TextView
 
     val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
 
