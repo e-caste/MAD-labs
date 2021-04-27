@@ -34,7 +34,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="1/5"
-                android:textColor="@color/color_aspect_passive"
+                android:textColor="#636363"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
@@ -57,7 +57,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="@string/default_registration_date"
-                android:textColor="@color/color_aspect_passive"
+                android:textColor="#636363"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
@@ -81,7 +81,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="105,99"
-                android:textColor="@color/color_aspect_passive"
+                android:textColor="#636363"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
