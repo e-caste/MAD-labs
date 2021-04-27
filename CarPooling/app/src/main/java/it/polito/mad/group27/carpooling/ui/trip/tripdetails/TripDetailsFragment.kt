@@ -1,9 +1,11 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
+import android.hardware.SensorAdditionalInfo
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
 import java.util.*
@@ -23,6 +26,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     // TODO insert title customized (Trip to .... ) (?)
     private lateinit var viewModel: TripDetailsViewModel
     private lateinit var dropdownListButton : LinearLayout
+    private lateinit var expandButton : ImageView
 
     private lateinit var trip : Trip
     private lateinit var seatsView : TextView
@@ -32,6 +36,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var departureLocation : TextView
     private lateinit var destinationHour : TextView
     private lateinit var destinationLocation : TextView
+    private lateinit var luggageView : LinearLayout
+    private lateinit var animalsView : LinearLayout
+    private lateinit var smokersView : LinearLayout
+    private lateinit var additionalInfo: LinearLayout
+    private lateinit var infoText : TextView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -67,8 +76,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         Log.d(getLogTag(),"got from bundle: $trip")
 
+        // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
-
+        expandButton = view.findViewById(R.id.expandButton)
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
@@ -76,7 +86,13 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         departureLocation = view.findViewById(R.id.departureNameDetails)
         destinationHour = view.findViewById(R.id.tripStopTime)
         destinationLocation = view.findViewById(R.id.tripStopName)
+        luggageView = view.findViewById(R.id.luggage_details)
+        animalsView = view.findViewById(R.id.animals_details)
+        smokersView = view.findViewById(R.id.smokers_details)
+        additionalInfo = view.findViewById(R.id.additional_info_details)
+        infoText = view.findViewById(R.id.extra_info_text_details)
 
+        // Display basic info
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
         dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.date)
         priceView.text = trip.price.toString()
@@ -85,28 +101,40 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         destinationHour.text = trip.endHour.toString()
         destinationLocation.text = trip.to
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = TripStopsViewAdapter(trip.stops)
-
-
-        dropdownListButton.setOnClickListener {
-            val arrowImageView : ImageView = view.findViewById(R.id.expandButton)
+        // Additional stops visualization
+        if(trip.stops.size > 0){
             val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.adapter = TripStopsViewAdapter(trip.stops)
 
-            Log.d(getLogTag(),"Touched route list")
+            dropdownListButton.setOnClickListener {
+                val arrowImageView : ImageView = view.findViewById(R.id.expandButton)
+                val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
 
-            recyclerView.visibility =
+                Log.d(getLogTag(),"Touched route list")
+
+                recyclerView.visibility =
                     when(recyclerView.visibility) {
-                View.GONE -> {
-                    arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                    View.VISIBLE
-                }
-                else ->{
-                    arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                    View.GONE
-                }
+                        View.GONE -> {
+                            arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                            View.VISIBLE
+                        }
+                        else -> {
+                            arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                            View.GONE
+                        }
+                    }
             }
+        }
+
+        // Display additional info
+        luggageView.visibility = if(trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
+        animalsView.visibility = if(trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
+        smokersView.visibility = if(trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
+
+        if(trip.otherInformation != null) {
+            infoText.text = trip.otherInformation
+            additionalInfo.visibility = View.VISIBLE
         }
     }
 
