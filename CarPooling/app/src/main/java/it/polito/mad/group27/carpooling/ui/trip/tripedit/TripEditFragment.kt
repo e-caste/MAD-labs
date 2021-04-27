@@ -1,6 +1,7 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
+import android.graphics.ColorSpace
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -243,6 +244,21 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 Snackbar.make(requireView(),  getString(R.string.toast_complete_previous_stop), Snackbar.LENGTH_LONG).show()
             }
         }
+
+        val option_luggage = view.findViewById<SwitchMaterial>(R.id.luggage_switch)
+        val option_animals = view.findViewById<SwitchMaterial>(R.id.animal_switch)
+        val option_smokers = view.findViewById<SwitchMaterial>(R.id.smokers_switch)
+        option_animals.isChecked = newTrip.options.contains(Option.ANIMALS)
+        option_luggage.isChecked = newTrip.options.contains(Option.LUGGAGE)
+        option_smokers.isChecked = newTrip.options.contains(Option.SMOKE)
+
+        val additional_info = view.findViewById<TextInputEditText>(R.id.additionalInfo)
+        additional_info.setText(newTrip.otherInformation)
+        additional_info.addTextChangedListener(Watcher(
+            { true },
+            { newTrip.otherInformation = additional_info.text.toString() },
+            { newTrip.otherInformation = additional_info.text.toString() }
+        ))
 
     }
 
