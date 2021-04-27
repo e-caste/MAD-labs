@@ -321,7 +321,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 apply()
             }
         }
-        val imageName = "trips/img${newTrip.id}"
+        val imageName = "${getString(R.string.car_image_prefix)}${newTrip.id}"
         if (newTrip.carImageUri == null && image!=null){
             val f = File(act.filesDir, imageName)
             newTrip.carImageUri = f.toUri()
@@ -347,7 +347,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         newTrip.otherInformation = info.text?.toString() ?: null
 
         Log.d(getLogTag(), Json.encodeToString(newTrip))
-        writeParcelable(newTrip, "group27.lab1.trips.${newTrip.id}")
+        writeParcelable(newTrip, "${getString(R.string.trip_prefix)}${newTrip.id}")
         saveImg(imageName)
     }
 

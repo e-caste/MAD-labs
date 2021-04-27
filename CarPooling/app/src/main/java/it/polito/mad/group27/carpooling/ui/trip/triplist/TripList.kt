@@ -34,12 +34,16 @@ class TripList: BaseFragmentWithToolbar(
 
     private val trips: MutableList<Trip> = mutableListOf()
     private val displayMetrics: DisplayMetrics = DisplayMetrics()
-    val counterName = "group27.lab2.trips.id_counter"
-    val tripPrefix = "group27.lab2.trips."
-    val carImagePrefix = "group27.lab2.car_img."
+    lateinit var counterName:String
+    lateinit var tripPrefix:String
+    lateinit var carImagePrefix:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        counterName = getString(R.string.trip_counter)
+        tripPrefix = getString(R.string.trip_prefix)
+        carImagePrefix = getString(R.string.car_image_prefix)
 
         val tripsCounter = savedInstanceState?.getInt("trips_counter")
         Log.d(getLogTag(), "tripsCounter is $tripsCounter")
