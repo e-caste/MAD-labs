@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.trip.triplist
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ class TripList: BaseFragmentWithToolbar(
 ){
 
     private val trips: MutableList<Trip> = mutableListOf()
+    private val displayMetrics: DisplayMetrics = DisplayMetrics()
     val counterName = "group27.lab2.trips.id_counter"
     val tripPrefix = "group27.lab2.trips."
     val carImagePrefix = "group27.lab2.car_img."
@@ -105,9 +107,13 @@ class TripList: BaseFragmentWithToolbar(
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView.layoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                Log.d(getLogTag(), "orientation is landscape, using grid layout...")
-                // TODO: select number of columns based on screen width
-                GridLayoutManager(context, 2)
+                if (displayMetrics.ydpi <= 720) {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+                    GridLayoutManager(context, 2)
+                } else {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
+                    GridLayoutManager(context, 3)
+                }
             }
             else -> {
                 Log.d(getLogTag(), "orientation is portrait, using linear layout...")
