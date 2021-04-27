@@ -21,25 +21,32 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
+import kotlin.math.round
 import kotlin.random.Random.Default.nextDouble
 
 
-fun Fragment.getLogTag(): String {
-    return getString(R.string.log_tag)
-}
+fun Fragment.getLogTag() = getString(R.string.log_tag)
 
-fun AppCompatActivity.getLogTag(): String {
-    return getString(R.string.log_tag)
-}
+fun AppCompatActivity.getLogTag() = getString(R.string.log_tag)
+
+fun OutputStream.getLogTag() = "MAD-group-27"
 
 fun OutputStream.writeBitmap(
     bitmap: Bitmap,
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
-    quality: Int = 100
+    quality: Int = 100,
+    targetHeight: Int? = null,
 ) {
     use { out ->
-        bitmap.compress(format, quality, out)
+        if (targetHeight != null) {
+            Log.d(getLogTag(), "scaling bitmap: ${bitmap.width}x${bitmap.height} -> ${targetHeight * bitmap.width / bitmap.height}x$targetHeight")
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetHeight * bitmap.width / bitmap.height, targetHeight, true)
+            scaledBitmap.compress(format, quality, out)
+        } else {
+            bitmap.compress(format, quality, out)
+        }
         out.flush()
     }
 }
@@ -59,21 +66,57 @@ fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
     return bitmap
 }
 
-fun TripList.createSampleData() {
-    val counterName = "group27.lab2.trips.id_counter"
-    val tripPrefix = "group27.lab2.trips."
-    val carImagePrefix = "group27.lab2.car_img."
+fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boolean = false) {
 
-    val carImages = listOf(R.drawable.audi_a6, R.drawable.ford_fiesta, R.drawable.tesla_cybertruck)
+    val carImages = listOf(
+        R.drawable.audi_a6,
+        R.drawable.bmw_x6,
+        R.drawable.citroen_c4,
+        R.drawable.dmc_delorean,
+        R.drawable.fiat_500,
+        R.drawable.fiat_500l,
+        R.drawable.fiat_punto,
+        R.drawable.ford_f150,
+        R.drawable.ford_fiesta,
+        R.drawable.ford_focus,
+        R.drawable.lamborghini_urus,
+        R.drawable.lancia_y,
+        R.drawable.mercedes_cla45_amg,
+        R.drawable.mini_cooper,
+        R.drawable.nissan_gt_r,
+        R.drawable.porsche_panamera,
+        R.drawable.smart_fortwo,
+        R.drawable.tesla_cybertruck,
+        R.drawable.tesla_model_3,
+        R.drawable.tesla_model_s,
+    )
+    val places = listOf(
+        "Torino Centro",
+        "Milano Porta Garibaldi",
+        "Ancona",
+        "La Spezia Manarola",
+        "New New York",
+        "Sacred Heart Hospital",
+        "Springfield",
+        "Marte",
+        "Giza",
+        "Roma Stazione Termini",
+        "Aeroporto Milano Malpensa",
+        "Canicattì",
+        "Museo Oceanografico di San Benedetto del Tronto",
+    )
     val days = (1..31)
     val hours = (0..23)
     val minutes = (0..59)
     val priceUntil = 10000.0
-    val places = listOf("Torino Centro", "Milano Porta Garibaldi", "Ancona", "La Spezia Manarola", "New New York", "Sacred Heart Hospital", "Springfield", "Marte", "Giza")
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    fun getRandomDate() = Date(2021, 5, days.random())
+    // Date is a deprecated class. I can see why...
+    fun getRandomDate() = Date(2021 - 1900, 4, days.random())
+
+    // BigDecimals are evil and I'm not sure we need them
+    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil)).replace(",", ".").toDouble()).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomHour() = Hour(hours.random(), minutes.random())
 
@@ -101,7 +144,7 @@ fun TripList.createSampleData() {
         date = getRandomDate(),
         totalSeats = (1..6).random(),
         availableSeats = 1,
-        price = BigDecimal(nextDouble(priceUntil)),
+        price = getRandomPrice(),
         startHour = getRandomHour(),
         endHour = getRandomHour(),
         from = places.random(),
@@ -112,12 +155,13 @@ fun TripList.createSampleData() {
 
     // TODO: check for EXTERNAL_STORAGE permission here
     fun saveCarImagesToStorage() {
-        if (!File(activity?.filesDir, "${carImagePrefix}0").exists()) {
+        if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
             for ((i, img) in carImages.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
-                    it?.writeBitmap(bitmap)
+                    it?.writeBitmap(bitmap, Bitmap.CompressFormat.JPEG, 100, 720)
                 }
+                Log.d(getLogTag(), "saved car image $carImagePrefix$i to storage")
             }
             Log.d(getLogTag(), "saved sample car images to storage with prefix $carImagePrefix")
         }
@@ -127,14 +171,14 @@ fun TripList.createSampleData() {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val counter = sharedPreferences.getString(counterName, null)?.toInt()
         // first time saving || data has changed
-        if (counter == null || counter != trips.size) {
+        if (counter == null || counter != trips.size || forceReset) {
             // TODO: should use EditFragment.writeParcelable()
             with(sharedPreferences.edit()) {
                 putString(counterName, Json.encodeToString(trips.size))
-                Log.d(getLogTag(), "saved shared preference: $counterName")
+                Log.d(getLogTag(), "saved shared preference: $counterName with data ${trips.size}")
                 for ((i, trip) in trips.withIndex()) {
                     putString("$tripPrefix$i", Json.encodeToString(trip))
-                    Log.d(getLogTag(), "saved shared preference: $tripPrefix$i")
+                    Log.d(getLogTag(), "saved shared preference: $tripPrefix$i with data $trip")
                 }
                 apply()
             }
@@ -142,6 +186,6 @@ fun TripList.createSampleData() {
     }
 
     saveCarImagesToStorage()
-    val trips = (0..10).map { getRandomTrip(it.toLong()) }
+    val trips = (0 until tripsNumber).map { getRandomTrip(it.toLong()) }
     saveTripsToStorage(trips)
 }
