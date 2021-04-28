@@ -14,10 +14,14 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Hour
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
+import java.text.FieldPosition
+import java.text.SimpleDateFormat
 import java.util.*
 
-private val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
 
 fun getTimePicker(view: EditText, hour: Calendar, context: Context, update: (MaterialTimePicker) -> Calendar): MaterialTimePicker {
     val isSystem24Hour = is24HourFormat(context)
@@ -59,4 +63,53 @@ fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
     this.set(Calendar.HOUR, timePicker.hour)
     this.set(Calendar.MINUTE, timePicker.minute)
     return this
+}
+
+fun Trip.checkDateTimeStop(position: Int) : Pair<Boolean, Boolean>{
+
+    val stop = this.stops[position]
+    var validStopTime = true
+    var validStopDate = true
+    val newTrip = this
+
+    if(position == 0){
+        if(YYYYMMDD.format(this.stops[position].dateTime) < YYYYMMDD.format(newTrip.startDateTime)){
+            validStopDate = false
+        }
+        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.startDateTime)
+            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() <=
+            Hour(newTrip.startDateTime.get(Calendar.HOUR), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
+            validStopTime = false
+        }
+    }else if(position == newTrip.stops.size -1){
+        if(YYYYMMDD.format(stop.dateTime) > YYYYMMDD.format(newTrip.endDateTime)){
+            validStopDate = false
+        }
+        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.endDateTime)
+            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            Hour(newTrip.endDateTime.get(Calendar.HOUR), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
+            validStopTime = false
+        }
+
+        if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[position-1].dateTime)){
+            validStopDate = false
+        }
+        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[position-1].dateTime)
+            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
+            validStopTime = false
+        }
+
+    }else{
+        if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[position-1].dateTime)){
+            validStopDate = false
+        }
+        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[position-1].dateTime)
+            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
+            validStopTime = false
+        }
+    }
+
+    return Pair(validStopDate, validStopTime)
 }
