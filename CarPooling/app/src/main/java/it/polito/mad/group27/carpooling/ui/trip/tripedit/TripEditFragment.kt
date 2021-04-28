@@ -243,17 +243,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
             val lastStop = newTrip.stops.size -1
-            if (lastStop < 0
-                || ( newTrip.stops[lastStop].place.trim() != ""
-                && (if (lastStop > 0) {
-                    newTrip.stops[lastStop].dateTime > newTrip.stops[lastStop - 1].dateTime
-                }
-                    else true)
-                        &&  newTrip.stops[lastStop].dateTime < newTrip.endDateTime
-                        && newTrip.stops[lastStop].dateTime > newTrip.startDateTime) ) {
-                            val calendar_init = Calendar.getInstance()
-                            calendar_init.set(Calendar.HOUR_OF_DAY, 0)
-                            calendar_init.set(Calendar.MINUTE, 0)
+            var valid = validateFields(true)
+
+            if(valid){
+                val calendar_init = Calendar.getInstance()
+                calendar_init.set(Calendar.HOUR_OF_DAY, 0)
+                calendar_init.set(Calendar.MINUTE, 0)
                 (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", calendar_init ))
             }else{
                 Snackbar.make(requireView(),  getString(R.string.toast_complete_previous_stop), Snackbar.LENGTH_LONG).show()
@@ -352,7 +347,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
 
-    private fun validateFields(): Boolean{
+    private fun validateFields(onlyRoute: Boolean = false): Boolean{
         var valid = true
         if(newTrip.from.trim() =="") {
             from_place.error = getString(R.string.edit_from_error)
@@ -364,12 +359,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
 
-        if(newTrip.price == null || newTrip.price!! <= BigDecimal(0)){
+        if(!onlyRoute && (newTrip.price == null || newTrip.price!! <= BigDecimal(0))){
             price.error =  getString(R.string.invalid_price)
             valid = false
         }
 
-        if(newTrip.totalSeats == null || newTrip.totalSeats!! < 0 ){
+        if(!onlyRoute && (newTrip.totalSeats == null || newTrip.totalSeats!! < 0 )){
             passengers.error = getString(R.string.insert_passengers)
             valid= false
         }
