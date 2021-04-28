@@ -133,6 +133,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
     fun remove(position : Int) {
         trip.stops.removeAt(position)
         this.notifyItemRemoved(position)
+        this.notifyItemRangeChanged(position, trip.stops.size-position)
     }
 
 }
