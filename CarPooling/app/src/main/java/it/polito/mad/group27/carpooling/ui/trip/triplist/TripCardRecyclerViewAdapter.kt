@@ -41,7 +41,8 @@ class TripCardRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         val bundle = bundleOf("trip" to Json.encodeToString(item))
-        holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
+        val bundleParcelable = bundleOf("trip" to item)
+        holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundleParcelable) }
 
         if(item.carImageUri ==null) {
             holder.carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
@@ -51,6 +52,8 @@ class TripCardRecyclerViewAdapter(
             holder.carImageView.colorFilter = null
         }
         holder.priceTextView.text = priceFormat.format(item.price)
+
+
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
