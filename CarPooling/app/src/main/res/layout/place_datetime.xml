@@ -7,21 +7,36 @@
     android:orientation="vertical"
     android:layout_margin="8dp">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:id="@+id/stop_place"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:startIconDrawable="@drawable/ic_baseline_place_24"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:tag="editPlace"
-            android:inputType="textCapWords"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal">
+       <com.google.android.material.textfield.TextInputLayout
+           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+           android:id="@+id/stop_place"
+           android:layout_width="0dp"
+           android:layout_weight="7"
+           android:layout_height="wrap_content"
+           app:startIconDrawable="@drawable/ic_baseline_place_24"
+           android:layout_marginRight="8dp"
+           android:layout_marginLeft="8dp">
+           <com.google.android.material.textfield.TextInputEditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:tag="editPlace"
+               android:inputType="textCapWords"
+               android:maxLines="1" />
+       </com.google.android.material.textfield.TextInputLayout>
+       <ImageView
+           android:id="@+id/remove_stop_button"
+           android:layout_width="0dp"
+           android:layout_height="match_parent"
+           android:layout_margin="8dp"
+           android:layout_weight="1"
+           app:srcCompat="@drawable/ic_baseline_remove_circle_outline_24"
+           android:visibility="gone"/>
+
+   </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
