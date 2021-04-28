@@ -23,6 +23,7 @@ import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment
 import it.polito.mad.group27.carpooling.writeBitmap
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -235,7 +236,10 @@ open class EditFragment(layoutId: Int,
             }
             R.id.delete -> {
                 Log.d(getLogTag(), "deleting picture...")
-                imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                if(this is EditProfileFragment)
+                    imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                else
+                    imageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
                 image = null
                 imageChanged = true
                 return true
