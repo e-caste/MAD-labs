@@ -109,9 +109,10 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
     val minutes = (0..59)
     val priceUntil = 10000.0
 
-    val carImagesTmp = if (Build.VERSION.SDK_INT < 26) carImages.subList(0, 5) else carImages
-    val imageHeight = if (Build.VERSION.SDK_INT < 26) 360 else 720
-    val tripsNumberTmp = if (Build.VERSION.SDK_INT < 26) 10 else tripsNumber
+    val buildVersionLimit = 23
+    val carImagesTmp = if (Build.VERSION.SDK_INT < buildVersionLimit) carImages.subList(0, 5) else carImages
+    val imageHeight = if (Build.VERSION.SDK_INT < buildVersionLimit) 360 else 720
+    val tripsNumberTmp = if (Build.VERSION.SDK_INT < buildVersionLimit) 10 else tripsNumber
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImagesTmp.indices.random()}").toUri()
 
