@@ -239,7 +239,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         stops_rv.adapter = StopRecyclerViewAdapter(newTrip, this.requireContext())
 
         val remove_button = view.findViewById<Button>(R.id.remove_button)
-        remove_button.visibility = View.INVISIBLE if(newTrip.stops.size == 0) else View.VISIBLE
+        remove_button.visibility = if(newTrip.stops.size == 0)  View.INVISIBLE else View.VISIBLE
         remove_button.setOnClickListener {
             (stops_rv.adapter as StopRecyclerViewAdapter).remove()
             if (newTrip.stops.size == 0)
@@ -285,23 +285,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     }
 
-    private fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicker<Long> {
-        val constraintsBuilder =
-            CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.now())
-        val datePicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .setCalendarConstraints(constraintsBuilder.build())
-                .build()
-        datePicker.addOnPositiveButtonClickListener {
-            calendar.timeInMillis = datePicker.selection!!
-            view.editText?.setText(df.format(newTrip.startDateTime))
-            Log.d(getLogTag(), newTrip.startDateTime.toString())
-        }
-        return datePicker
-    }
-
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
         val delta_minutes = (start.getTimeInMillis() - end.getTimeInMillis()) / (1000*60)
         val hours = ((delta_minutes)/60).toInt()
@@ -328,7 +311,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
         // check id, if -1 take counter and increment
-        if(newTrip.id == null) {
+        if(newTrip.id == -1L) {
             val counterKey = getString(R.string.trip_counter)
             val counter = sharedPref.getLong(counterKey, 0)
             newTrip.id = counter + 1
@@ -360,7 +343,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
-        newTrip.otherInformation = info.text?.toString() ?: null
+        info.setText(newTrip.otherInformation ?: "")
 
         Log.d(getLogTag(), Json.encodeToString(newTrip))
         writeParcelable(newTrip, "${getString(R.string.trip_prefix)}${newTrip.id}")
