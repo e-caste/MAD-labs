@@ -21,8 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.min
 
-val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
-val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
+val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
+val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")
 
 fun getTimePicker(view: EditText, hour: Calendar, context: Context, update: (MaterialTimePicker) -> Calendar): MaterialTimePicker {
     val isSystem24Hour = is24HourFormat(context)
@@ -103,7 +103,7 @@ fun Trip.checkDateTimeStop(position: Int) : Pair<Boolean, Boolean>{
             validStopDate = false
         }
         else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)
-            && Hour(stop.dateTime.get(Calendar.HOUR_OF_DAY), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            && Hour(stop.dateTime.get(Calendar.HOUR_OF_DAY), stop.dateTime.get(Calendar.MINUTE)).toString() <=
             Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR_OF_DAY), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
