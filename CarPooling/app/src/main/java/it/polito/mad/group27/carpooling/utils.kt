@@ -144,11 +144,14 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         val startDateTime = getRandomDateTime()
         val endDateTime = startDateTime.also { it.add(Calendar.HOUR, (1..72).random()) }
 
+        val totalSeats = (1..6).random()
+        val availableSeats = (0..totalSeats).random()
+
         return Trip(
             id = id,
             carImageUri = getRandomImageUri(),
-            totalSeats = (1..6).random(),
-            availableSeats = 1,
+            totalSeats = totalSeats,
+            availableSeats = availableSeats,
             price = getRandomPrice(),
             startDateTime = startDateTime,
             endDateTime = endDateTime,
