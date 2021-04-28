@@ -80,8 +80,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // get trip from bundle
         trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        if(trip.id==-1)
+            updateTitle(getString(R.string.add_trip))
         newTrip = trip.copy()
         Log.d(getLogTag(), "got from bundle trip: $trip")
 
