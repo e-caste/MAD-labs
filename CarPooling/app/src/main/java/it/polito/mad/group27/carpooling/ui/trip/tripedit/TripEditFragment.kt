@@ -68,7 +68,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private var timePickerTo: MaterialTimePicker? = null
     private lateinit var estimated_time: TextView
 
-    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
     private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -105,7 +105,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val dateTimeWatcher = Watcher(
             {
                 YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)
-                        || (YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
+                        || (YYYYMMDD.format(newTrip.startDateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
                         && from_hour.editText?.text.toString() > to_hour.editText?.text.toString())
             },
             {
@@ -252,7 +252,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         &&  newTrip.stops[lastStop].dateTime < newTrip.endDateTime
                         && newTrip.stops[lastStop].dateTime > newTrip.startDateTime) ) {
                             val calendar_init = Calendar.getInstance()
-                            calendar_init.set(Calendar.HOUR, 0)
+                            calendar_init.set(Calendar.HOUR_OF_DAY, 0)
                             calendar_init.set(Calendar.MINUTE, 0)
                 (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", calendar_init ))
             }else{
@@ -278,7 +278,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
-        val delta_minutes = (start.getTimeInMillis() - end.getTimeInMillis()) / (1000*60)
+        val delta_minutes = (start.timeInMillis - end.timeInMillis) / (1000*60)
         val hours = ((delta_minutes)/60).toInt()
         val minutes = ((delta_minutes)%60).toInt()
         return Hour(hours, minutes)
@@ -292,7 +292,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     private fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
-        this.set(Calendar.HOUR, timePicker.hour)
+        this.set(Calendar.HOUR_OF_DAY, timePicker.hour)
         this.set(Calendar.MINUTE, timePicker.minute)
         setEstimatedTime()
         return this

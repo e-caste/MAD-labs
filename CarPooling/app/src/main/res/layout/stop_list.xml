@@ -5,8 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="?attr/actionBarSize"
     tools:context=".ui.trip.triplist.TripList"
-    tools:layout_editor_absoluteX="16dp"
-    tools:layout_editor_absoluteY="16dp"
     tools:listitem="@layout/place_datetime">
 
 </androidx.recyclerview.widget.RecyclerView>
