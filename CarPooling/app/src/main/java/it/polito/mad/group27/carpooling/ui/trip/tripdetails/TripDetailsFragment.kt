@@ -2,12 +2,10 @@ package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
 import android.content.res.Configuration
 import android.graphics.Color
-import android.hardware.SensorAdditionalInfo
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -26,7 +24,6 @@ import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
-    // TODO insert title customized (Trip to .... ) (?)
     private lateinit var viewModel: TripDetailsViewModel
     private lateinit var dropdownListButton : LinearLayout
     private lateinit var expandButton : ImageView
@@ -36,9 +33,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var dateView : TextView
     private lateinit var estimatedTimeView: TextView
     private lateinit var priceView : TextView
-    private lateinit var departureHour : TextView
+    private lateinit var departureDateTime : TextView
     private lateinit var departureLocation : TextView
-    private lateinit var destinationHour : TextView
+    private lateinit var destinationDateTime : TextView
     private lateinit var destinationLocation : TextView
     private lateinit var luggageView : LinearLayout
     private lateinit var animalsView : LinearLayout
@@ -80,23 +77,27 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
 
-        Log.d(getLogTag(),"got from bundle: $trip")
+        Log.d(getLogTag(), "got from bundle: $trip")
 
         // Update title only in portrait orientation
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             updateTitle("${getString(R.string.trip_to)} ${trip.to}")
+        else{
+            val fragmentTitle : TextView = view.findViewById(R.id.trip_title_details)
+            fragmentTitle.text = "${getString(R.string.trip_to)} ${trip.to}"
+        }
 
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
         expandButton = view.findViewById(R.id.expandButton)
-        carImageView  = view.findViewById(R.id.image_details_view)
+        carImageView = view.findViewById(R.id.image_details_view)
         estimatedTimeView = view.findViewById(R.id.estimated_time_details)
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
-        departureHour = view.findViewById(R.id.departureTimeDetails)
+        departureDateTime = view.findViewById(R.id.departureTimeDetails)
         departureLocation = view.findViewById(R.id.departureNameDetails)
-        destinationHour = view.findViewById(R.id.tripStopTime)
+        destinationDateTime = view.findViewById(R.id.tripStopDateTime)
         destinationLocation = view.findViewById(R.id.tripStopName)
         luggageView = view.findViewById(R.id.luggage_details)
         animalsView = view.findViewById(R.id.animals_details)
@@ -106,55 +107,52 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
-        carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
-        if(trip.carImageUri != null) {
-            carImageView.setImageURI(trip.carImageUri)
-        } else {
+        if (trip.carImageUri == null) {
+            carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
             carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+        } else {
+            carImageView.setImageURI(trip.carImageUri)
         }
 
+
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
-        dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime.time)
+        dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime.time)
         setEstimatedTime()
         priceView.text = trip.price.toString()
-        departureHour.text = Hour(trip.startDateTime[Calendar.HOUR], trip.startDateTime[Calendar.MINUTE]).toString()
+        departureDateTime.text = getDateTime(trip.startDateTime)
         departureLocation.text = trip.from
-        destinationHour.text = Hour(trip.endDateTime[Calendar.HOUR], trip.endDateTime[Calendar.MINUTE]).toString()
+        destinationDateTime.text = getDateTime(trip.endDateTime)
         destinationLocation.text = trip.to
 
         // Additional stops visualization
-        if(trip.stops.size > 0){
+        if (trip.stops.size > 0) {
             val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = TripStopsViewAdapter(trip.stops)
 
             dropdownListButton.setOnClickListener {
-                val arrowImageView : ImageView = view.findViewById(R.id.expandButton)
-                val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
-
-                Log.d(getLogTag(),"Touched route list")
-
+                Log.d(getLogTag(), "Touched route list")
                 recyclerView.visibility =
-                        when(recyclerView.visibility) {
-                            View.GONE -> {
-                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                                View.VISIBLE
-                            }
-                            else -> {
-                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                                View.GONE
-                            }
+                    when (recyclerView.visibility) {
+                        View.GONE -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                            View.VISIBLE
                         }
+                        else -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                            View.GONE
+                        }
+                    }
             }
-        }
+        } else expandButton.visibility = View.INVISIBLE
 
         // Display additional info
-        if(trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")){
-            luggageView.visibility = if(trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
-            animalsView.visibility = if(trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
-            smokersView.visibility = if(trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
+        if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
+            luggageView.visibility = if (trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
+            animalsView.visibility = if (trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
+            smokersView.visibility = if (trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
 
-            if(trip.otherInformation != null && trip.otherInformation!!.trim() != "" ) {
+            if (trip.otherInformation != null && trip.otherInformation!!.trim() != "") {
                 infoText.text = trip.otherInformation
                 additionalInfo.visibility = View.VISIBLE
             } else {
@@ -179,7 +177,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
-        val deltaMinutes = (start.timeInMillis - end.timeInMillis) / (1000*60)
+        val deltaMinutes = (end.timeInMillis - start.timeInMillis) / (1000*60)
         val hours = ((deltaMinutes)/60).toInt()
         val minutes = ((deltaMinutes)%60).toInt()
         return Hour(hours, minutes)
@@ -190,6 +188,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimatedTimeView.text = ("$hours $minutes")
+    }
+
+    private fun getDateTime(item: Calendar) :String {
+        val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY).format(item.timeInMillis).toString()
+        val time = Hour(item[Calendar.HOUR], item[Calendar.MINUTE]).toString()
+        return "$date, $time"
     }
 
 }
