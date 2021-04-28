@@ -1,6 +1,5 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
 import java.text.DateFormat
@@ -53,8 +52,8 @@ class TripCardRecyclerViewAdapter(
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
-        holder.hourDepartureTextView.text = item.startHour.toString()
-        holder.dateDepartureTextView.text = dateFormat.format(item.date)
+        holder.hourDepartureTextView.text = Hour(item.startDateTime[Calendar.HOUR], item.startDateTime[Calendar.MINUTE]).toString()
+        holder.dateDepartureTextView.text = dateFormat.format(item.startDateTime)
     }
 
     override fun getItemCount(): Int = values.size
