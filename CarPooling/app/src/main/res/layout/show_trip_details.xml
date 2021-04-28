@@ -102,6 +102,45 @@
             android:paddingEnd="4sp"
             android:paddingRight="4sp"
             android:paddingLeft="8sp"
+            android:text="@string/estimated_time" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_round_access_time_24" />
+
+            <TextView
+                android:id="@+id/estimated_time_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8sp"
+                android:paddingEnd="8sp"
+                android:text="22h 56min"
+                android:textColor="#636363"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:paddingStart="8sp"
+            android:paddingEnd="4sp"
+            android:paddingRight="4sp"
+            android:paddingLeft="8sp"
             android:text="@string/price_for_each_seat_display" />
         <View
             android:layout_width="match_parent"
