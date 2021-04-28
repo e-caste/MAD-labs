@@ -113,7 +113,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomDateTime() = Calendar.getInstance().also { it.set(2021, 4, days.random(), hours.random(), minutes.random()) }
 
-    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil))).setScale(2, RoundingMode.HALF_EVEN)
+    fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil)).replace(",", ".")).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomStops(from: String, to: String, startDateTime: Calendar, endDateTime: Calendar): MutableList<Stop> {
         val res = mutableListOf<Stop>()
