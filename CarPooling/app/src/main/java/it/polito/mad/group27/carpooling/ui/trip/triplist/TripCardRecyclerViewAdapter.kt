@@ -13,6 +13,8 @@ import androidx.navigation.NavController
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -38,7 +40,7 @@ class TripCardRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        val bundle = bundleOf("trip" to item)
+        val bundle = bundleOf("trip" to Json.encodeToString(item))
         holder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundle) }
 
         if(item.carImageUri ==null) {
