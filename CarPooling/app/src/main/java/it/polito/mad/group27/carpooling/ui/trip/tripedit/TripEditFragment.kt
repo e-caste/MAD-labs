@@ -69,8 +69,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private var timePickerTo: MaterialTimePicker? = null
     private lateinit var estimated_time: TextView
 
-    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
-    private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
+    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
+    private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

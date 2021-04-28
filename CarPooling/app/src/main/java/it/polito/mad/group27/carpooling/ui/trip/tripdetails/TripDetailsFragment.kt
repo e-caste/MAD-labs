@@ -45,7 +45,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var additionalInfo: LinearLayout
     private lateinit var optionsView : LinearLayout
     private lateinit var infoText : TextView
-    private lateinit var carImageView: ImageView
+    private lateinit var carImageView : ImageView
+    private lateinit var recyclerView : RecyclerView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -77,6 +78,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val visibility = savedInstanceState?.getInt("${getString(R.string.app_name)}.stateView")
         trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
 
         Log.d(getLogTag(), "got from bundle: $trip")
@@ -128,7 +130,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         // Additional stops visualization
         if (trip.stops.size > 0) {
-            val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
+            recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
+            recyclerView.visibility = visibility ?: View.GONE
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = TripStopsViewAdapter(trip.stops)
 
@@ -177,6 +180,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
         return true
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("${getString(R.string.app_name)}.stateView", recyclerView.visibility)
+    }
+
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
         val deltaMinutes = (end.timeInMillis - start.timeInMillis) / (1000*60)
