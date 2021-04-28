@@ -129,10 +129,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     to_hour.error = getString(R.string.edit_to_hour_error)
                     to_date.error = null
                 }
+                setEstimatedTime()
             },
             {
                 from_date.error = null
                 to_hour.error = null
+                setEstimatedTime()
             }
         )
 
@@ -303,7 +305,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         this.set(Calendar.HOUR_OF_DAY, timePicker.hour)
         this.set(Calendar.MINUTE, timePicker.minute)
         Log.d(getLogTag(), "update time to : ${timePicker.hour} : ${timePicker.minute}")
-        setEstimatedTime()
         return this
     }
 
@@ -405,7 +406,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             }
             if(!validStopDate){
                 valid = false
-                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_date).error = getString(R.string.stop_hour_error)
+                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_date).error = getString(R.string.date_error)
             }
 
             if(stop.place.trim()==""){

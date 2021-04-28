@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_margin="8dp">
+    android:orientation="vertical">
 
    <LinearLayout
        android:layout_width="match_parent"
@@ -17,9 +16,7 @@
            android:layout_width="0dp"
            android:layout_weight="7"
            android:layout_height="wrap_content"
-           app:startIconDrawable="@drawable/ic_baseline_place_24"
-           android:layout_marginRight="8dp"
-           android:layout_marginLeft="8dp">
+           app:startIconDrawable="@drawable/ic_baseline_place_24"           >
            <com.google.android.material.textfield.TextInputEditText
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -42,8 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp">
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
