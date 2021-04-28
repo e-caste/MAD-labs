@@ -57,7 +57,7 @@ class TripCardRecyclerViewAdapter(
         holder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
-        holder.hourDepartureTextView.text = Hour(item.startDateTime[Calendar.HOUR], item.startDateTime[Calendar.MINUTE]).toString()
+        holder.hourDepartureTextView.text = Hour(item.startDateTime[Calendar.HOUR_OF_DAY], item.startDateTime[Calendar.MINUTE]).toString()
         holder.dateDepartureTextView.text = dateFormat.format(item.startDateTime.time)
     }
 
