@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
-import it.polito.mad.group27.carpooling.ui.trip.tripdetails.dummy.DummyStageContent.DummyStage
+import java.util.Calendar
 
 class TripStopsViewAdapter(
         private val values: List<Stop>
@@ -21,14 +22,14 @@ class TripStopsViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.stageTime.text = item.hour.toString()
-        holder.stageName.text = item.place
+        holder.stopTime.text = Hour(item.dateTime[Calendar.HOUR], item.dateTime[Calendar.MINUTE]).toString()
+        holder.stopName.text = item.place
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val stageTime : TextView = view.findViewById(R.id.tripStopTime)
-        val stageName : TextView = view.findViewById(R.id.tripStopName)
+        val stopTime : TextView = view.findViewById(R.id.tripStopTime)
+        val stopName : TextView = view.findViewById(R.id.tripStopName)
     }
 }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
@@ -96,11 +97,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         // Display basic info
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
-        dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.date)
+        dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime)
         priceView.text = trip.price.toString()
-        departureHour.text = trip.startHour.toString()
+        departureHour.text = Hour(trip.startDateTime[Calendar.HOUR], trip.startDateTime[Calendar.MINUTE]).toString()
         departureLocation.text = trip.from
-        destinationHour.text = trip.endHour.toString()
+        destinationHour.text = Hour(trip.endDateTime[Calendar.HOUR], trip.endDateTime[Calendar.MINUTE]).toString()
         destinationLocation.text = trip.to
 
         // Additional stops visualization
