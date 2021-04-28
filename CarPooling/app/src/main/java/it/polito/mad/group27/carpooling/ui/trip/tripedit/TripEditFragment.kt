@@ -104,12 +104,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // from and to datetime check
         val dateTimeWatcher = Watcher(
             {
-                YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)
+                YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)
                         || (YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
                         && from_hour.editText?.text.toString() > to_hour.editText?.text.toString())
             },
             {
-                if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
+                if (YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)) {
                     to_date.error = getString(R.string.date_error)
                     to_hour.error = null
                 } else {
@@ -127,7 +127,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
         from_date = from.findViewById<TextInputLayout>(R.id.stop_date)
         from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
-        from_date.editText?.setText(df.format(newTrip.startDateTime))
+        from_date.editText?.setText(df.format(newTrip.startDateTime.time))
 
         datePickerFrom = getDatePicker(newTrip.startDateTime, from_date)
         from_date.editText?.setOnClickListener {
@@ -169,7 +169,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        from_date.editText?.setText(df.format(newTrip.startDateTime))
+        from_date.editText?.setText(df.format(newTrip.startDateTime.time))
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
 
@@ -196,7 +196,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 timePickerTo.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        to_date.editText?.setText(df.format(newTrip.endDateTime))
+        to_date.editText?.setText(df.format(newTrip.endDateTime.time))
         to_hour.editText?.addTextChangedListener(dateTimeWatcher)
         to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
@@ -372,11 +372,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid= false
         }
 
-        if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
+        if (YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)) {
             to_date.error = getString(R.string.date_error)
             to_hour.error = null
             valid = false
-        } else if(YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
+        } else if(YYYYMMDD.format(newTrip.startDateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
             && from_hour.editText?.text.toString() > to_hour.editText?.text.toString()) {
             to_hour.error = getString(R.string.edit_to_hour_error)
             to_date.error = null

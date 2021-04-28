@@ -73,38 +73,38 @@ fun Trip.checkDateTimeStop(position: Int) : Pair<Boolean, Boolean>{
     val newTrip = this
 
     if(position == 0){
-        if(YYYYMMDD.format(this.stops[position].dateTime) < YYYYMMDD.format(newTrip.startDateTime)){
+        if(YYYYMMDD.format(this.stops[position].dateTime.time) < YYYYMMDD.format(newTrip.startDateTime.time)){
             validStopDate = false
         }
-        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.startDateTime)
+        else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.startDateTime.time)
             && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() <=
             Hour(newTrip.startDateTime.get(Calendar.HOUR), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
     }else if(position == newTrip.stops.size -1){
-        if(YYYYMMDD.format(stop.dateTime) > YYYYMMDD.format(newTrip.endDateTime)){
+        if(YYYYMMDD.format(stop.dateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)){
             validStopDate = false
         }
-        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.endDateTime)
+        else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
             && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
             Hour(newTrip.endDateTime.get(Calendar.HOUR), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
 
-        if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[position-1].dateTime)){
+        if(YYYYMMDD.format(stop.dateTime.time) < YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)){
             validStopDate = false
         }
-        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[position-1].dateTime)
+        else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)
             && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
             Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
 
     }else{
-        if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[position-1].dateTime)){
+        if(YYYYMMDD.format(stop.dateTime.time) < YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)){
             validStopDate = false
         }
-        else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[position-1].dateTime)
+        else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)
             && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
             Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
