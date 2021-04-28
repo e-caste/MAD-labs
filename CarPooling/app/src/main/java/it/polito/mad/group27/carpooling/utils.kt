@@ -147,6 +147,12 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         val totalSeats = (1..6).random()
         val availableSeats = (0..totalSeats).random()
 
+        val otherInformation = {
+            val addInfo = (0..1).random()
+            if (addInfo == 1) "This is some other information about this trip."
+            else null
+        }()
+
         return Trip(
             id = id,
             carImageUri = getRandomImageUri(),
@@ -159,6 +165,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
             to = places.random(),
             stops = getRandomStops(),
             options = getRandomOptions(),
+            otherInformation = otherInformation,
         )
     }
 
