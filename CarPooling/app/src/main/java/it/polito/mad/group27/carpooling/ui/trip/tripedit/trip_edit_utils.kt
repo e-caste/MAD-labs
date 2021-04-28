@@ -54,7 +54,7 @@ fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicke
             .build()
     datePicker.addOnPositiveButtonClickListener {
         calendar.timeInMillis = datePicker.selection!!
-        view.editText?.setText(df.format(calendar))
+        view.editText?.setText(df.format(calendar.time))
     }
     return datePicker
 }
