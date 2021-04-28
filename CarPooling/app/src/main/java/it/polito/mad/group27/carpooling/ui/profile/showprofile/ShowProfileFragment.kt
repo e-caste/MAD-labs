@@ -32,8 +32,6 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ShowProfileViewModel::class.java)
         // TODO: Use the ViewModel
-
-        //TODO insert title name
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
