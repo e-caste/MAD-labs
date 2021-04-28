@@ -35,9 +35,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var dateView : TextView
     private lateinit var estimatedTimeView: TextView
     private lateinit var priceView : TextView
-    private lateinit var departureHour : TextView
+    private lateinit var departureDateTime : TextView
     private lateinit var departureLocation : TextView
-    private lateinit var destinationHour : TextView
+    private lateinit var destinationDateTime : TextView
     private lateinit var destinationLocation : TextView
     private lateinit var luggageView : LinearLayout
     private lateinit var animalsView : LinearLayout
@@ -93,9 +93,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
-        departureHour = view.findViewById(R.id.departureTimeDetails)
+        departureDateTime = view.findViewById(R.id.departureTimeDetails)
         departureLocation = view.findViewById(R.id.departureNameDetails)
-        destinationHour = view.findViewById(R.id.tripStopTime)
+        destinationDateTime = view.findViewById(R.id.tripStopDateTime)
         destinationLocation = view.findViewById(R.id.tripStopName)
         luggageView = view.findViewById(R.id.luggage_details)
         animalsView = view.findViewById(R.id.animals_details)
@@ -105,7 +105,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
-        Log.d(getLogTag(),"image URI: ${trip.carImageUri}")
         if (trip.carImageUri == null) {
             carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
             carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
@@ -118,13 +117,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime.time)
         setEstimatedTime()
         priceView.text = trip.price.toString()
-        departureHour.text = Hour(trip.startDateTime[Calendar.HOUR], trip.startDateTime[Calendar.MINUTE]).toString()
+        departureDateTime.text = getDateTime(trip.startDateTime)
         departureLocation.text = trip.from
-        destinationHour.text = Hour(trip.endDateTime[Calendar.HOUR], trip.endDateTime[Calendar.MINUTE]).toString()
+        destinationDateTime.text = getDateTime(trip.endDateTime)
         destinationLocation.text = trip.to
 
         // Additional stops visualization
-        Log.d(getLogTag(), "Stops{ n=${trip.stops.size}, stops=${trip.stops} }")
         if (trip.stops.size > 0) {
             val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
             recyclerView.layoutManager = LinearLayoutManager(context)
@@ -181,7 +179,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
-        val deltaMinutes = (start.timeInMillis - end.timeInMillis) / (1000*60)
+        val deltaMinutes = (end.timeInMillis - start.timeInMillis) / (1000*60)
         val hours = ((deltaMinutes)/60).toInt()
         val minutes = ((deltaMinutes)%60).toInt()
         return Hour(hours, minutes)
@@ -192,6 +190,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimatedTimeView.text = ("$hours $minutes")
+    }
+
+    private fun getDateTime(item: Calendar) :String {
+        val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(item.timeInMillis).toString()
+        val time = Hour(item[Calendar.HOUR], item[Calendar.MINUTE]).toString()
+        return "$date, $time"
     }
 
 }
