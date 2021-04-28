@@ -27,15 +27,27 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
         private var timePicker: MaterialTimePicker ? = null
         private lateinit var datePicker: MaterialDatePicker<Long>
 
+        private var dateTimeWatcher: Watcher?= null
+        private var placeViewWatcher: Watcher?= null
+
         fun bind(stop: Stop, position: Int) {
             datePicker = getDatePicker(stop.dateTime, dateView)
             remove_button.visibility = View.VISIBLE
+            if (dateTimeWatcher!=null){
+                dateView.editText!!.removeTextChangedListener(dateTimeWatcher)
+                hourView.editText!!.removeTextChangedListener(dateTimeWatcher)
+            }
+
+            if(placeViewWatcher!=null){
+                placeView.editText!!.removeTextChangedListener(placeViewWatcher)
+            }
 
             dateView.error = null
             hourView.error = null
             placeView.error = null
 
-            val dateTimeWatcher = Watcher(
+
+            dateTimeWatcher = Watcher(
                 { val (validStopDate, validStopTime) = trip.checkDateTimeStop(position)
                     !validStopDate || !validStopTime},
                 {
@@ -54,10 +66,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
                     hourView.error = null
                 }
             )
-
-            placeView.editText?.setText(stop.place)
-            placeView.hint = context.getString(R.string.stop) + " ${position+1}"
-            placeView?.editText?.addTextChangedListener(Watcher(
+            placeViewWatcher = Watcher(
                 { placeView.editText?.text?.isEmpty() ?: true },
                 { placeView.error = context.getString(R.string.stop_place_error)
                     stop.place = placeView.editText?.text.toString()
@@ -65,7 +74,10 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
                 { placeView.error = null
                     stop.place = placeView.editText?.text.toString()
                     (context as AppCompatActivity).invalidateOptionsMenu() }
-            ))
+            )
+            placeView.editText?.setText(stop.place)
+            placeView.hint = context.getString(R.string.stop) + " ${position+1}"
+            placeView?.editText?.addTextChangedListener(placeViewWatcher)
 
             remove_button.setOnClickListener {
                 parent.remove(position)
