@@ -25,7 +25,7 @@ class TripStopsViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY).format(item.dateTime.timeInMillis).toString()
-        val time = Hour(item.dateTime[Calendar.HOUR], item.dateTime[Calendar.MINUTE]).toString()
+        val time = Hour(item.dateTime[Calendar.HOUR_OF_DAY], item.dateTime[Calendar.MINUTE]).toString()
 
         holder.stopDateTime.text = "$date, $time"
         holder.stopName.text = item.place
