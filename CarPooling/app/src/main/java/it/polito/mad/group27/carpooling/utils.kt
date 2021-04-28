@@ -177,7 +177,8 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun saveCarImagesToStorage() {
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
-            for ((i, img) in carImages.withIndex()) {
+            val carImagesTmp = if (Build.VERSION.SDK_INT < 26) carImages.subList(0, 5) else carImages
+            for ((i, img) in carImagesTmp.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
                     it?.writeBitmap(
