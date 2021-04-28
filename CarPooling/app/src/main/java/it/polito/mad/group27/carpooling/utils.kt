@@ -111,20 +111,24 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    fun getRandomDateTime() = Calendar.getInstance().also { it.set(2021, 4, days.random(), hours.random(), minutes.random()) }
+    fun getRandomDateTime() = Calendar.getInstance().also { it.set(2022, 4, days.random(), hours.random(), minutes.random()) }
 
     fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil)).replace(",", ".")).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomStops(from: String, to: String, startDateTime: Calendar, endDateTime: Calendar): MutableList<Stop> {
         val res = mutableListOf<Stop>()
         val extractedPlaces = mutableSetOf<String>()
+
         val tripDurationMinutes = TimeUnit.MILLISECONDS.toMinutes(endDateTime.timeInMillis - startDateTime.timeInMillis)
         val stopsNumber = (0..10).random()
+        Log.d(getLogTag(), "Start ${startDateTime.timeInMillis}")
         for (i in 0 until stopsNumber) {
             val place = places.filter { it != from && it != to && !extractedPlaces.contains(it) }.random()
             extractedPlaces.add(place)
-            res.add(Stop(place, Calendar.getInstance()
-                .also { it.add(Calendar.MINUTE, (tripDurationMinutes / stopsNumber).toInt()) }))
+            val stopDateTime =(startDateTime.clone() as Calendar)
+                .also { it.add(Calendar.MINUTE, (i+1)*(tripDurationMinutes / (stopsNumber+1)).toInt())}
+            Log.d(getLogTag(), "Stop ${stopDateTime.timeInMillis}")
+            res.add(Stop(place, stopDateTime))
         }
         return res
     }
@@ -141,7 +145,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomTrip(id: Int): Trip {
         val startDateTime = getRandomDateTime()
-        val endDateTime = startDateTime.also { it.add(Calendar.HOUR, (1..72).random()) }
+        val endDateTime = (startDateTime.clone() as Calendar).also { it.add(Calendar.HOUR, (1..72).random()) }
 
         val totalSeats = (1..6).random()
         val availableSeats = (0..totalSeats).random()
