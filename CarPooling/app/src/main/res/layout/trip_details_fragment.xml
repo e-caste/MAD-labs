@@ -14,27 +14,35 @@
         android:theme="@style/Theme.CarPooling.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/toolbar">
+
             <ImageView
                 android:id="@+id/image_details_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 app:layout_collapseMode="parallax"
+                android:foreground="@drawable/user_profile_gradient"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ford_fiesta"
-                android:visibility="visible" />
+                app:srcCompat="@drawable/ic_baseline_directions_car_24"
+                android:visibility="visible"
+                android:adjustViewBounds="true" />
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:title="Trip details"
+                app:title="@string/trip_to"
                 app:popupTheme="@style/Theme.CarPooling.PopupOverlay"
                 app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Display1"/>
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
