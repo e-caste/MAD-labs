@@ -80,7 +80,7 @@
     <string name="fix_all_errors">Please complete the form correctly</string>
     <string name="trip_prefix" translatable="false">group27.lab2.trips.</string>
     <string name="car_image_prefix" translatable="false">group27.lab2.car_img.</string>
-    <string name="to_date_error">Invalid arrival date</string>
+    <string name="date_error">Invalid date</string>
     <string name="luggage_details">There is room for luggage</string>
     <string name="animals_details">Animals are allowed</string>
     <string name="smokers_details">Smoking allowed</string>
