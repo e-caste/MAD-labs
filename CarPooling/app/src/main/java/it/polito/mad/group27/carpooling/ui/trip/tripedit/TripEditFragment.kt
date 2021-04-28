@@ -331,6 +331,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
             Option.SMOKE to R.id.smokers_switch,
             Option.ANIMALS to R.id.animal_switch)
+        newTrip.options.removeAll { true }
         for ((option, switchId) in optionToSwitch.entries){
             val switch = requireView().findViewById<SwitchMaterial>(switchId)
             if(switch.isChecked)
