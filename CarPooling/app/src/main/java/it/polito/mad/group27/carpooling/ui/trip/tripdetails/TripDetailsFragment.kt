@@ -1,5 +1,7 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
+import android.content.res.Configuration
+import android.graphics.Color
 import android.hardware.SensorAdditionalInfo
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
@@ -42,6 +45,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var additionalInfo: LinearLayout
     private lateinit var optionsView : LinearLayout
     private lateinit var infoText : TextView
+    private lateinit var carImageView: ImageView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -77,9 +81,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         Log.d(getLogTag(),"got from bundle: $trip")
 
+        // Update title only in portrait orientation
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            updateTitle("${getString(R.string.trip_to)} ${trip.to}")
+
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
         expandButton = view.findViewById(R.id.expandButton)
+        carImageView  = view.findViewById(R.id.image_details_view)
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
@@ -95,12 +104,19 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
+        if(trip.carImageUri != null) {
+            carImageView.setImageURI(trip.carImageUri)
+        } else {
+            carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+            carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+        }
+
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
-        dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.date)
+        dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime)
         priceView.text = trip.price.toString()
-        departureHour.text = trip.startHour.toString()
+        departureHour.text = Hour(trip.startDateTime[Calendar.HOUR], trip.startDateTime[Calendar.MINUTE]).toString()
         departureLocation.text = trip.from
-        destinationHour.text = trip.endHour.toString()
+        destinationHour.text = Hour(trip.endDateTime[Calendar.HOUR], trip.endDateTime[Calendar.MINUTE]).toString()
         destinationLocation.text = trip.to
 
         // Additional stops visualization

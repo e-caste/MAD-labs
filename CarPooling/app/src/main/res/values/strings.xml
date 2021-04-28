@@ -85,6 +85,7 @@
     <string name="animals_details">Animals are allowed</string>
     <string name="smokers_details">Smoking allowed</string>
     <string name="additional_information_details">Extra information</string>
+    <string name="trip_to">Trip to</string>
 
 
 </resources>
