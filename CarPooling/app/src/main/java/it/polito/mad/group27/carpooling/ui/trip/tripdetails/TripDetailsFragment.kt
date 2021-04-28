@@ -82,6 +82,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         // Update title only in portrait orientation
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             updateTitle("${getString(R.string.trip_to)} ${trip.to}")
+        else{
+            val fragmentTitle : TextView = view.findViewById(R.id.trip_title_details)
+            fragmentTitle.text = "${getString(R.string.trip_to)} ${trip.to}"
+        }
 
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
@@ -127,22 +131,18 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             recyclerView.adapter = TripStopsViewAdapter(trip.stops)
 
             dropdownListButton.setOnClickListener {
-                val arrowImageView: ImageView = view.findViewById(R.id.expandButton)
-                val recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
-
                 Log.d(getLogTag(), "Touched route list")
-
                 recyclerView.visibility =
-                        when (recyclerView.visibility) {
-                            View.GONE -> {
-                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                                View.VISIBLE
-                            }
-                            else -> {
-                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                                View.GONE
-                            }
+                    when (recyclerView.visibility) {
+                        View.GONE -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                            View.VISIBLE
                         }
+                        else -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                            View.GONE
+                        }
+                    }
             }
         } else expandButton.visibility = View.INVISIBLE
 
@@ -191,7 +191,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     private fun getDateTime(item: Calendar) :String {
-        val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(item.timeInMillis).toString()
+        val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY).format(item.timeInMillis).toString()
         val time = Hour(item[Calendar.HOUR], item[Calendar.MINUTE]).toString()
         return "$date, $time"
     }
