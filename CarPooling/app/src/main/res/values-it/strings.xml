@@ -70,4 +70,5 @@
     <string name="animals_details">Animali ammessi</string>
     <string name="smokers_details">Possibilità di fumare</string>
     <string name="additional_information_details">Informazioni extra</string>
+    <string name="trip_to">Viaggio per</string>
 </resources>
