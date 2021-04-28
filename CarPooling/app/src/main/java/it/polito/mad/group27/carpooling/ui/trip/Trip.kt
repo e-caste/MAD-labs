@@ -25,7 +25,7 @@ object CalendarSerializer: KSerializer<Calendar> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Calendar) {
-        encoder.encodeString(df.format(value))
+        encoder.encodeString(df.format(value.time))
     }
 
     override fun deserialize(decoder: Decoder): Calendar {

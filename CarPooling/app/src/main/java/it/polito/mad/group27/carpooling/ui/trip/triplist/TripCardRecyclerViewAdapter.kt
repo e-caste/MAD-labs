@@ -53,7 +53,7 @@ class TripCardRecyclerViewAdapter(
         holder.departureTextView.text = item.from
         holder.destinationTextView.text = item.to
         holder.hourDepartureTextView.text = Hour(item.startDateTime[Calendar.HOUR], item.startDateTime[Calendar.MINUTE]).toString()
-        holder.dateDepartureTextView.text = dateFormat.format(item.startDateTime)
+        holder.dateDepartureTextView.text = dateFormat.format(item.startDateTime.time)
     }
 
     override fun getItemCount(): Int = values.size
