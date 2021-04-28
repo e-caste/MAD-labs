@@ -112,7 +112,11 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    fun getRandomDateTime() = Calendar.getInstance().set(2021, 4, days.random(), hours.random(), minutes.random())
+    fun getRandomDateTime(): Calendar {
+        val cal = Calendar.getInstance()
+        cal.set(2021, 4, days.random(), hours.random(), minutes.random())
+        return cal
+    }
 
     fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil))).setScale(2, RoundingMode.HALF_EVEN)
 
@@ -138,7 +142,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomTrip(id: Int): Trip {
         val startDateTime = getRandomDateTime()
-        val endDateTime = startDateTime  // TODO: + random timedelta
+        val endDateTime = startDateTime.also { it.add(Calendar.HOUR, (1..72).random()) }
 
         return Trip(
             id = id,
