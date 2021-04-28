@@ -23,6 +23,7 @@ import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment
 import it.polito.mad.group27.carpooling.writeBitmap
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -136,9 +137,15 @@ open class EditFragment(layoutId: Int,
         Log.d(getLogTag(), "$imageUri")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
-        intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
-        intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
+        if(this is EditProfileFragment) {
+            intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+            intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+            intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
+        }else{
+            intent.putExtra("android.intent.extras.CAMERA_FACING", 0)
+            intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 0)
+            intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", false)
+        }
         startActivityForResult(intent, RequestCodes.TAKE_PHOTO.ordinal)
     }
 
@@ -229,7 +236,10 @@ open class EditFragment(layoutId: Int,
             }
             R.id.delete -> {
                 Log.d(getLogTag(), "deleting picture...")
-                imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                if(this is EditProfileFragment)
+                    imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                else
+                    imageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
                 image = null
                 imageChanged = true
                 return true
