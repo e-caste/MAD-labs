@@ -20,7 +20,7 @@ import java.util.*
 
 @Serializer(forClass = Date::class)
 object CalendarSerializer: KSerializer<Calendar> {
-    private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm")
+    private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
 

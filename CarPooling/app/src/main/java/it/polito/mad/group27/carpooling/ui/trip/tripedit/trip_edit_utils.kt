@@ -19,6 +19,7 @@ import java.text.DateFormat
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.min
 
 val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
 val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
@@ -53,7 +54,11 @@ fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicke
             .setCalendarConstraints(constraintsBuilder.build())
             .build()
     datePicker.addOnPositiveButtonClickListener {
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
         calendar.timeInMillis = datePicker.selection!!
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
         view.editText?.setText(df.format(calendar.time))
     }
     return datePicker
