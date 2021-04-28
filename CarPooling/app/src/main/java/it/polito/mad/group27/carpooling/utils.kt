@@ -120,7 +120,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         val extractedPlaces = mutableSetOf<String>()
         val tripDurationMinutes = TimeUnit.MILLISECONDS.toMinutes(endDateTime.timeInMillis - startDateTime.timeInMillis)
         val stopsNumber = (0..10).random()
-        for (i in 0..stopsNumber) {
+        for (i in 0 until stopsNumber) {
             val place = places.filter { it != from && it != to && !extractedPlaces.contains(it) }.random()
             extractedPlaces.add(place)
             res.add(Stop(place, Calendar.getInstance()
