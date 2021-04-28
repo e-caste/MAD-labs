@@ -223,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="1dp"
                         android:layout_marginLeft="1dp"
-                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        app:srcCompat="@drawable/ic_baseline_calendar_today_24"
                         android:contentDescription="calendar icon shadow"
                         app:tint="#444444" />
 
@@ -231,7 +231,7 @@
                         android:id="@+id/calendar_image"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        app:srcCompat="@drawable/ic_baseline_calendar_today_24"
                         android:contentDescription="calendar icon"
                         app:tint="#FFFFFF" />
                 </FrameLayout>
