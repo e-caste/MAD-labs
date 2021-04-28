@@ -278,7 +278,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
-        val delta_minutes = (start.timeInMillis - end.timeInMillis) / (1000*60)
+        val delta_minutes = (end.timeInMillis - start.timeInMillis) / (1000*60)
         val hours = ((delta_minutes)/60).toInt()
         val minutes = ((delta_minutes)%60).toInt()
         return Hour(hours, minutes)
@@ -294,6 +294,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
         this.set(Calendar.HOUR_OF_DAY, timePicker.hour)
         this.set(Calendar.MINUTE, timePicker.minute)
+        Log.d(getLogTag(), "update time to : ${timePicker.hour} : ${timePicker.minute}")
         setEstimatedTime()
         return this
     }
