@@ -64,8 +64,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private lateinit var datePickerFrom: MaterialDatePicker<Long>
     private lateinit var datePickerTo: MaterialDatePicker<Long>
-    private lateinit var timePickerFrom: MaterialTimePicker
-    private lateinit var timePickerTo: MaterialTimePicker
+    private var timePickerFrom: MaterialTimePicker? = null
+    private var timePickerTo: MaterialTimePicker? = null
     private lateinit var estimated_time: TextView
 
     private val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
@@ -159,7 +159,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
         from_hour.editText?.setText(Hour(newTrip.startDateTime).toString())
         from_hour.editText?.setOnClickListener {
-            if(!timePickerFrom.isVisible) {
+            if(timePickerFrom==null || !timePickerFrom!!.isVisible) {
                 timePickerFrom = getTimePicker(
                     from_hour.editText!!,
                     newTrip.startDateTime,
@@ -186,14 +186,14 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
         to_hour.editText?.setText(Hour(newTrip.endDateTime).toString())
         to_hour.editText?.setOnClickListener {
-            if(!timePickerTo.isVisible) {
+            if(timePickerTo==null || !timePickerTo!!.isVisible) {
                 timePickerTo = getTimePicker(
                     to_hour.editText!!,
                     newTrip.endDateTime,
                     this.requireContext()){
                     newTrip.endDateTime.updateTime(it)
                 }
-                timePickerTo.show(requireActivity().supportFragmentManager, "timePickerTag")
+                timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
         to_date.editText?.setText(df.format(newTrip.endDateTime.time))

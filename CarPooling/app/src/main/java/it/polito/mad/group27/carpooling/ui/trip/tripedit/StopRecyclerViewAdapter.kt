@@ -24,7 +24,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
         private val hourView = v.findViewById<TextInputLayout>(R.id.stop_hour)
         private val dateView  = v.findViewById<TextInputLayout>(R.id.stop_date)
         private val remove_button = v.findViewById<ImageView>(R.id.remove_stop_button)
-        private lateinit var timePicker: MaterialTimePicker
+        private var timePicker: MaterialTimePicker ? = null
         private lateinit var datePicker: MaterialDatePicker<Long>
 
         fun bind(stop: Stop, position: Int) {
@@ -69,7 +69,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
 
             hourView.editText?.setText(Hour(stop.dateTime).toString())
             hourView.editText?.setOnClickListener {
-                if (!timePicker.isVisible) {
+                if (timePicker ==null || !timePicker!!.isVisible) {
                     timePicker = getTimePicker(
                         hourView.editText!!,
                         stop.dateTime,
@@ -77,7 +77,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
                     ) {
                         stop.dateTime.updateTime(it)
                     }
-                    timePicker.show(
+                    timePicker!!.show(
                         (context as AppCompatActivity).getSupportFragmentManager(),
                         "timePickerTag"
                     )
