@@ -12,7 +12,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import java.io.OutputStream
-import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
@@ -23,7 +22,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
-import kotlin.math.round
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random.Default.nextDouble
 
 
@@ -112,18 +111,20 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    // Date is a deprecated class. I can see why...
-    fun getRandomDate() = Date(2021 - 1900, 4, days.random())
+    fun getRandomDateTime() = Calendar.getInstance().also { it.set(2021, 4, days.random(), hours.random(), minutes.random()) }
 
-    // BigDecimals are evil and I'm not sure we need them
     fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil))).setScale(2, RoundingMode.HALF_EVEN)
 
-    fun getRandomHour() = Hour(hours.random(), minutes.random())
-
-    fun getRandomStops(): MutableList<Stop> {
+    fun getRandomStops(from: String, to: String, startDateTime: Calendar, endDateTime: Calendar): MutableList<Stop> {
         val res = mutableListOf<Stop>()
-        for (i in 0..(0..10).random()) {
-            res.add(Stop(places.random(), getRandomHour()))
+        val extractedPlaces = mutableSetOf<String>()
+        val tripDurationMinutes = TimeUnit.MILLISECONDS.toMinutes(endDateTime.timeInMillis - startDateTime.timeInMillis)
+        val stopsNumber = (0..10).random()
+        for (i in 0..stopsNumber) {
+            val place = places.filter { it != from && it != to && !extractedPlaces.contains(it) }.random()
+            extractedPlaces.add(place)
+            res.add(Stop(place, Calendar.getInstance()
+                .also { it.add(Calendar.MINUTE, (tripDurationMinutes / stopsNumber).toInt()) }))
         }
         return res
     }
@@ -138,20 +139,37 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         return res
     }
 
-    fun getRandomTrip(id: Int) = Trip(
-        id = id,
-        carImageUri = getRandomImageUri(),
-        date = getRandomDate(),
-        totalSeats = (1..6).random(),
-        availableSeats = 1,
-        price = getRandomPrice(),
-        startHour = getRandomHour(),
-        endHour = getRandomHour(),
-        from = places.random(),
-        to = places.random(),
-        stops = getRandomStops(),
-        options = getRandomOptions(),
-    )
+    fun getRandomTrip(id: Int): Trip {
+        val startDateTime = getRandomDateTime()
+        val endDateTime = startDateTime.also { it.add(Calendar.HOUR, (1..72).random()) }
+
+        val totalSeats = (1..6).random()
+        val availableSeats = (0..totalSeats).random()
+
+        val from = places.random()
+        val to = places.filter { it != from }.random()
+
+        val otherInformation = {
+            val addInfo = (0..1).random()
+            if (addInfo == 1) "This is some other information about this trip."
+            else null
+        }()
+
+        return Trip(
+            id = id,
+            carImageUri = getRandomImageUri(),
+            totalSeats = totalSeats,
+            availableSeats = availableSeats,
+            price = getRandomPrice(),
+            startDateTime = startDateTime,
+            endDateTime = endDateTime,
+            from = from,
+            to = to,
+            stops = getRandomStops(from, to, startDateTime, endDateTime),
+            options = getRandomOptions(),
+            otherInformation = otherInformation,
+        )
+    }
 
     fun saveCarImagesToStorage() {
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
