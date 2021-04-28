@@ -85,7 +85,7 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
             }
             hourView.editText?.addTextChangedListener(dateTimeWatcher)
 
-            dateView.editText?.setText(df.format(stop.dateTime))
+            dateView.editText?.setText(df.format(stop.dateTime.time))
             dateView.editText?.setOnClickListener {
                 if(!datePicker.isVisible)
                     datePicker.show((context as AppCompatActivity).getSupportFragmentManager(), "datePickerTag")
