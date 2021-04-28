@@ -69,7 +69,7 @@ object BigDecimalSerializer: KSerializer<BigDecimal> {
 @Serializable
 @Parcelize
 data class Trip(
-    var id: Long = -1,
+    var id: Int = -1,
     @Serializable(with=UriSerializer::class)
     var carImageUri: Uri? = null,
     var totalSeats: Int? = null,

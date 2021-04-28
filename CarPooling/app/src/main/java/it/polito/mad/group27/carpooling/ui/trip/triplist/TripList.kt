@@ -32,7 +32,17 @@ class TripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    private val trips: MutableList<Trip> = mutableListOf()
+    companion object{
+        var trips: MutableList<Trip> = mutableListOf()
+
+        fun notifyAdded(newTrip: Trip) {
+            trips.add(newTrip)
+        }
+
+        fun notifyModified(id: Int, updatedTrip : Trip) {
+            trips = trips.map { if(it.id == id) updatedTrip else it}.toMutableList()
+        }
+    }
     private val displayMetrics: DisplayMetrics = DisplayMetrics()
     lateinit var counterName:String
     lateinit var tripPrefix:String
@@ -59,7 +69,7 @@ class TripList: BaseFragmentWithToolbar(
 
     private fun loadTripsFromStorage() {
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val savedTripsCounter = prefs?.getString(counterName, null)?.toInt()
+        val savedTripsCounter = prefs?.getInt(counterName, 0)
         if (savedTripsCounter != null) {
             for (i in 0 until savedTripsCounter) {
                 try {
@@ -129,4 +139,6 @@ class TripList: BaseFragmentWithToolbar(
             Log.d(getLogTag(), "saved to bundle: trip $i")
         }
     }
+
+
 }
