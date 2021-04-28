@@ -19,6 +19,8 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.text.DateFormat
 import java.util.*
 
@@ -169,7 +171,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 Log.d(getLogTag(),"Passing bundle of $trip")
                 findNavController().navigate(
                         R.id.action_tripDetailsFragment_to_tripEditFragment,
-                        bundleOf("trip" to trip))
+                        bundleOf("trip" to Json.encodeToString(trip)))
             }
             else-> return super.onOptionsItemSelected(item)
         }

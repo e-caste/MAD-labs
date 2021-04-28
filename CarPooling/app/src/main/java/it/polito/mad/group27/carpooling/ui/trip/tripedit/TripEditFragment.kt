@@ -35,6 +35,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.triplist.TripList
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -80,8 +81,20 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // get trip from bundle
-        trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        if(arguments?.getString("trip")==null) {
+            trip =  Trip()
+        }else {
+            try{
+                trip = Json.decodeFromString<Trip>(requireArguments().getString("trip")!!) ?: Trip()
+
+            }catch (e:Throwable){
+                trip= Trip()
+            }
+        }
+        if(trip.id==-1)
+            updateTitle(getString(R.string.add_trip))
         newTrip = trip.copy()
         Log.d(getLogTag(), "got from bundle trip: $trip")
 

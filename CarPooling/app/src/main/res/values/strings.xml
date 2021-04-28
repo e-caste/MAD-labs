@@ -86,6 +86,7 @@
     <string name="smokers_details">Smoking allowed</string>
     <string name="additional_information_details">Extra information</string>
     <string name="trip_to">Trip to</string>
+    <string name="add_trip">Add trip</string>
 
 
 </resources>
