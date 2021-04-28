@@ -106,10 +106,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
+        carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
         if(trip.carImageUri != null) {
             carImageView.setImageURI(trip.carImageUri)
         } else {
-            carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
             carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
         }
 
@@ -189,7 +189,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val time = getEstimatedTime(trip.startDateTime, trip.endDateTime)
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
-        estimatedTimeView.text = ( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
+        estimatedTimeView.text = ("$hours $minutes")
     }
 
 }
