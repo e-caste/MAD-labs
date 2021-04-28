@@ -50,7 +50,7 @@ fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicke
             .setValidator(DateValidatorPointForward.now())
     val datePicker =
         MaterialDatePicker.Builder.datePicker()
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setSelection(calendar.timeInMillis)
             .setCalendarConstraints(constraintsBuilder.build())
             .build()
     datePicker.addOnPositiveButtonClickListener {
