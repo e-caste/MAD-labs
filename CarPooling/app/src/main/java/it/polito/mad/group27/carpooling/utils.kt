@@ -109,7 +109,11 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
     val minutes = (0..59)
     val priceUntil = 10000.0
 
-    fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
+    val carImagesTmp = if (Build.VERSION.SDK_INT < 26) carImages.subList(0, 5) else carImages
+    val imageHeight = if (Build.VERSION.SDK_INT < 26) 240 else 720
+    val tripsNumberTmp = if (Build.VERSION.SDK_INT < 26) 10 else tripsNumber
+
+    fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImagesTmp.indices.random()}").toUri()
 
     fun getRandomDateTime() = Calendar.getInstance().also { it.set(2022, 4, days.random(), hours.random(), minutes.random()) }
 
@@ -177,7 +181,6 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun saveCarImagesToStorage() {
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
-            val carImagesTmp = if (Build.VERSION.SDK_INT < 26) carImages.subList(0, 5) else carImages
             for ((i, img) in carImagesTmp.withIndex()) {
                 val bitmap = BitmapFactory.decodeResource(resources, img)
                 activity?.openFileOutput("$carImagePrefix$i", Context.MODE_PRIVATE).use {
@@ -185,7 +188,7 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
                         bitmap,
                         Bitmap.CompressFormat.JPEG,
                         100,
-                        if (Build.VERSION.SDK_INT >= 26) 720 else 240,
+                        imageHeight,
                     )
                 }
                 Log.d(getLogTag(), "saved car image $carImagePrefix$i to storage")
@@ -211,7 +214,6 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         }
     }
 
-    val tripsNumberTmp = if (Build.VERSION.SDK_INT < 26) 10 else tripsNumber
     saveCarImagesToStorage()
     val trips = (0 until tripsNumberTmp).map { getRandomTrip(it) }
     saveTripsToStorage(trips)
