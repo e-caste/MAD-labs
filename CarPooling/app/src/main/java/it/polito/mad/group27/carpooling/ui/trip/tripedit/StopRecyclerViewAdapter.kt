@@ -31,12 +31,16 @@ class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
             datePicker = getDatePicker(stop.dateTime, dateView)
             remove_button.visibility = View.VISIBLE
 
+            dateView.error = null
+            hourView.error = null
+            placeView.error = null
+
             val dateTimeWatcher = Watcher(
                 { val (validStopDate, validStopTime) = trip.checkDateTimeStop(position)
-                    validStopDate || validStopTime},
+                    !validStopDate || !validStopTime},
                 {
                     val (validStopDate, validStopTime) = trip.checkDateTimeStop(position)
-                    if(validStopDate){
+                    if(!validStopDate){
                         dateView.error = context.getString(R.string.date_error)
                         hourView.error = null
                     }

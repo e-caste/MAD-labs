@@ -20,7 +20,7 @@ import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
 val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
 
 fun getTimePicker(view: EditText, hour: Calendar, context: Context, update: (MaterialTimePicker) -> Calendar): MaterialTimePicker {
@@ -30,7 +30,7 @@ fun getTimePicker(view: EditText, hour: Calendar, context: Context, update: (Mat
     val timePicker =
         MaterialTimePicker.Builder()
             .setTimeFormat(clockFormat)
-            .setHour(hour.get(Calendar.HOUR))
+            .setHour(hour.get(Calendar.HOUR_OF_DAY))
             .setMinute(hour.get(Calendar.MINUTE))
             .build()
     timePicker.addOnPositiveButtonClickListener {
@@ -60,7 +60,7 @@ fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicke
 }
 
 fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
-    this.set(Calendar.HOUR, timePicker.hour)
+    this.set(Calendar.HOUR_OF_DAY, timePicker.hour)
     this.set(Calendar.MINUTE, timePicker.minute)
     return this
 }
@@ -77,36 +77,29 @@ fun Trip.checkDateTimeStop(position: Int) : Pair<Boolean, Boolean>{
             validStopDate = false
         }
         else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.startDateTime.time)
-            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() <=
-            Hour(newTrip.startDateTime.get(Calendar.HOUR), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
+            && Hour(stop.dateTime.get(Calendar.HOUR_OF_DAY), stop.dateTime.get(Calendar.MINUTE)).toString() <=
+            Hour(newTrip.startDateTime.get(Calendar.HOUR_OF_DAY), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
-    }else if(position == newTrip.stops.size -1){
+    }
+    if(position == newTrip.stops.size -1){
         if(YYYYMMDD.format(stop.dateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)){
             validStopDate = false
         }
         else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
-            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-            Hour(newTrip.endDateTime.get(Calendar.HOUR), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
+            && Hour(stop.dateTime.get(Calendar.HOUR_OF_DAY), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            Hour(newTrip.endDateTime.get(Calendar.HOUR_OF_DAY), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
+    }
 
+    if(position > 0){
         if(YYYYMMDD.format(stop.dateTime.time) < YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)){
             validStopDate = false
         }
         else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)
-            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-            Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
-            validStopTime = false
-        }
-
-    }else{
-        if(YYYYMMDD.format(stop.dateTime.time) < YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)){
-            validStopDate = false
-        }
-        else if (YYYYMMDD.format(stop.dateTime.time) == YYYYMMDD.format(newTrip.stops[position-1].dateTime.time)
-            && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-            Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
+            && Hour(stop.dateTime.get(Calendar.HOUR_OF_DAY), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+            Hour(newTrip.stops[position-1].dateTime.get(Calendar.HOUR_OF_DAY), newTrip.stops[position-1].dateTime.get(Calendar.MINUTE)).toString()){
             validStopTime = false
         }
     }
