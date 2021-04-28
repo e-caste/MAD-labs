@@ -203,7 +203,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private fun getDateTime(item: Calendar) :String {
         val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY).format(item.timeInMillis).toString()
-        val time = Hour(item[Calendar.HOUR], item[Calendar.MINUTE]).toString()
+        val time = Hour(item[Calendar.HOUR_OF_DAY], item[Calendar.MINUTE]).toString()
         return "$date, $time"
     }
 
