@@ -68,8 +68,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private lateinit var timePickerTo: MaterialTimePicker
     private lateinit var estimated_time: TextView
 
-    val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
-    val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
+    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+    private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyddMM")
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -110,7 +110,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             },
             {
                 if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
-                    to_date.error = getString(R.string.to_date_error)
+                    to_date.error = getString(R.string.date_error)
                     to_hour.error = null
                 } else {
                     to_hour.error = getString(R.string.edit_to_hour_error)
@@ -239,13 +239,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         stops_rv.layoutManager = LinearLayoutManager(this.context)
         stops_rv.adapter = StopRecyclerViewAdapter(newTrip, this.requireContext())
 
-        val remove_button = view.findViewById<Button>(R.id.remove_button)
-        remove_button.visibility = if(newTrip.stops.size == 0)  View.INVISIBLE else View.VISIBLE
-        remove_button.setOnClickListener {
-            (stops_rv.adapter as StopRecyclerViewAdapter).remove()
-            if (newTrip.stops.size == 0)
-                remove_button.visibility = View.GONE
-        }
 
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
@@ -262,8 +255,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             calendar_init.set(Calendar.HOUR, 0)
                             calendar_init.set(Calendar.MINUTE, 0)
                 (stops_rv.adapter as StopRecyclerViewAdapter).add(Stop("", calendar_init ))
-                if (newTrip.stops.size > 0)
-                    remove_button.visibility = View.VISIBLE
             }else{
                 Snackbar.make(requireView(),  getString(R.string.toast_complete_previous_stop), Snackbar.LENGTH_LONG).show()
             }
@@ -382,7 +373,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
         if (YYYYMMDD.format(newTrip.startDateTime) > YYYYMMDD.format(newTrip.endDateTime)) {
-            to_date.error = getString(R.string.to_date_error)
+            to_date.error = getString(R.string.date_error)
             to_hour.error = null
             valid = false
         } else if(YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
@@ -396,46 +387,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
         for ((idx, stop) in newTrip.stops.withIndex()){
-            var validStopTime = true
-            var validStopDate = true
-            if(idx == 0){
-                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.startDateTime)){
-                    validStopDate = false
-                }
-                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.startDateTime)
-                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() <=
-                    Hour(newTrip.startDateTime.get(Calendar.HOUR), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
-                    validStopTime = false
-                }
-            }else if(idx== newTrip.stops.size -1){
-                if(YYYYMMDD.format(stop.dateTime) > YYYYMMDD.format(newTrip.endDateTime)){
-                    validStopDate = false
-                }
-                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.endDateTime)
-                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-                    Hour(newTrip.endDateTime.get(Calendar.HOUR), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
-                    validStopTime = false
-                }
-
-                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[idx-1].dateTime)){
-                    validStopDate = false
-                }
-                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[idx-1].dateTime)
-                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-                    Hour(newTrip.stops[idx-1].dateTime.get(Calendar.HOUR), newTrip.stops[idx-1].dateTime.get(Calendar.MINUTE)).toString()){
-                    validStopTime = false
-                }
-
-            }else{
-                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[idx-1].dateTime)){
-                    validStopDate = false
-                }
-                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[idx-1].dateTime)
-                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
-                    Hour(newTrip.stops[idx-1].dateTime.get(Calendar.HOUR), newTrip.stops[idx-1].dateTime.get(Calendar.MINUTE)).toString()){
-                    validStopTime = false
-                }
-            }
+            val (validStopDate, validStopTime) = newTrip.checkDateTimeStop(idx)
 
             if(!validStopTime){
                 valid = false
