@@ -392,7 +392,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             }
             if(!validStopDate){
                 valid = false
-                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_date).error = getString(R.string.stop_hour_error)
+                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_date).error = getString(R.string.date_error)
             }
 
             if(stop.place.trim()==""){
