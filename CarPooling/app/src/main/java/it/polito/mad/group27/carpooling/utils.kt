@@ -112,10 +112,8 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
 
     fun getRandomImageUri() = File(activity?.filesDir, "${carImagePrefix}${carImages.indices.random()}").toUri()
 
-    // Date is a deprecated class. I can see why...
-    fun getRandomDate() = Date(2021 - 1900, 4, days.random())
+    fun getRandomDateTime() = Calendar.getInstance().set(2021, 4, days.random(), hours.random(), minutes.random())
 
-    // BigDecimals are evil and I'm not sure we need them
     fun getRandomPrice() = BigDecimal("%.2f".format(nextDouble(priceUntil))).setScale(2, RoundingMode.HALF_EVEN)
 
     fun getRandomHour() = Hour(hours.random(), minutes.random())
@@ -138,20 +136,24 @@ fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boo
         return res
     }
 
-    fun getRandomTrip(id: Int) = Trip(
-        id = id,
-        carImageUri = getRandomImageUri(),
-        date = getRandomDate(),
-        totalSeats = (1..6).random(),
-        availableSeats = 1,
-        price = getRandomPrice(),
-        startHour = getRandomHour(),
-        endHour = getRandomHour(),
-        from = places.random(),
-        to = places.random(),
-        stops = getRandomStops(),
-        options = getRandomOptions(),
-    )
+    fun getRandomTrip(id: Int): Trip {
+        val startDateTime = getRandomDateTime()
+        val endDateTime = startDateTime  // TODO: + random timedelta
+
+        return Trip(
+            id = id,
+            carImageUri = getRandomImageUri(),
+            totalSeats = (1..6).random(),
+            availableSeats = 1,
+            price = getRandomPrice(),
+            startDateTime = startDateTime,
+            endDateTime = endDateTime,
+            from = places.random(),
+            to = places.random(),
+            stops = getRandomStops(),
+            options = getRandomOptions(),
+        )
+    }
 
     fun saveCarImagesToStorage() {
         if (!File(activity?.filesDir, "${carImagePrefix}0").exists() || forceReset) {
