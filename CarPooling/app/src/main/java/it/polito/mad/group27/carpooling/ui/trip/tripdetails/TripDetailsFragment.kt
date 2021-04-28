@@ -25,7 +25,7 @@ import java.text.DateFormat
 import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
-    R.menu.show_menu, null) {
+        R.menu.show_menu, null) {
     // TODO insert title customized (Trip to .... ) (?)
     private lateinit var viewModel: TripDetailsViewModel
     private lateinit var dropdownListButton : LinearLayout
@@ -34,6 +34,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var trip : Trip
     private lateinit var seatsView : TextView
     private lateinit var dateView : TextView
+    private lateinit var estimatedTimeView: TextView
     private lateinit var priceView : TextView
     private lateinit var departureHour : TextView
     private lateinit var departureLocation : TextView
@@ -89,6 +90,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         dropdownListButton = view.findViewById(R.id.startTripView)
         expandButton = view.findViewById(R.id.expandButton)
         carImageView  = view.findViewById(R.id.image_details_view)
+        estimatedTimeView = view.findViewById(R.id.estimated_time_details)
         seatsView = view.findViewById(R.id.showTripSeats)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
@@ -113,6 +115,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
         dateView.text =  DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime)
+        setEstimatedTime()
         priceView.text = trip.price.toString()
         departureHour.text = Hour(trip.startDateTime[Calendar.HOUR], trip.startDateTime[Calendar.MINUTE]).toString()
         departureLocation.text = trip.from
@@ -132,16 +135,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 Log.d(getLogTag(),"Touched route list")
 
                 recyclerView.visibility =
-                    when(recyclerView.visibility) {
-                        View.GONE -> {
-                            arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                            View.VISIBLE
+                        when(recyclerView.visibility) {
+                            View.GONE -> {
+                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                                View.VISIBLE
+                            }
+                            else -> {
+                                arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                                View.GONE
+                            }
                         }
-                        else -> {
-                            arrowImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                            View.GONE
-                        }
-                    }
             }
         }
 
@@ -173,6 +176,20 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             else-> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
+        val deltaMinutes = (start.timeInMillis - end.timeInMillis) / (1000*60)
+        val hours = ((deltaMinutes)/60).toInt()
+        val minutes = ((deltaMinutes)%60).toInt()
+        return Hour(hours, minutes)
+    }
+
+    private fun setEstimatedTime(){
+        val time = getEstimatedTime(trip.startDateTime, trip.endDateTime)
+        val hours = if (time.hour > 0) "${time.hour} h" else ""
+        val minutes = if (time.minute > 0) "${time.minute} min" else ""
+        estimatedTimeView.text = ( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
     }
 
 }
