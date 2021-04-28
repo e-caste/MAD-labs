@@ -385,7 +385,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             to_date.error = getString(R.string.to_date_error)
             to_hour.error = null
             valid = false
-        } else {
+        } else if(YYYYMMDD.format(newTrip.startDateTime) == YYYYMMDD.format(newTrip.endDateTime)
+            && from_hour.editText?.text.toString() > to_hour.editText?.text.toString()) {
             to_hour.error = getString(R.string.edit_to_hour_error)
             to_date.error = null
             valid = false
@@ -396,16 +397,42 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         for ((idx, stop) in newTrip.stops.withIndex()){
             var validStopTime = true
+            var validStopDate = true
             if(idx == 0){
-                if(stop.hour.toString() <= newTrip.startHour.toString()){
+                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.startDateTime)){
+                    validStopDate = false
+                }
+                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.startDateTime)
+                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() <=
+                    Hour(newTrip.startDateTime.get(Calendar.HOUR), newTrip.startDateTime.get(Calendar.MINUTE)).toString()){
                     validStopTime = false
                 }
             }else if(idx== newTrip.stops.size -1){
-                if(stop.hour.toString() >= newTrip.endHour.toString()){
+                if(YYYYMMDD.format(stop.dateTime) > YYYYMMDD.format(newTrip.endDateTime)){
+                    validStopDate = false
+                }
+                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.endDateTime)
+                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+                    Hour(newTrip.endDateTime.get(Calendar.HOUR), newTrip.endDateTime.get(Calendar.MINUTE)).toString()){
                     validStopTime = false
                 }
+
+                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[idx-1].dateTime)){
+                    validStopDate = false
+                }
+                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[idx-1].dateTime)
+                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+                    Hour(newTrip.stops[idx-1].dateTime.get(Calendar.HOUR), newTrip.stops[idx-1].dateTime.get(Calendar.MINUTE)).toString()){
+                    validStopTime = false
+                }
+
             }else{
-                if(stop.hour.toString() <= newTrip.stops[idx-1].hour.toString()){
+                if(YYYYMMDD.format(stop.dateTime) < YYYYMMDD.format(newTrip.stops[idx-1].dateTime)){
+                    validStopDate = false
+                }
+                else if (YYYYMMDD.format(stop.dateTime) == YYYYMMDD.format(newTrip.stops[idx-1].dateTime)
+                    && Hour(stop.dateTime.get(Calendar.HOUR), stop.dateTime.get(Calendar.MINUTE)).toString() >=
+                    Hour(newTrip.stops[idx-1].dateTime.get(Calendar.HOUR), newTrip.stops[idx-1].dateTime.get(Calendar.MINUTE)).toString()){
                     validStopTime = false
                 }
             }
@@ -413,6 +440,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             if(!validStopTime){
                 valid = false
                 stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_hour).error = getString(R.string.stop_hour_error)
+            }
+            if(!validStopDate){
+                valid = false
+                stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_date).error = getString(R.string.stop_hour_error)
             }
 
             if(stop.place.trim()==""){
