@@ -65,7 +65,7 @@
     <string name="from">Da</string>
     <string name="to">A</string>
     <string name="fix_all_errors">Completa il form correttamente</string>
-    <string name="to_date_error">Data di arrivo non valida</string>
+    <string name="date_error">Data non valida</string>
     <string name="luggage_details">Spazio per bagagli</string>
     <string name="animals_details">Animali ammessi</string>
     <string name="smokers_details">Possibilità di fumare</string>
