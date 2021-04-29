@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "378735075553",
+    "project_id": "madcarpooling",
+    "storage_bucket": "madcarpooling.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378735075553:android:e8d4a3df2570f8aa6d17a0",
+        "android_client_info": {
+          "package_name": "it.polito.mad.group27.carpooling"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378735075553-h6c25dor8tqia5bfc8noteum2dg2c6p2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh_8g9eNWt7whkJxWTGreAKulMSEcIXtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378735075553-h6c25dor8tqia5bfc8noteum2dg2c6p2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
