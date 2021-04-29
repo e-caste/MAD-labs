@@ -66,7 +66,7 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         nickNameView.text = profile.nickName
         emailView.text = profile.email
         locationView.text = profile.location
-        registrationDateView.text = profile.registrationDate
+        registrationDateView.text = profile.registrationDate.toString() // TODO fix format
         reputationBar.rating = profile.rating
     }
 
