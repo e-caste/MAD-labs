@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             signIn()
         } else {
             Log.d(TAG,"current user: ${currentUser.uid}, ${currentUser.displayName}, ${currentUser.email}, ${currentUser.photoUrl}")
-            loadProfile(Profile(currentUser.displayName,currentUser.displayName,currentUser.email))
+            loadProfile(Profile(currentUser.displayName,currentUser.photoUrl,currentUser.email))
         }
     }
 
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(getLogTag(), "Cannot parse saved preference profile")
                 }
             } else {
-                profile = Profile()
+                profile = Profile("dummyUid")
             }
         }
 

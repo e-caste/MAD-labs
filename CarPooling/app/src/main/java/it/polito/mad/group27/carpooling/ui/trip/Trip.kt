@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import it.polito.mad.group27.carpooling.Profile
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -73,6 +74,7 @@ data class Trip(
     @Serializable(with=UriSerializer::class)
     var carImageUri: Uri? = null,
     var totalSeats: Int? = null,
+    @Deprecated("Will no longer be used, use the list size")
     var availableSeats: Int? = null,
     @Serializable(with=BigDecimalSerializer::class)
     var price: BigDecimal? = null,
@@ -88,7 +90,9 @@ data class Trip(
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
-    var otherInformation: String? = null
+    var otherInformation: String? = null,
+    val acceptedUsersUids: MutableList<String> = mutableListOf(),
+    val interestedUsersUids: MutableList<String> = mutableListOf()
 ): Parcelable
 
 @Serializable

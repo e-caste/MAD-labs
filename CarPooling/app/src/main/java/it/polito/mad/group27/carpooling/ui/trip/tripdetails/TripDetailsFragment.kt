@@ -119,7 +119,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
 
-        seatsView.text = "${trip.availableSeats}/${trip.totalSeats}"
+        (trip.availableSeats.toString() + "/" + trip.totalSeats).also { seatsView.text = it }
         dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime.time)
         setEstimatedTime()
         priceView.text = trip.price.toString()
