@@ -2,19 +2,25 @@ package it.polito.mad.group27.carpooling.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.getLogTag
 
 
 open class BaseFragmentWithToolbar(layoutId: Int,
                                    private val optionsMenuId: Int,
                                    private val titleId: Int?): Fragment(layoutId) {
     protected lateinit var act :MainActivity
+
+    private var toolbarLayout: CollapsingToolbarLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +40,7 @@ open class BaseFragmentWithToolbar(layoutId: Int,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-
+        toolbarLayout =  view?.findViewById(R.id.toolbar_layout)
 
         act.setSupportActionBar(toolbar)
         act.setupActionBarWithNavController(findNavController(), act.appBarConfiguration)
@@ -42,7 +48,8 @@ open class BaseFragmentWithToolbar(layoutId: Int,
     }
 
     fun updateTitle(title: String){
-        act.supportActionBar?.title = title
+        Log.d(getLogTag(), "updating title with $title...")
+        toolbarLayout?.title= title
     }
 
 }
