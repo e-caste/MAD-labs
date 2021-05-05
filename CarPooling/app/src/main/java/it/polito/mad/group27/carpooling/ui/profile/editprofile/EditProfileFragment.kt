@@ -9,6 +9,7 @@ import android.util.Patterns
 import android.view.*
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -21,7 +22,6 @@ import java.io.File
 
 class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
-    private lateinit var viewModel: EditProfileViewModel
 
     private lateinit var imageButton: FloatingActionButton
     private lateinit var fullNameEdit: TextInputLayout
@@ -31,11 +31,13 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
     private lateinit var profileTmp: Profile
 
+    private lateinit var profileViewModel: ProfileViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditProfileViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        profileViewModel = ViewModelProvider(act).get(ProfileViewModel::class.java)
+        profileTmp = profileViewModel.profile.value?.copy() ?: Profile()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -65,11 +67,10 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         emailEdit = view.findViewById(R.id.emailEdit)
         locationEdit = view.findViewById(R.id.locationEdit)
 
-        profileTmp = act.profile.copy()
-        image = act.profileImage
 
-        if(image!=null)
-            imageView.setImageBitmap(image)
+
+        if(profileTmp.profileImageUri!=null)
+            Glide.with(this).load(profileTmp.profileImageUri).into(imageView);
         fullNameEdit.editText!!.setText(profileTmp.fullName)
         nickNameEdit.editText!!.setText(profileTmp.nickName)
         emailEdit.editText!!.setText(profileTmp.email)
@@ -134,7 +135,6 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     }
 
     private fun saveProfile() {
-        saveImg(getString(R.string.profile_image))
 
         profileTmp.fullName = fullNameEdit.editText!!.text.toString()
         profileTmp.nickName = nickNameEdit.editText!!.text.toString()
@@ -142,8 +142,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         profileTmp.location = locationEdit.editText!!.text.toString()
 
 
-        writeParcelable(profileTmp, getString(R.string.saved_profile_preference))
-        act.loadProfile(profileTmp)
+        profileViewModel.updateProfile(profileTmp)
     }
 
 

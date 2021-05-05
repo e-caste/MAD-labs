@@ -1,16 +1,22 @@
 package it.polito.mad.group27.carpooling
 
 import android.os.Parcelable
+import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class Profile (
+data class Profile(
+    val uid: String?=null,
+    var profileImageUri: String? = null,
     var fullName: String = "John Smith",
     var nickName: String = "MadJohn",
     var email: String = "john.smith@polito.it",
     var location: String = "Turin, Italy",
-    var registrationDate: String = "25/03/2021",
-    var rating: Float = 4.5f,
-): Parcelable
+    @Contextual
+    var registrationDate: Timestamp = Timestamp.now(),
+    var rating: Float = 4.5f
+    // TODO implement rating logic
+):Parcelable

@@ -6,19 +6,23 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import it.polito.mad.group27.carpooling.MainActivity
+import it.polito.mad.group27.carpooling.Profile
+import it.polito.mad.group27.carpooling.ProfileViewModel
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import java.text.SimpleDateFormat
 
 
 class ShowProfileFragment : BaseFragmentWithToolbar(
     R.layout.show_profile_fragment,
     R.menu.show_menu, null
 ) {
-
-    private lateinit var viewModel: ShowProfileViewModel
 
     private lateinit var profileImageView: ImageView
     private lateinit var nickNameView: TextView
@@ -28,10 +32,14 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     private lateinit var reputationBar: RatingBar
     private var fullNameView : TextView? = null
 
+    private val dateFormatter = SimpleDateFormat.getDateInstance()
+
+    private lateinit var profileViewModel: ProfileViewModel
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ShowProfileViewModel::class.java)
-        // TODO: Use the ViewModel
+        profileViewModel = ViewModelProvider(act).get(ProfileViewModel::class.java)
+        profileViewModel.profile.observe(viewLifecycleOwner) { updateFields(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,29 +53,28 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         locationView = view.findViewById(R.id.locationView)
         registrationDateView = view.findViewById(R.id.registrationDateView)
         reputationBar = view.findViewById(R.id.ratingBar)
-
         fullNameView = view.findViewById(R.id.nameView)
 
-        updateFields()
+
     }
 
-    private fun updateFields() {
-        val act = activity as MainActivity
-        val profile = act.profile
-        val profileImage = act.profileImage
+    private fun updateFields(profile: Profile?) {
+        if(profile!=null) {
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-            updateTitle(profile.fullName)
-        else{
-            fullNameView?.text = profile.fullName
+
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+                updateTitle(profile.fullName)
+            else {
+                fullNameView?.text = profile.fullName
+            }
+            if (profile.profileImageUri != null)
+                Glide.with(this).load(profile.profileImageUri ).into(profileImageView)
+            nickNameView.text = profile.nickName
+            emailView.text = profile.email
+            locationView.text = profile.location
+            registrationDateView.text = dateFormatter.format(profile.registrationDate.toDate()) // TODO fix format
+            reputationBar.rating = profile.rating
         }
-        if(profileImage!=null)
-            profileImageView.setImageBitmap(profileImage)
-        nickNameView.text = profile.nickName
-        emailView.text = profile.email
-        locationView.text = profile.location
-        registrationDateView.text = profile.registrationDate
-        reputationBar.rating = profile.rating
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -1,26 +1,23 @@
 package it.polito.mad.group27.carpooling
 
-import android.R.drawable
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
-import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,10 +27,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,12 +37,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var navView: NavigationView
     lateinit var drawerLayout: DrawerLayout
+    @Deprecated("Will be deleted")
     lateinit var profile: Profile
+    @Deprecated("Will be deleted")
     var profileImage: Bitmap?= null
     lateinit var navHeader: View
     lateinit var profileImageView: ImageView
     lateinit var profileNameTextView: TextView
     lateinit var profileEmailTextView: TextView
+
+    lateinit var profileViewModel : ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +58,8 @@ class MainActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel.profile.observe(this, Observer { loadProfile(it) })
 
         setContentView(R.layout.activity_main)
 
@@ -91,7 +90,8 @@ class MainActivity : AppCompatActivity() {
             signIn()
         } else {
             Log.d(TAG,"current user: ${currentUser.uid}, ${currentUser.displayName}, ${currentUser.email}, ${currentUser.photoUrl}")
-            loadProfile(Profile(currentUser.displayName,currentUser.displayName,currentUser.email))
+//            loadProfile(Profile(currentUser.displayName,currentUser.photoUrl,currentUser.email))
+            profileViewModel.loadProfile(currentUser)
         }
     }
 
@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
             }
+            //TODO manage profile
         }
     }
 
@@ -126,11 +127,11 @@ class MainActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    //updateUI(user)
+                    profileViewModel.loadProfile(user)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    //updateUI(null)
+                    //TODO back to login page
                 }
             }
     }
@@ -146,38 +147,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadProfile(_profile: Profile? = null){
-        if(_profile!=null){
-            profile = _profile
-        }else {        // if something in storage -> set it
-            val savedProfileJson = getPreferences(MODE_PRIVATE)
-                ?.getString(getString(R.string.saved_profile_preference), null)
-            if (savedProfileJson != null) {
-                try {
-                    profile = Json.decodeFromString(savedProfileJson)
-                } catch (e: SerializationException) {
-                    Log.d(getLogTag(), "Cannot parse saved preference profile")
-                }
-            } else {
-                profile = Profile()
-            }
+        if (_profile==null){
+            //TODO find when happen
+            Toast.makeText(this, "PROFILE WAS REMOVED, SHOULD NOT GET THERE", Toast.LENGTH_SHORT).show()
+        }else {
+            if (_profile.profileImageUri != null)
+                Glide.with(this).load(_profile.profileImageUri).into(profileImageView);
+            else
+                profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
+            profileNameTextView.text = _profile.fullName
+            profileEmailTextView.text = _profile.email
         }
-
-
-        if (File(filesDir, getString(R.string.profile_image)).exists()) {
-            val profileImageFile = File(filesDir, getString(R.string.profile_image))
-            profileImage = BitmapFactory.decodeFile(profileImageFile.absolutePath)
-            Log.d(getLogTag(), "image is set, using user selected image...")
-        } else {
-            profileImage = null
-            Log.d(getLogTag(), "image is removed, setting default icon...")
-        }
-
-        // updating drawer informations
-        if (profileImage!=null)
-            profileImageView.setImageBitmap(profileImage)
-        else
-            profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
-        profileNameTextView.text = profile.fullName
-        profileEmailTextView.text = profile.email
     }
 }
