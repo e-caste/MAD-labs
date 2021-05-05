@@ -3,20 +3,19 @@ package it.polito.mad.group27.carpooling
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
+class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
     var profile: MutableLiveData<Profile?> = MutableLiveData(null)
 
     lateinit var profileDocument:DocumentReference
 
-    private var db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
 
     fun loadProfile(currentUser: FirebaseUser) {
@@ -47,8 +46,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             ).show()
         }
 
-        profileDocument.addSnapshotListener{
-            value, e ->
+        profileDocument.addSnapshotListener{ value, e ->
             if(e!=null){
                 //TODO manage errors
             }else {
@@ -68,4 +66,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
 
+
+
+
 }
+
