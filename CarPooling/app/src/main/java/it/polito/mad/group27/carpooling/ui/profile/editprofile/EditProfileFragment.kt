@@ -1,24 +1,16 @@
 package it.polito.mad.group27.carpooling.ui.profile.editprofile
 
-import android.content.Context.MODE_PRIVATE
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.*
-import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.*
-import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.EditFragment
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.File
 
 class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
@@ -32,6 +24,8 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     private lateinit var profileTmp: Profile
 
     private lateinit var profileViewModel: ProfileViewModel
+
+    // TODO back should not go back to Edit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +63,10 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
 
 
-        if(profileTmp.profileImageUri!=null)
-            Glide.with(this).load(profileTmp.profileImageUri).into(imageView);
+        if(profileTmp.profileImageUri!=null) {
+            Glide.with(this).load(profileTmp.profileImageUri).into(imageView)
+            imagePresent = true
+        }
         fullNameEdit.editText!!.setText(profileTmp.fullName)
         nickNameEdit.editText!!.setText(profileTmp.nickName)
         emailEdit.editText!!.setText(profileTmp.email)
@@ -141,8 +137,11 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         profileTmp.email = emailEdit.editText!!.text.toString()
         profileTmp.location = locationEdit.editText!!.text.toString()
 
+         saveImg("profile",  profileTmp.uid!!){
+             profileTmp.profileImageUri = it
+            profileViewModel.updateProfile(profileTmp)
+        }
 
-        profileViewModel.updateProfile(profileTmp)
     }
 
 
