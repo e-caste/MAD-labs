@@ -84,7 +84,7 @@ class PassengerRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.place_datetime, parent, false)
+            .inflate(R.layout.passenger_item, parent, false)
         return ItemViewHolder(layout, this, acceptedAdapter)
     }
 
