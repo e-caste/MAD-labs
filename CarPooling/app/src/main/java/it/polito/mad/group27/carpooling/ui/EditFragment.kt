@@ -21,10 +21,8 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
-import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment
-import it.polito.mad.group27.carpooling.writeBitmap
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -36,6 +34,7 @@ open class EditFragment(layoutId: Int,
     private var imageUri: Uri? = null
     private var imageChanged: Boolean = false
     protected var image: Bitmap? = null
+    protected var imagePresent : Boolean = false
     protected lateinit var imageView: ImageView
 
 
@@ -194,6 +193,7 @@ open class EditFragment(layoutId: Int,
                     image = MediaStore.Images.Media.getBitmap(act.contentResolver, resultUri)
                     imageView.setImageURI(result?.uriContent)
                     imageChanged = true
+                    imagePresent = true
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Snackbar.make(requireView(), getString(R.string.crop_error),
                         Snackbar.LENGTH_LONG)
@@ -213,12 +213,10 @@ open class EditFragment(layoutId: Int,
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater: MenuInflater = act.menuInflater
         inflater.inflate(R.menu.select_image_source_menu, menu)
-        if (image != null) {
-            var deleteItem = menu?.findItem(R.id.delete)
-            if (deleteItem != null) {
-                deleteItem.isVisible = true
-            }
-        }
+
+        val deleteItem = menu.findItem(R.id.delete)
+        deleteItem.isVisible = imagePresent
+
         Log.d(getLogTag(), "context menu created")
     }
 
@@ -242,20 +240,19 @@ open class EditFragment(layoutId: Int,
                     imageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
                 image = null
                 imageChanged = true
+                imagePresent = false
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    protected fun saveImg(fileName: String){
+    protected fun saveImg(baseDir: String, id:String, callback: (String?)->Unit) {
         if (imageChanged) {
             if (image != null) {
-                act.openFileOutput(fileName, Context.MODE_PRIVATE).use {
-                    it.writeBitmap(image!!)
-                }
+                uploadBitmap(image!!,  id, baseDir, callback )
             } else{
-                File(act.filesDir, fileName).delete()
+                deleteImage(id, baseDir, callback)
             }
             File(act.filesDir, getString(R.string.temporary_edit_image_file))
         }
