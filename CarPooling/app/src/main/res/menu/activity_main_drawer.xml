@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_baseline_directions_car_24"
             android:title="@string/nav_trips" />
         <item
+            android:id="@+id/nav_my_trips"
+            android:icon="@drawable/ic_baseline_car_rental_24"
+            android:title="@string/nav_my_trips" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_baseline_person_24"
             android:title="@string/nav_profile" />
