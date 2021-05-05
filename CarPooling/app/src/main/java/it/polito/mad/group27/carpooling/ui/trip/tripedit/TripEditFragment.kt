@@ -285,6 +285,23 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             { tripEditViewModel.newTrip.otherInformation = additional_info.text.toString() }
         ))
 
+        val accepted_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
+        accepted_rv.layoutManager = LinearLayoutManager(this.context)
+        accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null)
+
+        val interested_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
+        interested_rv.layoutManager = LinearLayoutManager(this.context)
+        interested_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel,
+            accepted_rv.adapter as PassengerRecyclerViewAdapter
+        )
+
+        // TODO fix
+
+        accepted_rv.visibility = View.VISIBLE
+        interested_rv.visibility = View.VISIBLE
+
+        // TODO aggiungere utenti che compaiono-scompaiono ?
+
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
