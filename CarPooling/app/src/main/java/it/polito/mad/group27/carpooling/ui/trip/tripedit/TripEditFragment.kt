@@ -69,10 +69,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
     private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
