@@ -1,7 +1,9 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +12,7 @@ import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-class TripEditViewModel(private val context: Context) : ViewModel() {
+class TripEditViewModel(application: Application) : AndroidViewModel(application)  {
 
     lateinit var trip: Trip
     lateinit var newTrip : Trip
@@ -29,6 +31,8 @@ class TripEditViewModel(private val context: Context) : ViewModel() {
         }
         userProfiles = mapTmp.toMap()
         callback(userProfiles)
+    private val context by lazy { getApplication<Application>().applicationContext }
+
     }
 
     private fun downloadProfileByUid(uid:String) : Profile{
