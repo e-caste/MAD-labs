@@ -23,7 +23,6 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
 
     private val context by lazy { getApplication<Application>().applicationContext }
 
-    }
 
     fun downloadUsers(callback : ( Map<String, Profile> )-> Unit){
         val mapTmp : MutableMap<String, Profile> = mutableMapOf()
