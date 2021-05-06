@@ -43,7 +43,6 @@ class TripList: BaseFragmentWithToolbar(
             trips = trips.map { if(it.id == id) updatedTrip else it}.toMutableList()
         }
     }
-    private val displayMetrics: DisplayMetrics = DisplayMetrics()
     lateinit var counterName:String
     lateinit var tripPrefix:String
     lateinit var carImagePrefix:String
@@ -102,16 +101,17 @@ class TripList: BaseFragmentWithToolbar(
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView.layoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-//                displayMetrics .xdpi .ydpi .width .height are all 0, so it is not usable for our purpose
-//                if (displayMetrics.ydpi <= 720) {
-//                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
-//                    GridLayoutManager(context, 2)
-//                } else {
-//                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
-//                    GridLayoutManager(context, 3)
-//                }
-                Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
-                GridLayoutManager(context, 2)
+                val displayMetrics = DisplayMetrics()
+                Log.d(getLogTag(), "display metrics: ${displayMetrics.xdpi} ${displayMetrics.ydpi} ${displayMetrics.widthPixels} ${displayMetrics.heightPixels}")
+                if (displayMetrics.ydpi <= 720) {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+                    GridLayoutManager(context, 2)
+                } else {
+                    Log.d(getLogTag(), "orientation is landscape, using grid layout with 3 columns...")
+                    GridLayoutManager(context, 3)
+                }
+//                Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
+//                GridLayoutManager(context, 2)
             }
             else -> {
                 Log.d(getLogTag(), "orientation is portrait, using linear layout...")
