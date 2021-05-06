@@ -16,9 +16,9 @@ data class TripFilter(
     var from: String? = null,
     var to: String? = null,
     @Serializable(with= BigDecimalSerializer::class)
-    var priceMin: BigDecimal? = null,
+    var priceMin: BigDecimal = BigDecimal("0.00"),
     @Serializable(with=BigDecimalSerializer::class)
-    var priceMax: BigDecimal? = null,
+    var priceMax: BigDecimal = BigDecimal("100.00"), //TODO define upper bound for trips
     @Serializable(with= CalendarSerializer::class)
     var dateTime: Calendar? = null,
     val options: MutableMap<Option, Boolean> = Option.values().map{ it to false }.toMap(mutableMapOf())
