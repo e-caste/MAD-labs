@@ -47,7 +47,6 @@ import java.util.*
 class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     R.menu.edit_menu,
     R.string.trip_edit_title) {
-    //TODO change title to add (?)
 
     private lateinit var tripEditViewModel: TripEditViewModel
 
@@ -98,6 +97,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
         Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
 
+        tripEditViewModel.newTrip.acceptedUsersUids.add("LnfgLCgnr8WrA3L2qm7Ae50FXt43")
+
+        tripEditViewModel.newTrip.interestedUsersUids.add("pn9OUkY2S9gekrCRJZR2NJ6W9wQ2")
 
         // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
@@ -289,7 +291,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         accepted_rv.layoutManager = LinearLayoutManager(this.context)
         accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null)
 
-        val interested_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
+        val interested_rv = view.findViewById<RecyclerView>(R.id.interested_rv)
         interested_rv.layoutManager = LinearLayoutManager(this.context)
         interested_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel,
             accepted_rv.adapter as PassengerRecyclerViewAdapter
@@ -369,7 +371,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         Log.d(getLogTag(), Json.encodeToString(tripEditViewModel.newTrip))
         writeParcelable(tripEditViewModel.newTrip, "${getString(R.string.trip_prefix)}${tripEditViewModel.newTrip.id}")
-        saveImg(imageName)
+//        saveImg(imageName)
+        // TODO manage save image
 
 
         if(created)
