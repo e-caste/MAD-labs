@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 @Parcelize
 data class Profile(
     val uid: String?=null,
@@ -15,7 +15,6 @@ data class Profile(
     var nickName: String = "MadJohn",
     var email: String = "john.smith@polito.it",
     var location: String = "Turin, Italy",
-    @Contextual
     var registrationDate: Timestamp = Timestamp.now(),
     var rating: Float = 4.5f
     // TODO implement rating logic
