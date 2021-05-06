@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
-import it.polito.mad.group27.carpooling.Profile
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -70,7 +69,10 @@ object BigDecimalSerializer: KSerializer<BigDecimal> {
 @Serializable
 @Parcelize
 data class Trip(
-    var id: Int = -1,
+    // primary keys
+    var id: Int,  // TODO: this should be a String if we want to use the Firebase ids
+    var ownerUid: String,
+    // other fields
     @Serializable(with=UriSerializer::class)
     var carImageUri: Uri? = null,
     var totalSeats: Int? = null,
@@ -81,18 +83,14 @@ data class Trip(
     @Serializable(with=CalendarSerializer::class)
     var startDateTime: Calendar = Calendar.getInstance(),
     @Serializable(with=CalendarSerializer::class)
-    var endDateTime: Calendar =  {
-                            val calendar = Calendar.getInstance()
-                            calendar.add(Calendar.HOUR, +1)
-                            calendar
-                        }(),
+    var endDateTime: Calendar = (Calendar.getInstance().clone() as Calendar).also { it.add(Calendar.HOUR, +1) },
     var from: String = "",
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
     var otherInformation: String? = null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
-    val interestedUsersUids: MutableList<String> = mutableListOf()
+    val interestedUsersUids: MutableList<String> = mutableListOf(),
 ): Parcelable
 
 @Serializable
