@@ -9,12 +9,12 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class ProfileViewModel(application: Application) : AndroidViewModel(application) {
+class ProfileViewModel(application: Application) : ProfileBaseViewModel(application) {
 
-    var profile: MutableLiveData<Profile?> = MutableLiveData(null)
+
 
     lateinit var profileDocument:DocumentReference
-
+    // TODO add loading flag
     private val db = FirebaseFirestore.getInstance()
 
 
@@ -25,6 +25,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             if (!it.exists()) {
                 profileDocument.set(
                     Profile(
+                        //TODO set default displayName
                         currentUser.uid,
                         currentUser.photoUrl?.toString(),
                         currentUser.displayName ?: "",
