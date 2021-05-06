@@ -70,8 +70,8 @@ object BigDecimalSerializer: KSerializer<BigDecimal> {
 @Parcelize
 data class Trip(
     // primary keys
-    var id: Int,  // TODO: this should be a String if we want to use the Firebase ids
-    var ownerUid: String,
+    var id: Int = -1,  // TODO: this should be a String if we want to use the Firebase ids
+    var ownerUid: String = "testUid",
     // other fields
     @Serializable(with=UriSerializer::class)
     var carImageUri: Uri? = null,
