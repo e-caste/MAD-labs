@@ -72,4 +72,9 @@
     <string name="additional_information_details">Informazioni extra</string>
     <string name="trip_to">Viaggio per</string>
     <string name="add_trip">Aggiungi viaggio</string>
+    <string name="nav_my_trips">I Miei Viaggi</string>
+    <string name="passengers_details">Dettagli del passeggero</string>
+    <string name="interested_passengers">Passeggeri interessati</string>
+    <string name="accepted_passengers">Passeggeri accettati</string>
+    <string name="accept">ACCETTA</string>
 </resources>
