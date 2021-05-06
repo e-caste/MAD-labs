@@ -17,7 +17,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-class StopRecyclerViewAdapter(val trip: Trip, val context: Context) :
+class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(v: View, val context: Context, val trip: Trip, val parent: StopRecyclerViewAdapter) : RecyclerView.ViewHolder(v) {
         private val placeView = v.findViewById<TextInputLayout>(R.id.stop_place)

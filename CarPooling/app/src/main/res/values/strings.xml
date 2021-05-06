@@ -92,4 +92,5 @@
     <string name="interested_passengers">Interested travelers</string>
     <string name="accepted_passengers">Accepted travelers</string>
     <string name="accept">ACCEPT</string>
+    <string name="seats_finished">Seats are complete, add new ones</string>
 </resources>

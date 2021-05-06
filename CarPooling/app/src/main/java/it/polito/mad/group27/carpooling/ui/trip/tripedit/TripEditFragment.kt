@@ -6,13 +6,11 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.get
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -68,6 +66,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
     private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")
 
+    private lateinit var scrollView: NestedScrollView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
@@ -108,6 +108,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             Log.d(getLogTag(), "image button clicked")
             act.openContextMenu(fab)
         }
+
+        // init scrollView
+        scrollView = view.findViewById(R.id.edit_trip_scrollview)
+
 
         // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
@@ -234,6 +238,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                  }
         ))
 
+        //  TODO on change check that it cannot be < accepted users
+        // TODO on change update interested passengers ( accept buttons may need to be disabled)
+
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
         tripEditViewModel.newTrip.price?.let { price.editText?.setText(it.toString()) }
         price.editText?.addTextChangedListener(Watcher(
@@ -288,21 +295,45 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         ))
 
         val accepted_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
-        accepted_rv.layoutManager = LinearLayoutManager(this.context)
-        accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null)
+        val accepted_button = view.findViewById<ImageView>(R.id.expand_accepted_button)
+        accepted_rv.layoutManager = MyLinearLayoutManager(this.requireContext(), scrollView)
+        accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null, requireContext())
 
         val interested_rv = view.findViewById<RecyclerView>(R.id.interested_rv)
+        val interested_button = view.findViewById<ImageView>(R.id.expand_interested_button)
         interested_rv.layoutManager = LinearLayoutManager(this.context)
         interested_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel,
-            accepted_rv.adapter as PassengerRecyclerViewAdapter
+            accepted_rv.adapter as PassengerRecyclerViewAdapter,
+            requireContext()
         )
 
-        // TODO fix
-
         accepted_rv.visibility = View.VISIBLE
+        accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
         interested_rv.visibility = View.VISIBLE
+        interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
 
-        // TODO aggiungere utenti che compaiono-scompaiono ?
+        val expandButtonClickListener: (RecyclerView, ImageView) -> Unit = {
+            view, button ->
+            if(view.visibility == View.VISIBLE){
+                view.visibility = View.GONE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
+            else{
+                view.visibility = View.VISIBLE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                scrollView.post {
+                    scrollView.fullScroll(View.FOCUS_DOWN)
+                }
+            }
+        }
+        accepted_button.setOnClickListener {
+            expandButtonClickListener(accepted_rv, it as ImageView)
+        }
+        interested_button.setOnClickListener {
+            expandButtonClickListener(interested_rv, it as ImageView)
+        }
+
+        // TODO aggiungere stop advertise button
 
     }
 
@@ -328,6 +359,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     private fun saveTrip(){
+
+        // TODO send notification to newly accepted users
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
@@ -382,6 +415,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
 
     private fun validateFields(onlyRoute: Boolean = false): Boolean{
+        // TODO add check on total seats that has to be >= accepted users
+
         var valid = true
         if(tripEditViewModel.newTrip.from.trim() =="") {
             from_place.error = getString(R.string.edit_from_error)
@@ -482,4 +517,18 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return true
     }
 
+    private class MyLinearLayoutManager(val context: Context, private val scrollView: NestedScrollView) :
+        LinearLayoutManager(context) {
+
+        // Force new items appear at the top
+        override fun onItemsAdded(recyclerView: RecyclerView, positionStart: Int, itemCount: Int) {
+            super.onItemsAdded(recyclerView, positionStart, itemCount)
+
+            scrollView.post {
+                scrollView.fullScroll(View.FOCUS_DOWN)
+            }
+        }
+    }
+
 }
+
