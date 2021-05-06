@@ -236,5 +236,81 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/passengers_details"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/interested_users"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingStart="8sp"
+                android:paddingEnd="0sp"
+                android:paddingLeft="8sp"
+                android:paddingRight="0sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="@string/interested_passengers" />
+
+            <ImageView
+                android:id="@+id/expand_interested_button"
+                app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <include
+            android:id="@+id/interested_rv"
+            layout="@layout/passengers_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/accepted_users"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingStart="8sp"
+                android:paddingEnd="0sp"
+                android:paddingLeft="8sp"
+                android:paddingRight="0sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="@string/accepted_passengers" />
+
+            <ImageView
+                android:id="@+id/expand_accepted_button"
+                app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/accepted_rv"
+            layout="@layout/passengers_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

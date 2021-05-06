@@ -6,15 +6,10 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import it.polito.mad.group27.carpooling.MainActivity
-import it.polito.mad.group27.carpooling.Profile
-import it.polito.mad.group27.carpooling.ProfileViewModel
-import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import java.text.SimpleDateFormat
 
@@ -31,20 +26,23 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     private lateinit var registrationDateView: TextView
     private lateinit var reputationBar: RatingBar
     private var fullNameView : TextView? = null
+    private var privateMode = false
 
     private val dateFormatter = SimpleDateFormat.getDateInstance()
 
-    private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var profileViewModel: ProfileBaseViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        profileViewModel = ViewModelProvider(act).get(ProfileViewModel::class.java)
-        profileViewModel.profile.observe(viewLifecycleOwner) { updateFields(it) }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if(!privateMode){
+            val inflater: MenuInflater = inflater
+            inflater.inflate(optionsMenuId, menu)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val profile = arguments?.getParcelable<Profile>("profile")
 
 
         profileImageView = view.findViewById(R.id.imageProfileView)
@@ -55,6 +53,20 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         reputationBar = view.findViewById(R.id.ratingBar)
         fullNameView = view.findViewById(R.id.nameView)
 
+        if(profile!=null){
+            privateMode = true
+            profileViewModel = ViewModelProvider(this).get(ProfileBaseViewModel::class.java)
+            profileViewModel.profile.value= Profile()
+            updateFields(profile)
+        }else{
+            profileViewModel = ViewModelProvider(act).get(ProfileViewModel::class.java)
+            profileViewModel.profile.observe(viewLifecycleOwner) { updateFields(it) }
+        }
+
+
+        if(privateMode){
+            view.findViewById<ViewGroup>(R.id.sensible_information).visibility=View.GONE
+        }
 
     }
 
@@ -70,8 +82,10 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
             if (profile.profileImageUri != null)
                 Glide.with(this).load(profile.profileImageUri ).into(profileImageView)
             nickNameView.text = profile.nickName
-            emailView.text = profile.email
-            locationView.text = profile.location
+            if(!privateMode) {
+                emailView.text = profile.email
+                locationView.text = profile.location
+            }
             registrationDateView.text = dateFormatter.format(profile.registrationDate.toDate()) // TODO fix format
             reputationBar.rating = profile.rating
         }

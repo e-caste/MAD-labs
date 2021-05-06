@@ -47,12 +47,8 @@ import java.util.*
 class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     R.menu.edit_menu,
     R.string.trip_edit_title) {
-    //TODO change title to add (?)
 
-    private lateinit var viewModel: TripEditViewModel
-
-    private lateinit var trip : Trip
-    private lateinit var newTrip : Trip
+    private lateinit var tripEditViewModel: TripEditViewModel
 
     lateinit var price: TextInputLayout
     lateinit var to_place: TextInputLayout
@@ -72,10 +68,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
     private val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,19 +83,23 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // get trip from bundle
         if(arguments?.getString("trip")==null) {
-            trip =  Trip()
+            tripEditViewModel.trip =  Trip()
         }else {
             try{
-                trip = Json.decodeFromString<Trip>(requireArguments().getString("trip")!!) ?: Trip()
+                tripEditViewModel.trip = Json.decodeFromString<Trip>(requireArguments().getString("trip")!!) ?: Trip()
 
             }catch (e:Throwable){
-                trip= Trip()
+                tripEditViewModel.trip= Trip()
             }
         }
-        if(trip.id==-1)
+        if(tripEditViewModel.trip.id==-1)
             updateTitle(getString(R.string.add_trip))
-        newTrip = trip.copy()
-        Log.d(getLogTag(), "got from bundle trip: $trip")
+        tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
+        Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
+
+        tripEditViewModel.newTrip.acceptedUsersUids.add("LnfgLCgnr8WrA3L2qm7Ae50FXt43")
+
+        tripEditViewModel.newTrip.interestedUsersUids.add("pn9OUkY2S9gekrCRJZR2NJ6W9wQ2")
 
         // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
@@ -108,8 +111,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
-        if(newTrip.carImageUri != null){
-            image = MediaStore.Images.Media.getBitmap(act.contentResolver, newTrip.carImageUri)
+        if(tripEditViewModel.newTrip.carImageUri != null){
+            image = MediaStore.Images.Media.getBitmap(act.contentResolver, tripEditViewModel.newTrip.carImageUri)
             if(image != null)
                 imageView.setImageBitmap(image)
         }
@@ -117,12 +120,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // from and to datetime check
         val dateTimeWatcher = Watcher(
             {
-                YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)
-                        || (YYYYMMDD.format(newTrip.startDateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
+                YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
+                        || (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) == YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
                         && from_hour.editText?.text.toString() > to_hour.editText?.text.toString())
             },
             {
-                if (YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)) {
+                if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
                     to_date.error = getString(R.string.date_error)
                     to_hour.error = null
                 } else {
@@ -142,9 +145,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
         from_date = from.findViewById<TextInputLayout>(R.id.stop_date)
         from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
-        from_date.editText?.setText(df.format(newTrip.startDateTime.time))
+        from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))
 
-        datePickerFrom = getDatePicker(newTrip.startDateTime, from_date)
+        datePickerFrom = getDatePicker(tripEditViewModel.newTrip.startDateTime, from_date)
         from_date.editText?.setOnClickListener {
             if(!datePickerFrom.isVisible)
                 datePickerFrom.show(requireActivity().supportFragmentManager, "datePickerTag")
@@ -155,84 +158,84 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
         to_date = to.findViewById<TextInputLayout>(R.id.stop_date)
 
-        datePickerTo = getDatePicker(newTrip.endDateTime, to_date)
+        datePickerTo = getDatePicker(tripEditViewModel.newTrip.endDateTime, to_date)
         to_date.editText?.setOnClickListener {
             if(!datePickerTo.isVisible)
                 datePickerTo.show(requireActivity().supportFragmentManager, "datePickerTag")
         }
 
         from_place.hint = getString(R.string.from)
-        from_place.editText?.setText(newTrip.from)
+        from_place.editText?.setText(tripEditViewModel.newTrip.from)
         from_place.editText?.addTextChangedListener(Watcher(
             { from_place.editText?.text?.isEmpty() ?: true },
             { from_place.error = getString(R.string.edit_from_error)
-                newTrip.from = from_place.editText?.text.toString()
+                tripEditViewModel.newTrip.from = from_place.editText?.text.toString()
                  },
             { from_place.error = null
-                newTrip.from = from_place.editText?.text.toString()
+                tripEditViewModel.newTrip.from = from_place.editText?.text.toString()
                  }
         ))
-        from_hour.editText?.setText(Hour(newTrip.startDateTime).toString())
+        from_hour.editText?.setText(Hour(tripEditViewModel.newTrip.startDateTime).toString())
         from_hour.editText?.setOnClickListener {
             if(timePickerFrom==null || !timePickerFrom!!.isVisible) {
                 timePickerFrom = getTimePicker(
                     from_hour.editText!!,
-                    newTrip.startDateTime,
+                    tripEditViewModel.newTrip.startDateTime,
                     this.requireContext()){
-                    newTrip.startDateTime.updateTime(it)
+                    tripEditViewModel.newTrip.startDateTime.updateTime(it)
                 }
                 timePickerFrom!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        from_date.editText?.setText(df.format(newTrip.startDateTime.time))
+        from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
 
         to_place.hint = getString(R.string.to)
-        to_place.editText?.setText(newTrip.to)
+        to_place.editText?.setText(tripEditViewModel.newTrip.to)
         to_place.editText?.addTextChangedListener(Watcher(
             { to_place.editText?.text?.isEmpty() ?: true || to_place.editText?.text == from_place.editText?.text},
             { to_place.error = getString(R.string.edit_to_error)
-                newTrip.to = to_place.editText?.text.toString()
+                tripEditViewModel.newTrip.to = to_place.editText?.text.toString()
                  },
             { to_place.error = null
-                newTrip.to = to_place.editText?.text.toString()
+                tripEditViewModel.newTrip.to = to_place.editText?.text.toString()
                  }
         ))
-        to_hour.editText?.setText(Hour(newTrip.endDateTime).toString())
+        to_hour.editText?.setText(Hour(tripEditViewModel.newTrip.endDateTime).toString())
         to_hour.editText?.setOnClickListener {
             if(timePickerTo==null || !timePickerTo!!.isVisible) {
                 timePickerTo = getTimePicker(
                     to_hour.editText!!,
-                    newTrip.endDateTime,
+                    tripEditViewModel.newTrip.endDateTime,
                     this.requireContext()){
-                    newTrip.endDateTime.updateTime(it)
+                    tripEditViewModel.newTrip.endDateTime.updateTime(it)
                 }
                 timePickerTo!!.show(requireActivity().supportFragmentManager, "timePickerTag")
             }
         }
-        to_date.editText?.setText(df.format(newTrip.endDateTime.time))
+        to_date.editText?.setText(df.format(tripEditViewModel.newTrip.endDateTime.time))
         to_hour.editText?.addTextChangedListener(dateTimeWatcher)
         to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        trip.totalSeats?.let { passengers.editText?.setText(it.toString()) }
+        tripEditViewModel.newTrip.totalSeats?.let { passengers.editText?.setText(it.toString()) }
         passengers.editText?.addTextChangedListener(Watcher(
             { passengers.editText?.text?.isEmpty() ?: true },
             { passengers.error = getString(R.string.insert_passengers)
-                newTrip.totalSeats = -1
+                tripEditViewModel.newTrip.totalSeats = -1
                 // TODO make not stubbed when adding some logic
-                newTrip.availableSeats = -1
+                tripEditViewModel.newTrip.availableSeats = -1
              },
             { passengers.error = null
-                newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
+                tripEditViewModel.newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
                 // TODO make not stubbed when adding some logic
-                newTrip.availableSeats = (0 .. newTrip.totalSeats!!).random()
+                tripEditViewModel.newTrip.availableSeats = (0 .. tripEditViewModel.newTrip.totalSeats!!).random()
                  }
         ))
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
-        trip.price?.let { price.editText?.setText(it.toString()) }
+        tripEditViewModel.newTrip.price?.let { price.editText?.setText(it.toString()) }
         price.editText?.addTextChangedListener(Watcher(
             { price.editText?.text?.isEmpty() ?: true
                     || price.editText?.text?.trim()?.split("[,.]".toRegex())?.size ?: 3 > 2
@@ -240,10 +243,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             price.editText?.text?.trim()?.split("[,.]".toRegex())?.get(1)?.length ?: 3 > 2
                         else false},
             { price.error = getString(R.string.invalid_price)
-                newTrip.price = BigDecimal("-1.00").setScale(2)
+                tripEditViewModel.newTrip.price = BigDecimal("-1.00").setScale(2)
                  },
             { price.error = null
-                newTrip.price = BigDecimal(price.editText!!.text!!.toString()).setScale(2)
+                tripEditViewModel.newTrip.price = BigDecimal(price.editText!!.text!!.toString()).setScale(2)
                  }
         ))
 
@@ -252,12 +255,11 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val stops_rv = view.findViewById<RecyclerView>(R.id.stop_list_rv)
         stops_rv.layoutManager = LinearLayoutManager(this.context)
-        stops_rv.adapter = StopRecyclerViewAdapter(newTrip, this.requireContext())
+        stops_rv.adapter = StopRecyclerViewAdapter(tripEditViewModel.newTrip, this.requireContext())
 
 
         val add_button = view.findViewById<Button>(R.id.add_button)
         add_button.setOnClickListener {
-            val lastStop = newTrip.stops.size -1
             var valid = validateFields(true)
 
             if(valid){
@@ -273,17 +275,34 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val option_luggage = view.findViewById<SwitchMaterial>(R.id.luggage_switch)
         val option_animals = view.findViewById<SwitchMaterial>(R.id.animal_switch)
         val option_smokers = view.findViewById<SwitchMaterial>(R.id.smokers_switch)
-        option_animals.isChecked = newTrip.options.contains(Option.ANIMALS)
-        option_luggage.isChecked = newTrip.options.contains(Option.LUGGAGE)
-        option_smokers.isChecked = newTrip.options.contains(Option.SMOKE)
+        option_animals.isChecked = tripEditViewModel.newTrip.options.contains(Option.ANIMALS)
+        option_luggage.isChecked = tripEditViewModel.newTrip.options.contains(Option.LUGGAGE)
+        option_smokers.isChecked = tripEditViewModel.newTrip.options.contains(Option.SMOKE)
 
         val additional_info = view.findViewById<TextInputEditText>(R.id.additionalInfo)
-        additional_info.setText(newTrip.otherInformation)
+        additional_info.setText(tripEditViewModel.newTrip.otherInformation)
         additional_info.addTextChangedListener(Watcher(
             { true },
-            { newTrip.otherInformation = additional_info.text.toString() },
-            { newTrip.otherInformation = additional_info.text.toString() }
+            { tripEditViewModel.newTrip.otherInformation = additional_info.text.toString() },
+            { tripEditViewModel.newTrip.otherInformation = additional_info.text.toString() }
         ))
+
+        val accepted_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
+        accepted_rv.layoutManager = LinearLayoutManager(this.context)
+        accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null)
+
+        val interested_rv = view.findViewById<RecyclerView>(R.id.interested_rv)
+        interested_rv.layoutManager = LinearLayoutManager(this.context)
+        interested_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel,
+            accepted_rv.adapter as PassengerRecyclerViewAdapter
+        )
+
+        // TODO fix
+
+        accepted_rv.visibility = View.VISIBLE
+        interested_rv.visibility = View.VISIBLE
+
+        // TODO aggiungere utenti che compaiono-scompaiono ?
 
     }
 
@@ -295,7 +314,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     }
 
     private fun setEstimatedTime(){
-        val time = getEstimatedTime(newTrip.startDateTime, newTrip.endDateTime)
+        val time = getEstimatedTime(tripEditViewModel.newTrip.startDateTime, tripEditViewModel.newTrip.endDateTime)
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimated_time.setText( getString(R.string.estimated_time) + " : ${hours} ${minutes}" )
@@ -314,80 +333,81 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         var created =  false
         // check id, if -1 take counter and increment
-        if(newTrip.id == -1) {
+        if(tripEditViewModel.newTrip.id == -1) {
             created = true
             val counterKey = getString(R.string.trip_counter)
             val counter = sharedPref.getInt(counterKey, 0)
-            newTrip.id = counter
+            tripEditViewModel.newTrip.id = counter
             with(sharedPref.edit()) {
                 putInt(counterKey, (counter + 1))
                 apply()
             }
         }
-        val imageName = "${getString(R.string.car_image_prefix)}${newTrip.id}"
-        if (newTrip.carImageUri == null && image!=null){
+        val imageName = "${getString(R.string.car_image_prefix)}${tripEditViewModel.newTrip.id}"
+        if (tripEditViewModel.newTrip.carImageUri == null && image!=null){
             val f = File(act.filesDir, imageName)
-            newTrip.carImageUri = f.toUri()
+            tripEditViewModel.newTrip.carImageUri = f.toUri()
         }
         if(image==null) {
-            if(newTrip.carImageUri != null){
+            if(tripEditViewModel.newTrip.carImageUri != null){
                 //delete old image
-                File(newTrip.carImageUri!!.path!!).delete()
+                File(tripEditViewModel.newTrip.carImageUri!!.path!!).delete()
             }
-            newTrip.carImageUri = null
+            tripEditViewModel.newTrip.carImageUri = null
         }
 
         val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
             Option.SMOKE to R.id.smokers_switch,
             Option.ANIMALS to R.id.animal_switch)
-        newTrip.options.removeAll { true }
+        tripEditViewModel.newTrip.options.removeAll { true }
         for ((option, switchId) in optionToSwitch.entries){
             val switch = requireView().findViewById<SwitchMaterial>(switchId)
             if(switch.isChecked)
-                newTrip.options.add(option)
+                tripEditViewModel.newTrip.options.add(option)
         }
 
         val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
-        info.setText(newTrip.otherInformation ?: "")
+        info.setText(tripEditViewModel.newTrip.otherInformation ?: "")
 
-        Log.d(getLogTag(), Json.encodeToString(newTrip))
-        writeParcelable(newTrip, "${getString(R.string.trip_prefix)}${newTrip.id}")
-        saveImg(imageName)
+        Log.d(getLogTag(), Json.encodeToString(tripEditViewModel.newTrip))
+        writeParcelable(tripEditViewModel.newTrip, "${getString(R.string.trip_prefix)}${tripEditViewModel.newTrip.id}")
+//        saveImg(imageName)
+        // TODO manage save image
 
 
         if(created)
-            TripList.notifyAdded(newTrip)
-        else TripList.notifyModified(newTrip.id, newTrip)
+            TripList.notifyAdded(tripEditViewModel.newTrip)
+        else TripList.notifyModified(tripEditViewModel.newTrip.id, tripEditViewModel.newTrip)
     }
 
 
     private fun validateFields(onlyRoute: Boolean = false): Boolean{
         var valid = true
-        if(newTrip.from.trim() =="") {
+        if(tripEditViewModel.newTrip.from.trim() =="") {
             from_place.error = getString(R.string.edit_from_error)
             valid = false
         }
-        if(newTrip.to.trim()=="" || newTrip.to == newTrip.from){
+        if(tripEditViewModel.newTrip.to.trim()=="" || tripEditViewModel.newTrip.to == tripEditViewModel.newTrip.from){
             to_place.error = getString(R.string.edit_to_error)
             valid= false
         }
 
 
-        if(!onlyRoute && (newTrip.price == null || newTrip.price!! <= BigDecimal(0))){
+        if(!onlyRoute && (tripEditViewModel.newTrip.price == null || tripEditViewModel.newTrip.price!! <= BigDecimal(0))){
             price.error =  getString(R.string.invalid_price)
             valid = false
         }
 
-        if(!onlyRoute && (newTrip.totalSeats == null || newTrip.totalSeats!! < 0 )){
+        if(!onlyRoute && (tripEditViewModel.newTrip.totalSeats == null || tripEditViewModel.newTrip.totalSeats!! < 0 )){
             passengers.error = getString(R.string.insert_passengers)
             valid= false
         }
 
-        if (YYYYMMDD.format(newTrip.startDateTime.time) > YYYYMMDD.format(newTrip.endDateTime.time)) {
+        if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
             to_date.error = getString(R.string.date_error)
             to_hour.error = null
             valid = false
-        } else if(YYYYMMDD.format(newTrip.startDateTime.time) == YYYYMMDD.format(newTrip.endDateTime.time)
+        } else if(YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) == YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
             && from_hour.editText?.text.toString() > to_hour.editText?.text.toString()) {
             to_hour.error = getString(R.string.edit_to_hour_error)
             to_date.error = null
@@ -397,8 +417,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // TODO set as field
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
-        for ((idx, stop) in newTrip.stops.withIndex()){
-            val (validStopDate, validStopTime) = newTrip.checkDateTimeStop(idx)
+        for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){
+            val (validStopDate, validStopTime) = tripEditViewModel.newTrip.checkDateTimeStop(idx)
 
             if(!validStopTime){
                 valid = false
@@ -416,21 +436,21 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
 
 
-        val places = newTrip.stops.groupingBy{it.place }.eachCount()
+        val places = tripEditViewModel.newTrip.stops.groupingBy{it.place }.eachCount()
 
 
 
-        if(places.containsKey(newTrip.from) || places.containsKey(newTrip.to)){
+        if(places.containsKey(tripEditViewModel.newTrip.from) || places.containsKey(tripEditViewModel.newTrip.to)){
 
-            for ((idx, stop) in newTrip.stops.withIndex()){
-                if(stop.place.trim()!="" && (stop.place == newTrip.from || stop.place == newTrip.to))
+            for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){
+                if(stop.place.trim()!="" && (stop.place == tripEditViewModel.newTrip.from || stop.place == tripEditViewModel.newTrip.to))
                     stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
             }
             valid = false
         }
         val duplicatedStops = places.filterValues { it >1  }.keys
         if(duplicatedStops.isNotEmpty()){
-            for ((idx, stop) in newTrip.stops.withIndex()){
+            for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){
                 if(stop.place.trim()!="" && stop.place in duplicatedStops)
                     stops_rv[idx].findViewById<TextInputLayout>(R.id.stop_place).error = getString(R.string.duplicated_place_error)
             }
@@ -451,7 +471,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     // detect where to go if added or modified
                     findNavController().navigate(
                         R.id.action_tripEditFragment_to_tripDetailsFragment,
-                        bundleOf("trip" to newTrip)
+                        bundleOf("trip" to tripEditViewModel.newTrip)
                     )
                 }else{
                     Snackbar.make(requireView(),getString(R.string.fix_all_errors), Snackbar.LENGTH_LONG).show()

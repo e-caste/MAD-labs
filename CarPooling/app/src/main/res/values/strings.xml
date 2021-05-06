@@ -88,4 +88,8 @@
     <string name="trip_to">Trip to</string>
     <string name="add_trip">Add trip</string>
     <string name="nav_my_trips">My Trips</string>
+    <string name="passengers_details">Travelers\' details</string>
+    <string name="interested_passengers">Interested travelers</string>
+    <string name="accepted_passengers">Accepted travelers</string>
+    <string name="accept">ACCEPT</string>
 </resources>
