@@ -56,5 +56,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popUpTo="@id/nav_trips"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_tripEditFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
     </fragment>
 </navigation>
