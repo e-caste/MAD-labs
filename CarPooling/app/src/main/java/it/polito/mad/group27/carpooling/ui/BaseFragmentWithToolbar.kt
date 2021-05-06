@@ -16,7 +16,7 @@ import it.polito.mad.group27.carpooling.getLogTag
 
 
 open class BaseFragmentWithToolbar(layoutId: Int,
-                                   private val optionsMenuId: Int,
+                                   protected val optionsMenuId: Int,
                                    private val titleId: Int?): Fragment(layoutId) {
     protected lateinit var act :MainActivity
 
