@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
@@ -29,6 +30,7 @@ class TripListViewModel(application: Application) : AndroidViewModel(application
             db.collection(coll).whereNotEqualTo("ownerUid", currentUser.uid)
         }
         filteredTrips
+            .orderBy("startDateTime", Query.Direction.ASCENDING)
             .addSnapshotListener { documents, error ->
                 if (error != null) {
                     Log.d(getLogTag(), "error while retrieving $coll from Firebase: $error")
