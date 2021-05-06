@@ -35,10 +35,9 @@ class TripListViewModel(application: Application) : AndroidViewModel(application
                 } else {
                     if (documents != null) {
                         val tmpList = mutableListOf<Trip>()
-                        for (doc in documents) {
-                            tmpList.add(doc.toObject(Trip::class.java))
-                        }
+                        documents.forEach { tmpList.add(it.toObject(Trip::class.java)) }
                         _trips.value = tmpList
+                        Log.d(getLogTag(), "collection $coll loaded with size ${tmpList.size}, first object is: ${tmpList[0]}")
                     } else {
                         Log.d(getLogTag(), "documents collection $coll is null")
                     }
