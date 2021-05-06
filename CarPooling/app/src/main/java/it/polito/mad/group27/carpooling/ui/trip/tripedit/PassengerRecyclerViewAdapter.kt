@@ -29,6 +29,7 @@ class PassengerRecyclerViewAdapter(
         private val button: Button = v.findViewById(R.id.accept_button)
 
         fun bind(
+            viewModel: TripEditViewModel,
             passenger: Profile,
             position: Int,
             this_rv: PassengerRecyclerViewAdapter,
@@ -44,23 +45,39 @@ class PassengerRecyclerViewAdapter(
                     viewProfile.isClickable = false
                 }
                 else {
-                    button.isClickable = true
-                    button.isEnabled = true
                     viewProfile.isClickable = true
-                    button.setOnClickListener {
-                        this_rv.remove(position)
-                        other_rv.add(passenger)
-                    }
-
                     viewProfile.setOnClickListener {
                         it.findNavController().navigate(
-                            R.id.action_tripEditFragment_to_tripDetailsFragment, // TODO set the correct one
+                            R.id.action_tripEditFragment_to_nav_profile,
                             bundleOf("profile" to passenger)
                         )
                     }
+
+                    if(viewModel.newTrip.acceptedUsersUids.size < viewModel.newTrip.totalSeats ?: 0) {
+
+                        button.isClickable = true
+                        button.isEnabled = true
+                        button.setOnClickListener {
+                            this_rv.remove(position)
+                            other_rv.add(passenger)
+                        }
+                    }
+                    else{
+                        button.isClickable = false
+                        button.isEnabled = false
+                    }
+
+
                 }
             } else {
                 button.visibility = View.GONE
+                viewProfile.isClickable = true
+                viewProfile.setOnClickListener {
+                    it.findNavController().navigate(
+                        R.id.action_tripEditFragment_to_nav_profile,
+                        bundleOf("profile" to passenger)
+                    )
+                }
             }
 
         }
@@ -93,7 +110,7 @@ class PassengerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(passengers[position], position, this, acceptedAdapter)
+        holder.bind(viewModel, passengers[position], position, this, acceptedAdapter)
     }
 
     fun add(passenger: Profile) {
