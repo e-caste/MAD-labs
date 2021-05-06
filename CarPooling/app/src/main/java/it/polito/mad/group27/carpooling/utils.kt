@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.AndroidViewModel
 import java.io.OutputStream
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
@@ -25,12 +26,12 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random.Default.nextDouble
 
+const val TAG = "MAD-group-27"
 
-fun Fragment.getLogTag() = getString(R.string.log_tag)
-
-fun AppCompatActivity.getLogTag() = getString(R.string.log_tag)
-
-fun OutputStream.getLogTag() = "MAD-group-27"
+fun Fragment.getLogTag() = TAG
+fun AppCompatActivity.getLogTag() = TAG
+fun AndroidViewModel.getLogTag() = TAG
+fun OutputStream.getLogTag() = TAG
 
 fun OutputStream.writeBitmap(
     bitmap: Bitmap,
