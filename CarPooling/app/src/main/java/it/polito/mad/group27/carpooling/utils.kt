@@ -66,6 +66,12 @@ fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
     return bitmap
 }
 
+fun TimestampToCalendar(dateTime: Timestamp): Calendar =
+    Calendar.getInstance().also { it.timeInMillis = dateTime.seconds * 1000 }
+
+fun CalendarToTimestamp(dateTime: Calendar): Timestamp =
+    Timestamp(dateTime.time)
+
 fun TripList.createSampleDataIfNotPresent(tripsNumber: Int = 20, forceReset: Boolean = false) {
 
     val carImages = listOf(
