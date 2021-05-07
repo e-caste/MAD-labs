@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
@@ -32,7 +33,13 @@ class TripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    companion object{
+    private lateinit var tripListViewModel: TripListViewModel
+
+    lateinit var counterName:String
+    lateinit var tripPrefix:String
+    lateinit var carImagePrefix:String
+
+    companion object {
         var trips: MutableList<Trip> = mutableListOf()
 
         fun notifyAdded(newTrip: Trip) {
@@ -43,9 +50,6 @@ class TripList: BaseFragmentWithToolbar(
             trips = trips.map { if(it.id == id) updatedTrip else it}.toMutableList()
         }
     }
-    lateinit var counterName:String
-    lateinit var tripPrefix:String
-    lateinit var carImagePrefix:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +57,9 @@ class TripList: BaseFragmentWithToolbar(
         counterName = getString(R.string.trip_counter)
         tripPrefix = getString(R.string.trip_prefix)
         carImagePrefix = getString(R.string.car_image_prefix)
+
+        tripListViewModel = ViewModelProvider(this).get(TripListViewModel::class.java)
+        tripListViewModel.trips.observe(viewLifecycleOwner) { notifyModified(it) }
 
         val tripsCounter = savedInstanceState?.getInt("trips_counter")
         Log.d(getLogTag(), "tripsCounter is $tripsCounter")
