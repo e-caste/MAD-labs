@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,15 +8,15 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 
 class PassengerRecyclerViewAdapter(
-    val viewModel: TripEditViewModel,
-    val acceptedAdapter: PassengerRecyclerViewAdapter?
+    private val viewModel: TripEditViewModel,
+    val acceptedAdapter: PassengerRecyclerViewAdapter?,
+    private val context: Context
 ) :
     RecyclerView.Adapter<PassengerRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(
@@ -29,6 +30,7 @@ class PassengerRecyclerViewAdapter(
         private val button: Button = v.findViewById(R.id.accept_button)
 
         fun bind(
+            context: Context,
             viewModel: TripEditViewModel,
             passenger: Profile,
             position: Int,
@@ -39,8 +41,8 @@ class PassengerRecyclerViewAdapter(
             nicknameView.text = passenger.nickName
             if (other_rv != null) {
                 button.visibility = View.VISIBLE
+
                 if (passenger.uid == null){
-                    button.isClickable = false
                     button.isEnabled = false
                     viewProfile.isClickable = false
                 }
@@ -55,7 +57,6 @@ class PassengerRecyclerViewAdapter(
 
                     if(viewModel.newTrip.acceptedUsersUids.size < viewModel.newTrip.totalSeats ?: 0) {
 
-                        button.isClickable = true
                         button.isEnabled = true
                         button.setOnClickListener {
                             this_rv.remove(position)
@@ -63,8 +64,11 @@ class PassengerRecyclerViewAdapter(
                         }
                     }
                     else{
-                        button.isClickable = false
-                        button.isEnabled = false
+
+                        button.isEnabled = true
+                        button.setOnClickListener {
+                            Snackbar.make(it, context.getString(R.string.seats_finished), Snackbar.LENGTH_LONG).show()
+                        }
                     }
 
 
@@ -82,6 +86,7 @@ class PassengerRecyclerViewAdapter(
 
         }
     }
+
     init {
         // download users data from db
         viewModel.downloadUsers{
@@ -110,7 +115,7 @@ class PassengerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(viewModel, passengers[position], position, this, acceptedAdapter)
+        holder.bind(context, viewModel, passengers[position], position, this, acceptedAdapter)
     }
 
     fun add(passenger: Profile) {
@@ -124,6 +129,5 @@ class PassengerRecyclerViewAdapter(
         this.notifyItemRemoved(position)
         this.notifyItemRangeChanged(position, passengers.size - position)
     }
-
 
 }
