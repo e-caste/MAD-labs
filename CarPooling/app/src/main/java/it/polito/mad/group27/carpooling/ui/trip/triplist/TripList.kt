@@ -33,65 +33,9 @@ class TripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    private lateinit var tripListViewModel: TripListViewModel
-
-    lateinit var counterName:String
-    lateinit var tripPrefix:String
-    lateinit var carImagePrefix:String
-
-    companion object {
-        var trips: MutableList<Trip> = mutableListOf()
-
-        fun notifyAdded(newTrip: Trip) {
-            trips.add(newTrip)
-        }
-
-        fun notifyModified(id: Int, updatedTrip : Trip) {
-            trips = trips.map { if(it.id == id) updatedTrip else it}.toMutableList()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        counterName = getString(R.string.trip_counter)
-        tripPrefix = getString(R.string.trip_prefix)
-        carImagePrefix = getString(R.string.car_image_prefix)
-
-        tripListViewModel = ViewModelProvider(this).get(TripListViewModel::class.java)
-        tripListViewModel.trips.observe(viewLifecycleOwner) { notifyModified(it) }
-
-        val tripsCounter = savedInstanceState?.getInt("trips_counter")
-        Log.d(getLogTag(), "tripsCounter is $tripsCounter")
-        if (tripsCounter == null) {
-            createSampleDataIfNotPresent()
-            loadTripsFromStorage()
-        } else {
-            for (i in 0 until tripsCounter) {
-                savedInstanceState.getParcelable<Trip>("trip$i")?.let { trips.add(it) }
-            }
-        }
-    }
-
-    private fun loadTripsFromStorage() {
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val savedTripsCounter = prefs?.getInt(counterName, 0)
-        if (savedTripsCounter != null) {
-            for (i in 0 until savedTripsCounter) {
-                try {
-                    val savedTripJson = prefs.getString("$tripPrefix$i", null)
-                    if (savedTripJson != null) {
-                        val tmpTrip: Trip = Json.decodeFromString(savedTripJson)
-                        trips.add(tmpTrip)
-                        Log.d(getLogTag(), "decoded $tripPrefix$i from JSON with data: $tmpTrip")
-                    } else {
-                        Log.d(getLogTag(), "$tripPrefix$i contains null, not decoding from JSON")
-                    }
-                } catch (e: SerializationException) {
-                    Log.d(getLogTag(), "cannot parse saved preference $tripPrefix$i")
-                }
-            }
-        }
     }
 
     override fun onCreateView(
@@ -129,14 +73,6 @@ class TripList: BaseFragmentWithToolbar(
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("trips_counter", trips.size)
-        Log.d(getLogTag(), "saved to bundle: counter ${trips.size}")
-        for ((i, trip) in trips.withIndex()) {
-            outState.putParcelable("trip$i", trip)
-            Log.d(getLogTag(), "saved to bundle: trip $i")
-        }
+
     }
-
-
 }
