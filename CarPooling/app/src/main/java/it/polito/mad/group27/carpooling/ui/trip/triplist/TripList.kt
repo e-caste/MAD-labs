@@ -115,4 +115,17 @@ class TripList: BaseFragmentWithToolbar(
     override fun onSaveInstanceState(outState: Bundle) {
         // TODO: do we still need to save and restore the instance state?
     }
+
+    override fun onStart() {
+        super.onStart()
+        adapter!!.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (adapter != null) {
+            adapter!!.stopListening()
+        }
+    }
 }
