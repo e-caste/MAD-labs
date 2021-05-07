@@ -17,6 +17,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         android.defaultConfig.vectorDrawables.useSupportLibrary true
+        resConfigs "en", "it"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -61,6 +62,13 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     // Skip this if you don't want to use integration libraries or configure Glide.
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
+    // FirebaseUI for Firebase Auth
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:7.1.1'
 
     implementation 'com.github.CanHub:Android-Image-Cropper:3.0.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
