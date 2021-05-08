@@ -406,11 +406,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         writeParcelable(tripEditViewModel.newTrip, "${getString(R.string.trip_prefix)}${tripEditViewModel.newTrip.id}")
 //        saveImg(imageName)
         // TODO manage save image
-
-
-        if(created)
-            TripList.notifyAdded(tripEditViewModel.newTrip)
-        else TripList.notifyModified(tripEditViewModel.newTrip.id, tripEditViewModel.newTrip)
     }
 
 
