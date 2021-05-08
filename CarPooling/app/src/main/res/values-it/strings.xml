@@ -77,4 +77,6 @@
     <string name="interested_passengers">Passeggeri interessati</string>
     <string name="accepted_passengers">Passeggeri accettati</string>
     <string name="accept">ACCETTA</string>
+    <string name="date_and_time_both_present">Devi selezionare sia data che ora</string>
+    <string name="date_not_in_past">Non è possibile ricercare nel passato</string>
 </resources>
