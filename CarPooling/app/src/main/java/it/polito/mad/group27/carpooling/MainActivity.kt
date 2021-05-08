@@ -134,13 +134,7 @@ class MainActivity : AppCompatActivity() {
             "oauth2: https://www.googleapis.com/auth/firebase.messaging",            // Auth scope
             options,                        // Authenticator-specific options
             this,                           // Your activity
-            { it ->
-                //TODO use this
-                Log.d(
-                    getLogTag(),
-                    "PROBABILY BE THIS " + it.result.getString(AccountManager.KEY_AUTHTOKEN)
-                )
-            },              // Callback called when a token is successfully acquired
+            { MessagingService.oauthToken = it.result.getString(AccountManager.KEY_AUTHTOKEN)!! }, // Callback called when a token is successfully acquired
             Handler (Looper.getMainLooper()){
                 Log.d(getLogTag(), "ERROR")
                 // TODO back to login page
