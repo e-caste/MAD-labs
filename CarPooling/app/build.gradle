@@ -73,11 +73,14 @@ dependencies {
     implementation 'com.github.CanHub:Android-Image-Cropper:3.0.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
-    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    // dependencies for Firebase Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
