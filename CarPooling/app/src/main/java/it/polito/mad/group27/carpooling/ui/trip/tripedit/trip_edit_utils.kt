@@ -70,6 +70,12 @@ fun Calendar.updateTime(timePicker: MaterialTimePicker): Calendar {
     return this
 }
 
+fun Calendar.clearHour(): Calendar{
+    this.set(Calendar.HOUR_OF_DAY,0)
+    this.set(Calendar.MINUTE, 0)
+    return this
+}
+
 fun Trip.checkDateTimeStop(position: Int) : Pair<Boolean, Boolean>{
 
     val stop = this.stops[position]
