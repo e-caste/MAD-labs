@@ -2,6 +2,8 @@ package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -23,6 +26,7 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.createSampleDataIfNotPresent
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
@@ -56,18 +60,47 @@ class TripList: BaseFragmentWithToolbar(
         private const val coll = "trips"
     }
 
-    private inner class TripViewHolder internal constructor(private val view: View) : RecyclerView.ViewHolder(view) {
+    private inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
-        internal fun setPrice(price: BigDecimal?) {
+        fun setPrice(price: BigDecimal?) {
             val textView = view.findViewById<TextView>(R.id.price_text)
             textView.text = priceFormat.format(price)
         }
-        // TODO: add all other fields, carefully respect names to allow automatic (de)serialization
+
+        fun setCarImageUri(carImageUri: Uri?) {
+            val carImageView = view.findViewById<ImageView>(R.id.car_image)
+            if (carImageUri == null) {
+                carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+                carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+            } else {
+                carImageView.setImageURI(carImageUri)
+                carImageView.colorFilter = null
+            }
+        }
+
+        fun setFrom(from: String?) {
+            val fromTextView = view.findViewById<TextView>(R.id.departure_text)
+            fromTextView.text = from
+        }
+
+        fun setTo(to: String?) {
+            val toTextView = view.findViewById<TextView>(R.id.destination_text)
+            toTextView.text = to
+        }
+
+        fun setStartDateTime(startDateTime: Calendar?) {
+            val hourDepartureTextView = view.findViewById<TextView>(R.id.hour_departure_text)
+            val dateDepartureTextView = view.findViewById<TextView>(R.id.date_departure_text)
+            if (startDateTime != null) {
+                hourDepartureTextView.text = Hour(startDateTime.get(Calendar.HOUR_OF_DAY), startDateTime[Calendar.MINUTE]).toString()
+                dateDepartureTextView.text = dateFormat.format(startDateTime.time)
+            }
+        }
     }
 
-    private inner class TripFirestoreRecyclerAdapter internal constructor(options: FirestoreRecyclerOptions<Trip>) : FirestoreRecyclerAdapter<Trip, TripViewHolder>(options) {
+    private inner class TripFirestoreRecyclerAdapter(options: FirestoreRecyclerOptions<Trip>) : FirestoreRecyclerAdapter<Trip, TripViewHolder>(options) {
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, trip: Trip) {
             tripViewHolder.setPrice(trip.price)
         }
