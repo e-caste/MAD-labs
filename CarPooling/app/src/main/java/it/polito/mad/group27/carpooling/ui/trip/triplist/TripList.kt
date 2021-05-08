@@ -77,6 +77,7 @@ class TripList: BaseFragmentWithToolbar(
                 carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
                 carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
             } else {
+                // TODO: use Glide
                 carImageView.setImageURI(carImageUri)
                 carImageView.colorFilter = null
             }
