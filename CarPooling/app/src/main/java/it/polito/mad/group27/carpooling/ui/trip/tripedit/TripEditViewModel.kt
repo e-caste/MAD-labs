@@ -17,6 +17,8 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
     lateinit var trip: Trip
     lateinit var newTrip : Trip
 
+    var totalSeats : MutableLiveData<Int?> = MutableLiveData(null)
+
     private lateinit var userProfiles : Map<String, Profile>
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")

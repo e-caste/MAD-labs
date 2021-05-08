@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import it.polito.mad.group27.carpooling.AndroidNotification
+import it.polito.mad.group27.carpooling.MessagingService
 import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 
@@ -55,22 +58,25 @@ class PassengerRecyclerViewAdapter(
                         )
                     }
 
-                    if(viewModel.newTrip.acceptedUsersUids.size < viewModel.newTrip.totalSeats ?: 0) {
+                    viewModel.totalSeats.observe(context as LifecycleOwner){
+                        if(viewModel.newTrip.acceptedUsersUids.size < it ?: 0) {
 
-                        button.isEnabled = true
-                        button.setOnClickListener {
-                            this_rv.remove(position)
-                            other_rv.add(passenger)
+                            button.isEnabled = true
+                            button.setOnClickListener {
+                                this_rv.remove(position)
+                                other_rv.add(passenger)
+                                MessagingService.sendNotification(
+                                    passenger.notificationToken,
+                                    AndroidNotification("New interested user!", "User ${passenger.nickName} is now interested to your trip", passenger.profileImageUri))
+                            }
+                        }
+                        else{
+                            button.isEnabled = true
+                            button.setOnClickListener {
+                                Snackbar.make(it, context.getString(R.string.seats_finished), Snackbar.LENGTH_LONG).show()
+                            }
                         }
                     }
-                    else{
-
-                        button.isEnabled = true
-                        button.setOnClickListener {
-                            Snackbar.make(it, context.getString(R.string.seats_finished), Snackbar.LENGTH_LONG).show()
-                        }
-                    }
-
 
                 }
             } else {

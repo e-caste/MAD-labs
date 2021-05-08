@@ -139,7 +139,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 setEstimatedTime()
             },
             {
-                from_date.error = null
+                to_date.error = null
                 to_hour.error = null
                 setEstimatedTime()
             }
@@ -223,18 +223,18 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        tripEditViewModel.newTrip.totalSeats?.let { passengers.editText?.setText(it.toString()) }
+        tripEditViewModel.newTrip.totalSeats?.let {
+            passengers.editText?.setText(it.toString())
+            tripEditViewModel.totalSeats.value = it
+        }
         passengers.editText?.addTextChangedListener(Watcher(
             { passengers.editText?.text?.isEmpty() ?: true },
             { passengers.error = getString(R.string.insert_passengers)
                 tripEditViewModel.newTrip.totalSeats = -1
-                // TODO make not stubbed when adding some logic
-                tripEditViewModel.newTrip.availableSeats = -1
              },
             { passengers.error = null
                 tripEditViewModel.newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
-                // TODO make not stubbed when adding some logic
-                tripEditViewModel.newTrip.availableSeats = (0 .. tripEditViewModel.newTrip.totalSeats!!).random()
+                tripEditViewModel.totalSeats.value = passengers.editText?.text?.toString()?.toInt()
                  }
         ))
 
@@ -408,9 +408,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // TODO manage save image
 
 
-        if(created)
-            TripList.notifyAdded(tripEditViewModel.newTrip)
-        else TripList.notifyModified(tripEditViewModel.newTrip.id, tripEditViewModel.newTrip)
+//        if(created)
+//            TripList.notifyAdded(tripEditViewModel.newTrip)
+//        else TripList.notifyModified(tripEditViewModel.newTrip.id, tripEditViewModel.newTrip)
     }
 
 
