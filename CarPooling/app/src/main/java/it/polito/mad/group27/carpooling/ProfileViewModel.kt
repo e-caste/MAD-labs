@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,7 +12,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileViewModel(application: Application) : ProfileBaseViewModel(application) {
 
-
+    companion object{
+        fun updateUserNotificationToken(token:String){
+            val user = FirebaseAuth.getInstance().currentUser
+            if(user !=null){
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(user.uid).update({notificationToken:token})
+            }
+        }
+    }
 
     lateinit var profileDocument:DocumentReference
     // TODO add loading flag
