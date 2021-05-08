@@ -131,11 +131,6 @@ class TripList: BaseFragmentWithToolbar(
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -163,10 +158,6 @@ class TripList: BaseFragmentWithToolbar(
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        // TODO: do we still need to save and restore the instance state?
     }
 
     override fun onStart() {
