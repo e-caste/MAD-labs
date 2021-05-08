@@ -166,9 +166,7 @@ class MainActivity : AppCompatActivity() {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }else{
-            googleSignInClient.silentSignIn().addOnSuccessListener {
-                loadToken(it)
-            }
+            GoogleSignIn.getLastSignedInAccount(this).also { loadToken(it!!) }
         }
     }
 

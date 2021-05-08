@@ -49,14 +49,25 @@ class MessagingService : FirebaseMessagingService() {
                 outputPost.close()
 
                 var line : String? = ""
-                val isr = InputStreamReader(client.getInputStream())
-                val reader = BufferedReader(isr)
-                val sb = StringBuilder()
-                while (reader.readLine().also { line = it } != null) {
-                    sb.append(line.toString() + "\n")
-                }
+                val code = client.responseCode.toString()
+                Log.d("MAD-group27", code)
+                if(!code.startsWith("4") && !code.startsWith("5")) {
+                    val isr = InputStreamReader(client.inputStream)
+                    val reader = BufferedReader(isr)
+                    val sb = StringBuilder()
+                    while (reader.readLine().also { line = it } != null) {
+                        sb.append(line.toString() + "\n")
+                    }
 
-                Log.d("MAD-group27", client.responseCode.toString()+ " " + client.responseMessage)
+                    Log.d("MAD-group27", code + " " + client.responseMessage)
+                }else{
+                    val isr = InputStreamReader(client.errorStream)
+                    val reader = BufferedReader(isr)
+                    val sb = StringBuilder()
+                    while (reader.readLine().also { line = it } != null) {
+                        sb.append(line.toString() + "\n")
+                    }
+                }
 
                 client.disconnect()
             }.start()
