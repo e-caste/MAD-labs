@@ -17,7 +17,7 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
             val user = FirebaseAuth.getInstance().currentUser
             if(user !=null){
                 FirebaseFirestore.getInstance().collection("users")
-                    .document(user.uid).update({notificationToken:token})
+                    .document(user.uid).update("notificationToken", token)
             }
         }
     }
