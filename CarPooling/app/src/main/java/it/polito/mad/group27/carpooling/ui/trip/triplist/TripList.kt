@@ -20,13 +20,13 @@ import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -48,7 +48,7 @@ class TripList: BaseFragmentWithToolbar(
 
     private val db = FirebaseFirestore.getInstance()
     private val queryBase = db.collection(coll)
-//        .whereGreaterThan("startDateTime", Calendar.getInstance())  // TODO: check if this works
+        .whereGreaterThan("startDateTime", Timestamp.now())  // TODO: check if this works
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     private val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(queryBase, TripDB::class.java)
