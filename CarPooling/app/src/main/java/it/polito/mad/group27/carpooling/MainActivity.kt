@@ -1,13 +1,15 @@
 package it.polito.mad.group27.carpooling
 
+import android.accounts.AccountManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -19,14 +21,19 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.TaskExecutors
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,12 +92,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-
-        if(currentUser == null){
-            signIn()
-        } else {
+        signIn()
+        if(currentUser != null){
             Log.d(TAG,"current user: ${currentUser.uid}, ${currentUser.displayName}, ${currentUser.email}, ${currentUser.photoUrl}")
-//            loadProfile(Profile(currentUser.displayName,currentUser.photoUrl,currentUser.email))
             profileViewModel.loadProfile(currentUser)
         }
     }
@@ -109,18 +113,45 @@ class MainActivity : AppCompatActivity() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+
+                loadToken(account)
+
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
+                //TODO back to loginPage
             }
-            //TODO manage profile
         }
+    }
+
+    private fun loadToken(account: GoogleSignInAccount) {
+        val am: AccountManager = AccountManager.get(this)
+        val options = Bundle()
+
+        am.getAuthToken(
+            account.account,                     // Account retrieved using getAccountsByType()
+            "oauth2: https://www.googleapis.com/auth/firebase.messaging",            // Auth scope
+            options,                        // Authenticator-specific options
+            this,                           // Your activity
+            { it ->
+                //TODO use this
+                Log.d(
+                    getLogTag(),
+                    "PROBABILY BE THIS " + it.result.getString(AccountManager.KEY_AUTHTOKEN)
+                )
+            },              // Callback called when a token is successfully acquired
+            Handler (Looper.getMainLooper()){
+                Log.d(getLogTag(), "ERROR")
+                // TODO back to login page
+                true
+            }              // Callback called if an error occurs
+        )
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
+
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -137,8 +168,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        if(FirebaseAuth.getInstance().currentUser==null) {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }else{
+            googleSignInClient.silentSignIn().addOnSuccessListener {
+                loadToken(it)
+            }
+        }
     }
 
     companion object {
@@ -146,13 +183,10 @@ class MainActivity : AppCompatActivity() {
         private const val RC_SIGN_IN = 9001
     }
 
-    fun loadProfile(_profile: Profile? = null){
-        if (_profile==null){
-            //TODO find when happen
-            Toast.makeText(this, "PROFILE WAS REMOVED, SHOULD NOT GET THERE", Toast.LENGTH_SHORT).show()
-        }else {
+    private fun loadProfile(_profile: Profile? = null){
+        if (_profile!=null){
             if (_profile.profileImageUri != null)
-                Glide.with(this).load(_profile.profileImageUri).into(profileImageView);
+                Glide.with(this).load(_profile.profileImageUri).into(profileImageView)
             else
                 profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
             profileNameTextView.text = _profile.fullName
