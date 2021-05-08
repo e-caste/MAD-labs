@@ -81,6 +81,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
             }
             if (profile.profileImageUri != null)
                 Glide.with(this).load(profile.profileImageUri ).into(profileImageView)
+            else
+                profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
             nickNameView.text = profile.nickName
             if(!privateMode) {
                 emailView.text = profile.email
