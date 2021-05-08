@@ -17,6 +17,8 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
     lateinit var trip: Trip
     lateinit var newTrip : Trip
 
+    val newAcceptedUsers = mutableListOf<String>()
+
     var totalSeats : MutableLiveData<Int?> = MutableLiveData(null)
 
     private lateinit var userProfiles : Map<String, Profile>
@@ -48,6 +50,7 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
     fun putToAccepted(uid: String){
         newTrip.interestedUsersUids.remove(uid)
         newTrip.acceptedUsersUids.add(uid)
+        newAcceptedUsers.add(uid)
     }
 
 }

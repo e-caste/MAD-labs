@@ -65,9 +65,6 @@ class PassengerRecyclerViewAdapter(
                             button.setOnClickListener {
                                 this_rv.remove(position)
                                 other_rv.add(passenger)
-                                MessagingService.sendNotification(
-                                    passenger.notificationToken,
-                                    AndroidNotification("New interested user!", "User ${passenger.nickName} is now interested to your trip", passenger.profileImageUri))
                             }
                         }
                         else{

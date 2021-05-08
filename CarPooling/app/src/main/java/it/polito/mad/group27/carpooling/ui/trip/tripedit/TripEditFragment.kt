@@ -360,7 +360,14 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun saveTrip(){
 
-        // TODO send notification to newly accepted users
+        for (uid in tripEditViewModel.newAcceptedUsers){
+            MessagingService.sendNotification(
+                tripEditViewModel.getProfileByUid(uid).notificationToken,
+                AndroidNotification("Request accepted",
+                    "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                    tripEditViewModel.newTrip.carImageUri.toString())
+            )
+        }
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
