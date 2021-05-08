@@ -1,11 +1,9 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
-import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +15,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -30,8 +27,7 @@ import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
+import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
@@ -52,10 +48,10 @@ class TripList: BaseFragmentWithToolbar(
 
     private val db = FirebaseFirestore.getInstance()
     private val queryBase = db.collection(coll)
-        .whereGreaterThan("startDateTime", Calendar.getInstance())  // TODO: check if this works
+//        .whereGreaterThan("startDateTime", Calendar.getInstance())  // TODO: check if this works
         .orderBy("startDateTime", Query.Direction.ASCENDING)
-    private val options = FirestoreRecyclerOptions.Builder<Trip>()
-        .setQuery(queryBase, Trip::class.java)
+    private val options = FirestoreRecyclerOptions.Builder<TripDB>()
+        .setQuery(queryBase, TripDB::class.java)
         .build()
     private var adapter: TripFirestoreRecyclerAdapter? = null
 
@@ -107,13 +103,17 @@ class TripList: BaseFragmentWithToolbar(
     }
 
     private inner class TripFirestoreRecyclerAdapter(
-        options: FirestoreRecyclerOptions<Trip>,
+        options: FirestoreRecyclerOptions<TripDB>,
         private val navController: NavController,
-    ) : FirestoreRecyclerAdapter<Trip, TripViewHolder>(options) {
+    ) : FirestoreRecyclerAdapter<TripDB, TripViewHolder>(options) {
 
-        override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, trip: Trip) {
+        override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
+            val trip = tripDB.toTrip()
+
             val bundle = bundleOf("trip" to Json.encodeToString(trip))
             val bundleParcelable = bundleOf("trip" to trip)
+
+            Log.d(getLogTag(), "adding trip to TripList: $bundle")
 
             tripViewHolder.setPrice(trip.price)
             tripViewHolder.setCarImageUri(trip.carImageUri)
