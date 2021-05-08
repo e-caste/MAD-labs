@@ -1,6 +1,7 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -8,18 +9,23 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 
 class ProfileViewModel(application: Application) : ProfileBaseViewModel(application) {
 
     companion object{
-        fun updateUserNotificationToken(token:String){
+        fun updateUserNotificationToken(notificationToken:String){
             val user = FirebaseAuth.getInstance().currentUser
             if(user !=null){
                 FirebaseFirestore.getInstance().collection("users")
-                    .document(user.uid).update("notificationToken", token)
+                    .document(user.uid).update("notificationToken", notificationToken)
+
             }
+            token = notificationToken
         }
+
+        var token:String? = null
     }
 
     lateinit var profileDocument:DocumentReference
@@ -38,7 +44,8 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
                         currentUser.uid,
                         currentUser.photoUrl?.toString(),
                         currentUser.displayName ?: "",
-                        email = currentUser.email ?: ""
+                        email = currentUser.email ?: "",
+                        notificationToken = token
                     )
                 ).addOnFailureListener {
                     Toast.makeText(
