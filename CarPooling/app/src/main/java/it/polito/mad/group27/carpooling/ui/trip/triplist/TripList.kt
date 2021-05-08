@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -30,6 +33,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
 import java.text.DateFormat
@@ -63,6 +67,9 @@ class TripList: BaseFragmentWithToolbar(
     private inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
+
+        val editButton: ImageButton = view.findViewById(R.id.edit_button)
+        val carImageView: ImageView = view.findViewById(R.id.car_image)
 
         fun setPrice(price: BigDecimal?) {
             val textView = view.findViewById<TextView>(R.id.price_text)
@@ -100,9 +107,23 @@ class TripList: BaseFragmentWithToolbar(
         }
     }
 
-    private inner class TripFirestoreRecyclerAdapter(options: FirestoreRecyclerOptions<Trip>) : FirestoreRecyclerAdapter<Trip, TripViewHolder>(options) {
+    private inner class TripFirestoreRecyclerAdapter(
+        options: FirestoreRecyclerOptions<Trip>,
+        private val navController: NavController,
+    ) : FirestoreRecyclerAdapter<Trip, TripViewHolder>(options) {
+
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, trip: Trip) {
+            val bundle = bundleOf("trip" to Json.encodeToString(trip))
+            val bundleParcelable = bundleOf("trip" to trip)
+
             tripViewHolder.setPrice(trip.price)
+            tripViewHolder.setCarImageUri(trip.carImageUri)
+            tripViewHolder.setFrom(trip.from)
+            tripViewHolder.setTo(trip.to)
+            tripViewHolder.setStartDateTime(trip.startDateTime)
+
+            tripViewHolder.carImageView.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripDetailsFragment, bundleParcelable) }
+            tripViewHolder.editButton.setOnClickListener { navController.navigate(R.id.action_tripList_to_tripEditFragment, bundle) }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
@@ -138,7 +159,7 @@ class TripList: BaseFragmentWithToolbar(
                 LinearLayoutManager(context)
             }
         }
-        adapter = TripFirestoreRecyclerAdapter(options)
+        adapter = TripFirestoreRecyclerAdapter(options, findNavController())
         recyclerView.adapter = adapter
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
