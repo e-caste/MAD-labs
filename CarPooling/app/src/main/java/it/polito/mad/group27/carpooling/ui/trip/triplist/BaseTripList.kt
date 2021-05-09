@@ -46,7 +46,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
     private val db = FirebaseFirestore.getInstance()
     protected val queryBase = db.collection(coll)
-        .whereGreaterThan("startDateTime", Timestamp.now())
+        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
     private val options = FirestoreRecyclerOptions.Builder<TripDB>()
@@ -63,7 +63,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
         val topRightButton: ImageButton = view.findViewById(R.id.topright_button)
-        val topRightButtonShadow: ImageButton = view.findViewById(R.id.topright_button_shadow)
+        val topRightButtonShadow: ImageView = view.findViewById(R.id.topright_button_shadow)
         val carImageView: ImageView = view.findViewById(R.id.car_image)
 
         fun setPrice(price: BigDecimal?) {
