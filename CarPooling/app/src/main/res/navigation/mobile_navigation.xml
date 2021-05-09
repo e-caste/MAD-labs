@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_trips">
+    app:startDestination="@id/othersTripList">
 
     <fragment
         android:id="@+id/nav_trips"
@@ -60,4 +60,8 @@
             android:id="@+id/action_tripEditFragment_to_nav_profile"
             app:destination="@id/nav_profile" />
     </fragment>
+    <fragment
+        android:id="@+id/othersTripList"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.OthersTripList"
+        android:label="OthersTripList" />
 </navigation>
