@@ -54,6 +54,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
+    private var hiddenCardsCounter: Int = 0
 
     companion object {
         private const val coll = "trips"
@@ -117,6 +118,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
             if (filterOutTrip(trip)) {
                 Log.d(getLogTag(), "filtering out trip: $trip")
                 tripViewHolder._setCardInvisible()
+                hiddenCardsCounter++
                 return
             }
 
@@ -160,19 +162,27 @@ open class BaseTripList: BaseFragmentWithToolbar(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView.layoutManager = when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
-                GridLayoutManager(context, 2)
-            }
-            else -> {
-                Log.d(getLogTag(), "orientation is portrait, using linear layout...")
-                LinearLayoutManager(context)
-            }
-        }
         adapter = TripFirestoreRecyclerAdapter(options)
-        recyclerView.adapter = adapter
+        if (hiddenCardsCounter == adapter!!.itemCount) {
+            Log.d(getLogTag(), "TripList is empty, showing warning message to user")
+            // TODO: show warning view instead of recyclerview
+        } else {
+            val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+            recyclerView.layoutManager = when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    Log.d(
+                        getLogTag(),
+                        "orientation is landscape, using grid layout with 2 columns..."
+                    )
+                    GridLayoutManager(context, 2)
+                }
+                else -> {
+                    Log.d(getLogTag(), "orientation is portrait, using linear layout...")
+                    LinearLayoutManager(context)
+                }
+            }
+            recyclerView.adapter = adapter
+        }
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
