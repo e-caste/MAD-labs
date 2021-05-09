@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -162,12 +163,19 @@ open class BaseTripList: BaseFragmentWithToolbar(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        val warningMessageView = view.findViewById<LinearLayout>(R.id.warning_message_notrips)
+
         adapter = TripFirestoreRecyclerAdapter(options)
+        // all trips are hidden -> show warning message
         if (hiddenCardsCounter == adapter!!.itemCount) {
             Log.d(getLogTag(), "TripList is empty, showing warning message to user")
-            // TODO: show warning view instead of recyclerview
+            recyclerView.visibility = View.GONE
+            warningMessageView.visibility = View.VISIBLE
         } else {
-            val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+            recyclerView.visibility = View.VISIBLE
+            warningMessageView.visibility = View.GONE
+
             recyclerView.layoutManager = when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     Log.d(
