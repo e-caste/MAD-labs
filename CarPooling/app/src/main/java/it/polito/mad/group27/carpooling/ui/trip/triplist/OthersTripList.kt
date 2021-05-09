@@ -4,11 +4,12 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
 class OthersTripList: BaseTripList() {
 
-    private val query = queryBase.whereEqualTo("ownerUid", currentUserUid)
+    private val query = queryBase  // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
     private val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
@@ -25,5 +26,9 @@ class OthersTripList: BaseTripList() {
     override fun setAdapter(recyclerView: RecyclerView) {
         adapter = TripFirestoreRecyclerAdapter(options)
         recyclerView.adapter = adapter
+    }
+
+    override fun filterOutTrip(trip: Trip): Boolean {
+        return trip.ownerUid != currentUserUid
     }
 }
