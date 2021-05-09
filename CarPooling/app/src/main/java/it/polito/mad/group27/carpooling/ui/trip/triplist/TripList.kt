@@ -49,7 +49,7 @@ class TripList: BaseFragmentWithToolbar(
 
     private val db = FirebaseFirestore.getInstance()
     private val queryBase = db.collection(coll)
-        .whereGreaterThan("startDateTime", Timestamp.now())  // TODO: check if this works
+        .whereGreaterThan("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     private val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(queryBase, TripDB::class.java)
