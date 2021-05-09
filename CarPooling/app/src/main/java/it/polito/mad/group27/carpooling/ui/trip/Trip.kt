@@ -71,12 +71,14 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
+// TODO: do we need the Trip/TripDB id?
+//  we can use the document id instead and remove the field from the dataclasses
 
 @Serializable
 @Parcelize
 data class Trip(
     // primary keys
-    var id: Int = -1,  // TODO: this should be a String if we want to use the Firebase ids
+    var id: Int = -1,
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -111,7 +113,7 @@ data class Trip(
             from = from,
             to = to,
             stops = stops.map { it.toStopDB() }.toMutableList(),
-            options = options,
+            options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
@@ -156,7 +158,7 @@ enum class Option {
 @Parcelize
 data class TripDB(
     // primary keys
-    var id: String="",  // TODO: this should be a String if we want to use the Firebase ids
+    var id: String="",
     var ownerUid: String="",
     var carImageUri: String?=null,
     var totalSeats: Int=0,
@@ -166,7 +168,7 @@ data class TripDB(
     var from: String="",
     var to: String="",
     val stops: MutableList<StopDB> = mutableListOf(),
-    val options: MutableList<Option> = mutableListOf(),
+    val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf()
@@ -183,7 +185,7 @@ data class TripDB(
             from = from,
             to = to,
             stops = stops.map { it.toStop() }.toMutableList(),
-            options = options,
+            options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
