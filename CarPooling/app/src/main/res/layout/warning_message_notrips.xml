@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="There are no trips yet...\nBe the first to offer one!"
+        android:text="@string/warning_message_notrips"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
