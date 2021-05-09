@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -77,8 +78,7 @@ class TripList: BaseFragmentWithToolbar(
                 carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
                 carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
             } else {
-                // TODO: use Glide
-                carImageView.setImageURI(carImageUri)
+                Glide.with(this@TripList).load(carImageUri).into(carImageView)
                 carImageView.colorFilter = null
             }
         }
