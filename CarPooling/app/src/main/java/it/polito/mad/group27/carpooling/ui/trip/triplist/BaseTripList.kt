@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -28,6 +29,7 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -100,6 +102,10 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 dateDepartureTextView.text = dateFormat.format(startDateTime.time)
             }
         }
+
+        fun _setCardInvisible() {
+            view.visibility = View.GONE
+        }
     }
 
     protected inner class TripFirestoreRecyclerAdapter(
@@ -109,10 +115,16 @@ open class BaseTripList: BaseFragmentWithToolbar(
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
+            if (filterOutTrip(trip)) {
+                Log.d(getLogTag(), "filtering out trip: $trip")
+                tripViewHolder._setCardInvisible()
+                return
+            }
+
             val bundle = bundleOf("trip" to Json.encodeToString(trip))
             val bundleParcelable = bundleOf("trip" to trip)
 
-            Log.d(getLogTag(), "adding trip to TripList: $bundle")
+            Log.d(getLogTag(), "adding trip to TripList: $trip")
 
             tripViewHolder.setPrice(trip.price)
             tripViewHolder.setCarImageUri(trip.carImageUri)
@@ -132,6 +144,10 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
     protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, bundle: Bundle) {
         // to implement in subclasses
+    }
+
+    protected open fun filterOutTrip(trip: Trip): Boolean {
+        return false
     }
 
     override fun onCreateView(
