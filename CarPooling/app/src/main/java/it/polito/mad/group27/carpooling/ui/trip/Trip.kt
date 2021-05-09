@@ -111,7 +111,7 @@ data class Trip(
             from = from,
             to = to,
             stops = stops.map { it.toStopDB() }.toMutableList(),
-            options = options,
+            options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
@@ -166,7 +166,7 @@ data class TripDB(
     var from: String="",
     var to: String="",
     val stops: MutableList<StopDB> = mutableListOf(),
-    val options: MutableList<Option> = mutableListOf(),
+    val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf()
@@ -183,7 +183,7 @@ data class TripDB(
             from = from,
             to = to,
             stops = stops.map { it.toStop() }.toMutableList(),
-            options = options,
+            options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
