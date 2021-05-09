@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -51,7 +50,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
-    private val options = FirestoreRecyclerOptions.Builder<TripDB>()
+    protected open val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
@@ -172,15 +171,11 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 LinearLayoutManager(context)
             }
         }
-        setAdapter(recyclerView)
+        adapter = TripFirestoreRecyclerAdapter(options)
+        recyclerView.adapter = adapter
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
-    }
-
-    protected open fun setAdapter(recyclerView: RecyclerView) {
-        adapter = TripFirestoreRecyclerAdapter(options)
-        recyclerView.adapter = adapter
     }
 
     override fun onStart() {
