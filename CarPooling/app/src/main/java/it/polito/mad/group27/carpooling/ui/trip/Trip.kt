@@ -71,12 +71,14 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
+// TODO: do we need the Trip/TripDB id?
+//  we can use the document id instead and remove the field from the dataclasses
 
 @Serializable
 @Parcelize
 data class Trip(
     // primary keys
-    var id: Int = -1,  // TODO: this should be a String if we want to use the Firebase ids
+    var id: Int = -1,
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -110,7 +112,7 @@ data class Trip(
             endDateTime = CalendarToTimestamp(endDateTime),
             from = from,
             to = to,
-            stops = stops.map { it.place to CalendarToTimestamp(it.dateTime) }.toMap().toMutableMap(),
+            stops = stops.map { it.toStopDB() }.toMutableList(),
             options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
@@ -140,7 +142,11 @@ data class Hour(var hour: Int, var minute: Int) : Parcelable {
 data class Stop(
     var place: String,
     @Serializable(with = CalendarSerializer::class) var dateTime: Calendar
-) : Parcelable
+) : Parcelable {
+    fun toStopDB():StopDB{
+        return StopDB(place, CalendarToTimestamp(dateTime))
+    }
+}
 
 enum class Option {
     ANIMALS,
@@ -152,7 +158,7 @@ enum class Option {
 @Parcelize
 data class TripDB(
     // primary keys
-    var id: String="",  // TODO: this should be a String if we want to use the Firebase ids
+    var id: String="",
     var ownerUid: String="",
     var carImageUri: String?=null,
     var totalSeats: Int=0,
@@ -161,7 +167,7 @@ data class TripDB(
     var endDateTime: Timestamp=Timestamp.now(),
     var from: String="",
     var to: String="",
-    val stops: MutableMap<String, Timestamp> = mutableMapOf(),
+    val stops: MutableList<StopDB> = mutableListOf(),
     val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
@@ -178,7 +184,7 @@ data class TripDB(
             endDateTime = TimestampToCalendar(endDateTime),
             from = from,
             to = to,
-            stops = stops.map { Stop(it.key, TimestampToCalendar(it.value)) }.toMutableList(),
+            stops = stops.map { it.toStop() }.toMutableList(),
             options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
@@ -186,3 +192,13 @@ data class TripDB(
         )
     }
 }
+
+@Parcelize
+data class StopDB(var place: String="", var dateTime: Timestamp=Timestamp.now()) : Parcelable {
+    fun toStop(): Stop {
+        return Stop(place, dateTime = TimestampToCalendar(dateTime))
+    }
+}
+
+
+
