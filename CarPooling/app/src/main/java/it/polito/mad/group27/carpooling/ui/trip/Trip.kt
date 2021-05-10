@@ -104,7 +104,7 @@ data class Trip(
 ) : Parcelable {
 
     fun toTripDB() = TripDB(
-            id = null,
+            id = id,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
