@@ -63,5 +63,17 @@
     <fragment
         android:id="@+id/othersTripList"
         android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.OthersTripList"
-        android:label="OthersTripList" />
+        android:label="OthersTripList" >
+        <action
+            android:id="@+id/action_othersTripList_to_tripFilterFragment"
+            app:destination="@id/tripFilterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripFilterFragment"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.tripfilter.TripFilterFragment"
+        android:label="TripFilterFragment" >
+        <action
+            android:id="@+id/action_tripFilterFragment_to_othersTripList"
+            app:destination="@id/othersTripList" />
+    </fragment>
 </navigation>
