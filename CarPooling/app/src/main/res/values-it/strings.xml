@@ -73,7 +73,7 @@
     <string name="trip_to">Viaggio per</string>
     <string name="add_trip">Aggiungi viaggio</string>
     <string name="nav_my_trips">I Miei Viaggi</string>
-    <string name="passengers_details">Dettagli del passeggero</string>
+    <string name="passengers_details">Dettagli dei passeggeri</string>
     <string name="interested_passengers">Passeggeri interessati</string>
     <string name="accepted_passengers">Passeggeri accettati</string>
     <string name="accept">ACCETTA</string>
@@ -85,4 +85,8 @@
     <string name="warning_message_alreadybooked">Hai già prenotato questo viaggio!</string>
     <string name="success_message_booked">Hai prenotato questo viaggio!</string>
     <string name="warning_message_failedbooking">C\'è stato un errore nella prenotazione del viaggio…<br />Riprova per favore.</string>
+    <plurals name="already_accepted_n_travelers">
+        <item quantity="one">Hai già accettato %d passeggero!</item>
+        <item quantity="other">Hai già accettato %d passeggeri!</item>
+    </plurals>
 </resources>
