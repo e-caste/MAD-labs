@@ -97,4 +97,6 @@
     <string name="date_not_in_past">Date cannot be in the past</string>
     <string name="warning_message_notrips">There are no trips yet…<br/>Be the first to offer one!</string>
     <string name="warning_message_alreadybooked">You have already booked this trip!</string>
+    <string name="success_message_booked">You have successfully booked this trip!</string>
+    <string name="warning_message_failedbooking">There was an error booking this trip…<br/>Please try again.</string>
 </resources>
