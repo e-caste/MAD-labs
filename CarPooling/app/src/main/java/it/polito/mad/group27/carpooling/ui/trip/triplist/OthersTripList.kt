@@ -27,11 +27,20 @@ class OthersTripList: BaseTripList() {
         } else {
             icon = R.drawable.ic_baseline_add_24
             tripViewHolder.topRightButton.setOnClickListener {
-                // TODO: call Firestore API to add current user to interestedUsers and set icon to done check
+                trip.interestedUsersUids.add(currentUserUid)
+                db.collection(coll).document(trip.id).set(trip)  // TODO: trip.id should be String
+                    .addOnSuccessListener {
+                        icon = R.drawable.ic_baseline_done_24
+                        Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                    }
+                    .addOnFailureListener {
+                        icon = R.drawable.ic_baseline_add_24
+                        Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
+                    }
             }
         }
-        tripViewHolder.topRightButtonShadow.setImageResource(icon)
-        tripViewHolder.topRightButton.setImageResource(icon)
+        tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
+        tripViewHolder.topRightButton.setImageResource(icon!!)
     }
 
     override fun filterOutTrip(trip: Trip): Boolean {
