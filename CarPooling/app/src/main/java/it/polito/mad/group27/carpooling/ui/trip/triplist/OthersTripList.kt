@@ -22,7 +22,7 @@ class OthersTripList: BaseTripList() {
         if (trip.interestedUsersUids.contains(currentUserUid) || trip.acceptedUsersUids.contains(currentUserUid)) {
             icon = R.drawable.ic_baseline_done_24
             tripViewHolder.topRightButton.setOnClickListener {
-                Toast.makeText(requireContext(), "You have already booked this trip!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG).show()
             }
         } else {
             icon = R.drawable.ic_baseline_add_24

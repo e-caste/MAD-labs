@@ -81,4 +81,5 @@
     <string name="date_not_in_past">Non è possibile ricercare nel passato</string>
     <string name="warning_message_notrips">Non c\'è ancora nessun viaggio…<br/>Sii il primo a offrirne uno!</string>
     <string name="seats_finished">I posti sono finiti, aggiungine altri</string>
+    <string name="warning_message_alreadybooked">Hai già prenotato questo viaggio!</string>
 </resources>
