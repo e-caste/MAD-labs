@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,7 @@ import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
+import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -46,13 +48,14 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
     private val db = FirebaseFirestore.getInstance()
     protected val queryBase = db.collection(coll)
-        .whereGreaterThan("startDateTime", Timestamp.now())
+        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
-    private val options = FirestoreRecyclerOptions.Builder<TripDB>()
+    protected open val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
+    private var hiddenCardsCounter: Int = 0
 
     companion object {
         private const val coll = "trips"
@@ -63,7 +66,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
         val topRightButton: ImageButton = view.findViewById(R.id.topright_button)
-        val topRightButtonShadow: ImageButton = view.findViewById(R.id.topright_button_shadow)
+        val topRightButtonShadow: ImageView = view.findViewById(R.id.topright_button_shadow)
         val carImageView: ImageView = view.findViewById(R.id.car_image)
 
         fun setPrice(price: BigDecimal?) {
@@ -100,6 +103,10 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 dateDepartureTextView.text = dateFormat.format(startDateTime.time)
             }
         }
+
+        fun _setCardInvisible() {
+            view.visibility = View.GONE
+        }
     }
 
     protected inner class TripFirestoreRecyclerAdapter(
@@ -109,10 +116,17 @@ open class BaseTripList: BaseFragmentWithToolbar(
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
+            if (filterOutTrip(trip)) {
+                Log.d(getLogTag(), "filtering out trip: $trip")
+                tripViewHolder._setCardInvisible()
+                hiddenCardsCounter++
+                return
+            }
+
             val bundle = bundleOf("trip" to Json.encodeToString(trip))
             val bundleParcelable = bundleOf("trip" to trip)
 
-            Log.d(getLogTag(), "adding trip to TripList: $bundle")
+            Log.d(getLogTag(), "adding trip to TripList: $trip")
 
             tripViewHolder.setPrice(trip.price)
             tripViewHolder.setCarImageUri(trip.carImageUri)
@@ -134,6 +148,10 @@ open class BaseTripList: BaseFragmentWithToolbar(
         // to implement in subclasses
     }
 
+    protected open fun filterOutTrip(trip: Trip): Boolean {
+        return false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -146,25 +164,36 @@ open class BaseTripList: BaseFragmentWithToolbar(
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView.layoutManager = when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                Log.d(getLogTag(), "orientation is landscape, using grid layout with 2 columns...")
-                GridLayoutManager(context, 2)
+        val warningMessageView = view.findViewById<LinearLayout>(R.id.warning_message_notrips)
+
+        adapter = TripFirestoreRecyclerAdapter(options)
+        // all trips are hidden -> show warning message
+        if (hiddenCardsCounter == adapter!!.itemCount) {
+            Log.d(getLogTag(), "TripList is empty, showing warning message to user")
+            recyclerView.visibility = View.GONE
+            warningMessageView.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            warningMessageView.visibility = View.GONE
+
+            recyclerView.layoutManager = when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    Log.d(
+                        getLogTag(),
+                        "orientation is landscape, using grid layout with 2 columns..."
+                    )
+                    GridLayoutManager(context, 2)
+                }
+                else -> {
+                    Log.d(getLogTag(), "orientation is portrait, using linear layout...")
+                    LinearLayoutManager(context)
+                }
             }
-            else -> {
-                Log.d(getLogTag(), "orientation is portrait, using linear layout...")
-                LinearLayoutManager(context)
-            }
+            recyclerView.adapter = adapter
         }
-        setAdapter(recyclerView)
 
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
-    }
-
-    protected open fun setAdapter(recyclerView: RecyclerView) {
-        adapter = TripFirestoreRecyclerAdapter(options)
-        recyclerView.adapter = adapter
     }
 
     override fun onStart() {
