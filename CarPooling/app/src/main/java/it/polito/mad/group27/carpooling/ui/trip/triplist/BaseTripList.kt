@@ -46,7 +46,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    private val db = FirebaseFirestore.getInstance()
+    protected val coll = "trips"
+    protected val db = FirebaseFirestore.getInstance()
     protected val queryBase = db.collection(coll)
         .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
@@ -57,9 +58,6 @@ open class BaseTripList: BaseFragmentWithToolbar(
     protected var adapter: TripFirestoreRecyclerAdapter? = null
     private var hiddenCardsCounter: Int = 0
 
-    companion object {
-        private const val coll = "trips"
-    }
 
     protected inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
