@@ -24,6 +24,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
@@ -371,28 +372,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
         var created =  false
-        // check id, if -1 take counter and increment
         if(tripEditViewModel.newTrip.id == null) {
             created = true
-//            val counterKey = getString(R.string.trip_counter)
-//            val counter = sharedPref.getInt(counterKey, 0)
-//            tripEditViewModel.newTrip.id = counter
-//            with(sharedPref.edit()) {
-//                putInt(counterKey, (counter + 1))
-//                apply()
-//            }
-        }
-        val imageName = "${getString(R.string.car_image_prefix)}${tripEditViewModel.newTrip.id}"
-        if (tripEditViewModel.newTrip.carImageUri == null && image!=null){
-            val f = File(act.filesDir, imageName)
-            tripEditViewModel.newTrip.carImageUri = f.toUri()
-        }
-        if(image==null) {
-            if(tripEditViewModel.newTrip.carImageUri != null){
-                //delete old image
-                File(tripEditViewModel.newTrip.carImageUri!!.path!!).delete()
-            }
-            tripEditViewModel.newTrip.carImageUri = null
         }
 
         val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
@@ -408,10 +389,18 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
         info.setText(tripEditViewModel.newTrip.otherInformation ?: "")
 
-        Log.d(getLogTag(), Json.encodeToString(tripEditViewModel.newTrip))
-        writeParcelable(tripEditViewModel.newTrip, "${getString(R.string.trip_prefix)}${tripEditViewModel.newTrip.id}")
-//        saveImg(imageName)
-        // TODO manage save image
+        if(created) {
+            tripEditViewModel.newTrip.id = tripEditViewModel.getNewId()
+            tripEditViewModel.newTrip.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
+        }
+
+        val tripDB = tripEditViewModel.newTrip.toTripDB()
+
+        saveImg("carImages",  tripDB.id!!){ uri:String?, changed:Boolean ->
+            if(changed)
+                tripDB.carImageUri = uri
+            tripEditViewModel.updateTrip(tripDB)
+        }
     }
 
 
