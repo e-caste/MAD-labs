@@ -71,14 +71,14 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
-// TODO: do we need the Trip/TripDB id?
-//  we can use the document id instead and remove the field from the dataclasses
+// TODO: do we need the Trip/TripDB id? YES, in OthersTripList
+//  we should use the document id. How to get it automatically?
 
 @Serializable
 @Parcelize
 data class Trip(
     // primary keys
-    var id: Int = -1,
+    var id: String = "",
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -101,9 +101,9 @@ data class Trip(
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf(),
 ) : Parcelable {
-    fun toTripDB():TripDB{
-        return TripDB(
-            id = "fakeID", //TODO ADAPT
+
+    fun toTripDB() = TripDB(
+            id = "",
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
@@ -118,7 +118,6 @@ data class Trip(
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
         )
-    }
 }
 
 @Serializable
@@ -173,9 +172,9 @@ data class TripDB(
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf()
 ) : Parcelable {
-    fun toTrip(): Trip {
-        return Trip(
-            id = -1, //TODO ADAPT
+
+    fun toTrip() = Trip(
+            id = id,
             ownerUid = ownerUid,
             carImageUri = if (carImageUri == null) null else Uri.parse(carImageUri),
             totalSeats = totalSeats,
@@ -190,7 +189,6 @@ data class TripDB(
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation
         )
-    }
 }
 
 @Parcelize
