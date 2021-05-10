@@ -24,9 +24,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
-import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.Watcher
-import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
@@ -92,7 +90,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 tripEditViewModel.trip= Trip()
             }
         }
-        if(tripEditViewModel.trip.id==-1)
+        if(tripEditViewModel.trip.id==null)
             updateTitle(getString(R.string.add_trip))
         tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
         Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
@@ -229,6 +227,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
         passengers.editText?.addTextChangedListener(Watcher(
             { passengers.editText?.text?.isEmpty() ?: true },
+//                    || passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip. },
             { passengers.error = getString(R.string.insert_passengers)
                 tripEditViewModel.newTrip.totalSeats = -1
              },
@@ -373,15 +372,15 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         var created =  false
         // check id, if -1 take counter and increment
-        if(tripEditViewModel.newTrip.id == -1) {
+        if(tripEditViewModel.newTrip.id == null) {
             created = true
-            val counterKey = getString(R.string.trip_counter)
-            val counter = sharedPref.getInt(counterKey, 0)
-            tripEditViewModel.newTrip.id = counter
-            with(sharedPref.edit()) {
-                putInt(counterKey, (counter + 1))
-                apply()
-            }
+//            val counterKey = getString(R.string.trip_counter)
+//            val counter = sharedPref.getInt(counterKey, 0)
+//            tripEditViewModel.newTrip.id = counter
+//            with(sharedPref.edit()) {
+//                putInt(counterKey, (counter + 1))
+//                apply()
+//            }
         }
         val imageName = "${getString(R.string.car_image_prefix)}${tripEditViewModel.newTrip.id}"
         if (tripEditViewModel.newTrip.carImageUri == null && image!=null){

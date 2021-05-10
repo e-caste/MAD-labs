@@ -78,7 +78,7 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
 @Parcelize
 data class Trip(
     // primary keys
-    var id: String = "",
+    var id: String? = null,
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -100,10 +100,11 @@ data class Trip(
     var otherInformation: String? = null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
 
     fun toTripDB() = TripDB(
-            id = "",
+            id = null,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
@@ -116,7 +117,8 @@ data class Trip(
             options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
 }
 
@@ -157,7 +159,7 @@ enum class Option {
 @Parcelize
 data class TripDB(
     // primary keys
-    var id: String="",
+    var id: String?=null,
     var ownerUid: String="",
     var carImageUri: String?=null,
     var totalSeats: Int=0,
@@ -170,7 +172,8 @@ data class TripDB(
     val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
-    val interestedUsersUids: MutableList<String> = mutableListOf()
+    val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
 
     fun toTrip() = Trip(
@@ -187,7 +190,8 @@ data class TripDB(
             options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
 }
 
