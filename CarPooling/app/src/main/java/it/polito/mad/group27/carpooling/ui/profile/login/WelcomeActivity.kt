@@ -123,10 +123,10 @@ class WelcomeActivity : AppCompatActivity() {
         private const val RC_SIGN_IN = 9001
     }
 
-    fun goToMainActivity(){
+    private fun goToMainActivity(){
         findViewById<ConstraintLayout>(R.id.loading).visibility = View.VISIBLE
-        // TODO clear stack
         startActivity(Intent(this, MainActivity::class.java))
+        finishAffinity()
     }
 
 }
