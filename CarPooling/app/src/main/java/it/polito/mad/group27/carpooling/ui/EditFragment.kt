@@ -247,7 +247,7 @@ open class EditFragment(layoutId: Int,
         }
     }
 
-    protected fun saveImg(baseDir: String, id:String, callback: (String?)->Unit) {
+    protected fun saveImg(baseDir: String, id:String, callback: (String?, Boolean)->Unit) {
         if (imageChanged) {
             if (image != null) {
                 uploadBitmap(image!!,  id, baseDir, callback )
@@ -255,6 +255,9 @@ open class EditFragment(layoutId: Int,
                 deleteImage(id, baseDir, callback)
             }
             File(act.filesDir, getString(R.string.temporary_edit_image_file))
+        }else {
+            //TODO manage it
+            callback(null, false)
         }
     }
 
