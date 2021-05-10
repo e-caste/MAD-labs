@@ -35,6 +35,10 @@
         tools:layout_editor_absoluteY="16dp"
         tools:listitem="@layout/fragment_trip" />
 
+    <include
+        layout="@layout/warning_message_notrips"
+        android:visibility="gone" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
