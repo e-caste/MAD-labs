@@ -54,7 +54,9 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
+            }else
+                // updating notification token if needed
+                token?.let { t -> updateUserNotificationToken(t) }
         }.addOnFailureListener {
             Toast.makeText(
                 getApplication<Application>().applicationContext,
