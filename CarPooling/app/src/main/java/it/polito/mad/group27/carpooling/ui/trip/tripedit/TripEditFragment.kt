@@ -335,6 +335,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // TODO aggiungere stop advertise button
 
+        val passengersListWrapper = view.findViewById<LinearLayout>(R.id.passengers_list_wrapper)
+        if (tripEditViewModel.newTrip.id == null)
+            passengersListWrapper.visibility = View.GONE
+        else
+            passengersListWrapper.visibility = View.VISIBLE
+
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
