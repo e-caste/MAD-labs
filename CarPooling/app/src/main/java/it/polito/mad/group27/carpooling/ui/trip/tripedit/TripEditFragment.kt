@@ -227,9 +227,16 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             tripEditViewModel.totalSeats.value = it
         }
         passengers.editText?.addTextChangedListener(Watcher(
-            { passengers.editText?.text?.isEmpty() ?: true },
-//                    || passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip. },
-            { passengers.error = getString(R.string.insert_passengers)
+            { passengers.editText?.text?.isEmpty() ?: true
+                    || passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size },
+            { if(passengers.editText?.text?.isEmpty() ?: true ) {
+                passengers.error = getString(R.string.insert_passengers)
+            }
+                else{
+                passengers.error = resources.getQuantityString(R.plurals.already_accepted_n_travelers,
+                                                        tripEditViewModel.newTrip.acceptedUsersUids.size,
+                                                        tripEditViewModel.newTrip.acceptedUsersUids.size)
+            }
                 tripEditViewModel.newTrip.totalSeats = -1
              },
             { passengers.error = null
@@ -237,9 +244,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 tripEditViewModel.totalSeats.value = passengers.editText?.text?.toString()?.toInt()
                  }
         ))
-
-        //  TODO on change check that it cannot be < accepted users
-        // TODO on change update interested passengers ( accept buttons may need to be disabled)
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
         tripEditViewModel.newTrip.price?.let { price.editText?.setText(it.toString()) }
@@ -411,7 +415,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
 
     private fun validateFields(onlyRoute: Boolean = false): Boolean{
-        // TODO add check on total seats that has to be >= accepted users
 
         var valid = true
         if(tripEditViewModel.newTrip.from.trim() =="") {
@@ -432,6 +435,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if(!onlyRoute && (tripEditViewModel.newTrip.totalSeats == null || tripEditViewModel.newTrip.totalSeats!! < 0 )){
             passengers.error = getString(R.string.insert_passengers)
             valid= false
+        }else if(passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size) {
+            passengers.error = resources.getQuantityString(
+                R.plurals.already_accepted_n_travelers,
+                tripEditViewModel.newTrip.acceptedUsersUids.size,
+                tripEditViewModel.newTrip.acceptedUsersUids.size
+            )
+            valid=false
         }
 
         if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
@@ -445,7 +455,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid = false
         }
 
-        // TODO set as field
+        // TODO set as property
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
         for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){
