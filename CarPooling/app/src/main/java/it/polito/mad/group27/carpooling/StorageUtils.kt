@@ -6,18 +6,18 @@ import java.io.ByteArrayOutputStream
 
 
 
-fun uploadBitmap(bitmap: Bitmap, filename:String, baseDir: String ="." , callback: (String?)->Unit) {
+fun uploadBitmap(bitmap: Bitmap, filename:String, baseDir: String ="." , callback: (String?, Boolean)->Unit) {
     //TODO add listeners for errors
     val storage = FirebaseStorage.getInstance()
     val reference = storage.reference.child(baseDir).child(filename)
     reference.putBytes(bitmap.convertToByteArray()).addOnSuccessListener {
-        it.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri->  callback( uri.toString()) }
+        it.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri->  callback( uri.toString(), true) }
     }
 }
 
-fun deleteImage( filename:String, baseDir: String ="." , callback: (String?)->Unit){
+fun deleteImage( filename:String, baseDir: String ="." , callback: (String?, Boolean)->Unit){
     val storage = FirebaseStorage.getInstance()
-    storage.reference.child(baseDir).child(filename).delete().addOnSuccessListener { callback(null) }
+    storage.reference.child(baseDir).child(filename).delete().addOnSuccessListener { callback(null, true) }
 }
 
 /**

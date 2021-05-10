@@ -1,6 +1,7 @@
 package it.polito.mad.group27.carpooling
 
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -38,9 +39,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
-
     lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var navView: NavigationView
     lateinit var drawerLayout: DrawerLayout
@@ -57,14 +55,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-        auth = Firebase.auth
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         profileViewModel.profile.observe(this, Observer { loadProfile(it) })
 
@@ -91,12 +81,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        signIn()
-        if(currentUser != null){
-            Log.d(TAG,"current user: ${currentUser.uid}, ${currentUser.displayName}, ${currentUser.email}, ${currentUser.photoUrl}")
-            profileViewModel.loadProfile(currentUser)
-        }
+        val currentUser = FirebaseAuth.getInstance().currentUser!!
+
+        Log.d(TAG,"current user: ${currentUser.uid}, ${currentUser.displayName}, ${currentUser.email}, ${currentUser.photoUrl}")
+        profileViewModel.loadProfile(currentUser)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -104,76 +93,9 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
 
-                loadToken(account)
 
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
-                //TODO back to loginPage
-            }
-        }
-    }
-
-    private fun loadToken(account: GoogleSignInAccount) {
-        val am: AccountManager = AccountManager.get(this)
-        val options = Bundle()
-
-        am.getAuthToken(
-            account.account,                     // Account retrieved using getAccountsByType()
-            "oauth2: https://www.googleapis.com/auth/firebase.messaging",            // Auth scope
-            options,                        // Authenticator-specific options
-            this,                           // Your activity
-            { MessagingService.oauthToken = it.result.getString(AccountManager.KEY_AUTHTOKEN)!! }, // Callback called when a token is successfully acquired
-            Handler (Looper.getMainLooper()){
-                Log.d(getLogTag(), "ERROR")
-                // TODO back to login page
-                true
-            }              // Callback called if an error occurs
-        )
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
-                    profileViewModel.loadProfile(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    //TODO back to login page
-                }
-            }
-    }
-
-    private fun signIn() {
-        if(FirebaseAuth.getInstance().currentUser==null) {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-        }else{
-            GoogleSignIn.getLastSignedInAccount(this).also { loadToken(it!!) }
-        }
-    }
-
-    companion object {
-        private const val TAG = "MAD-group-27"
-        private const val RC_SIGN_IN = 9001
-    }
 
     private fun loadProfile(_profile: Profile? = null){
         if (_profile!=null){
