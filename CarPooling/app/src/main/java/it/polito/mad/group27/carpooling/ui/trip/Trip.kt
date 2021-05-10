@@ -78,7 +78,7 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
 @Parcelize
 data class Trip(
     // primary keys
-    var id: String = "",
+    var id: String? = null,
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -103,7 +103,7 @@ data class Trip(
 ) : Parcelable {
 
     fun toTripDB() = TripDB(
-            id = "",
+            id = null,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
@@ -157,7 +157,7 @@ enum class Option {
 @Parcelize
 data class TripDB(
     // primary keys
-    var id: String="",
+    var id: String?=null,
     var ownerUid: String="",
     var carImageUri: String?=null,
     var totalSeats: Int=0,
