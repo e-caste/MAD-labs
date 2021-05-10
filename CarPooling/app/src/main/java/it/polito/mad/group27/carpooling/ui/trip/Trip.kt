@@ -100,6 +100,7 @@ data class Trip(
     var otherInformation: String? = null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
 
     fun toTripDB() = TripDB(
@@ -116,7 +117,8 @@ data class Trip(
             options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
 }
 
@@ -170,7 +172,8 @@ data class TripDB(
     val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
-    val interestedUsersUids: MutableList<String> = mutableListOf()
+    val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
 
     fun toTrip() = Trip(
@@ -187,7 +190,8 @@ data class TripDB(
             options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
 }
 
