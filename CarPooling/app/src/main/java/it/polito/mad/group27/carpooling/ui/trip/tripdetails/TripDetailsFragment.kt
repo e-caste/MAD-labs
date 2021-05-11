@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
@@ -144,7 +145,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
                 carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
             } else {
-                carImageView.setImageURI(trip.carImageUri)
+                Glide.with(this).load(trip.carImageUri).into(carImageView)
             }
 
             (trip.acceptedUsersUids.size.toString() + "/" + trip.totalSeats).also { seatsView.text = it }
@@ -164,7 +165,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
                 dropdownListButton.setOnClickListener {
-                    Log.d(getLogTag(), "Touched route list")
                     stopsRecyclerView.visibility =
                         when (stopsRecyclerView.visibility) {
                             View.GONE -> {
