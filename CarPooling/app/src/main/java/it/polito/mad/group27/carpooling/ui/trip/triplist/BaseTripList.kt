@@ -46,9 +46,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    protected val coll = "trips"
-    protected val db = FirebaseFirestore.getInstance()
-    protected val queryBase = db.collection(coll)
+    protected val coll = FirebaseFirestore.getInstance().collection("trips")
+    protected val queryBase = coll
         .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
