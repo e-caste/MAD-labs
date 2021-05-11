@@ -72,7 +72,7 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
 }
 
 // TODO: do we need the Trip/TripDB id? YES, in OthersTripList
-//  we should use the document id. How to get it automatically?
+// we should use the document id. How to get it automatically? DONE in saveTrip method of tripEditFragment
 
 @Serializable
 @Parcelize
@@ -104,7 +104,7 @@ data class Trip(
 ) : Parcelable {
 
     fun toTripDB() = TripDB(
-            id = null,
+            id = id,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
