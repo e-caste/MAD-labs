@@ -8,6 +8,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import java.util.*
 
 
 class TripList: BaseTripList() {
@@ -18,6 +19,13 @@ class TripList: BaseTripList() {
         .build()
 
     override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
+        // do not allow users to edit trips in the past
+        if (trip.endDateTime <= Calendar.getInstance()) {
+            tripViewHolder.topRightButtonShadow.visibility = View.GONE
+            tripViewHolder.topRightButton.visibility = View.GONE
+            tripViewHolder.topRightButton.setOnClickListener {}
+            return
+        }
         val icon = R.drawable.ic_baseline_edit_24
         tripViewHolder.topRightButtonShadow.setImageResource(icon)
         tripViewHolder.topRightButton.setImageResource(icon)
