@@ -26,11 +26,10 @@ import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
-    private lateinit var viewModel: TripDetailsViewModel
+    private lateinit var tripDetailsViewModel: TripDetailsViewModel
     private lateinit var dropdownListButton : LinearLayout
     private lateinit var expandButton : ImageView
 
-    private lateinit var trip : Trip
     private lateinit var seatsView : TextView
     private lateinit var dateView : TextView
     private lateinit var estimatedTimeView: TextView
@@ -48,17 +47,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var carImageView : ImageView
     private lateinit var recyclerView : RecyclerView
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TripDetailsViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tripDetailsViewModel = ViewModelProvider(this).get(TripDetailsViewModel::class.java)
         setHasOptionsMenu(true)
     }
-
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -66,10 +60,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.trip_details_fragment, container, false)
-
         if (view is RecyclerView) {
             with(view) {
-                adapter = TripStopsViewAdapter(trip.stops)
+                adapter = TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
             }
         }
         return view
@@ -79,16 +72,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         super.onViewCreated(view, savedInstanceState)
 
         val visibility = savedInstanceState?.getInt("${getString(R.string.app_name)}.stateView")
-        trip = arguments?.getParcelable<Trip>("trip") ?: Trip()
+        tripDetailsViewModel.trip.value = arguments?.getParcelable("trip") ?: Trip()
 
-        Log.d(getLogTag(), "got from bundle: $trip")
+        Log.d(getLogTag(), "got from bundle: ${tripDetailsViewModel.trip}")
 
         // Update title only in portrait orientation
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-            updateTitle("${getString(R.string.trip_to)} ${trip.to}")
+            updateTitle("${getString(R.string.trip_to)} ${tripDetailsViewModel.trip.value?.to}")
         else{
             val fragmentTitle : TextView = view.findViewById(R.id.trip_title_details)
-            fragmentTitle.text = "${getString(R.string.trip_to)} ${trip.to}"
+            "${getString(R.string.trip_to)} ${tripDetailsViewModel.trip.value?.to}".also { fragmentTitle.text = it }
         }
 
         // Find views
@@ -111,29 +104,29 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         infoText = view.findViewById(R.id.extra_info_text_details)
 
         // Display basic info
-        if (trip.carImageUri == null) {
+        if (tripDetailsViewModel.trip.value?.carImageUri == null) {
             carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
             carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
         } else {
-            carImageView.setImageURI(trip.carImageUri)
+            carImageView.setImageURI(tripDetailsViewModel.trip.value?.carImageUri)
         }
 
 
-        (trip.availableSeats.toString() + "/" + trip.totalSeats).also { seatsView.text = it }
-        dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(trip.startDateTime.time)
+        (tripDetailsViewModel.trip.value!!.availableSeats.toString() + "/" + tripDetailsViewModel.trip.value?.totalSeats).also { seatsView.text = it }
+        dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(tripDetailsViewModel.trip.value!!.startDateTime.time)
         setEstimatedTime()
-        priceView.text = trip.price.toString()
-        departureDateTime.text = getDateTime(trip.startDateTime)
-        departureLocation.text = trip.from
-        destinationDateTime.text = getDateTime(trip.endDateTime)
-        destinationLocation.text = trip.to
+        priceView.text = tripDetailsViewModel.trip.value?.price.toString()
+        departureDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.startDateTime)
+        departureLocation.text = tripDetailsViewModel.trip.value?.from
+        destinationDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.endDateTime)
+        destinationLocation.text = tripDetailsViewModel.trip.value?.to
 
         // Additional stops visualization
-        if (trip.stops.size > 0) {
-            recyclerView = view.findViewById<RecyclerView>(R.id.tripStopList)
+        if (tripDetailsViewModel.trip.value!!.stops.size > 0) {
+            recyclerView = view.findViewById(R.id.tripStopList)
             recyclerView.visibility = visibility ?: View.GONE
             recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = TripStopsViewAdapter(trip.stops)
+            recyclerView.adapter = TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
             dropdownListButton.setOnClickListener {
                 Log.d(getLogTag(), "Touched route list")
@@ -152,13 +145,13 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         } else expandButton.visibility = View.INVISIBLE
 
         // Display additional info
-        if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
-            luggageView.visibility = if (trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
-            animalsView.visibility = if (trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
-            smokersView.visibility = if (trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
+        if (tripDetailsViewModel.trip.value?.options!!.size > 0 || (tripDetailsViewModel.trip.value?.otherInformation != null && tripDetailsViewModel.trip.value?.otherInformation!!.trim() != "")) {
+            luggageView.visibility = if (tripDetailsViewModel.trip.value?.options!!.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
+            animalsView.visibility = if (tripDetailsViewModel.trip.value?.options!!.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
+            smokersView.visibility = if (tripDetailsViewModel.trip.value?.options!!.contains(Option.SMOKE)) View.VISIBLE else View.GONE
 
-            if (trip.otherInformation != null && trip.otherInformation!!.trim() != "") {
-                infoText.text = trip.otherInformation
+            if (tripDetailsViewModel.trip.value?.otherInformation != null && tripDetailsViewModel.trip.value?.otherInformation!!.trim() != "") {
+                infoText.text = tripDetailsViewModel.trip.value?.otherInformation
                 additionalInfo.visibility = View.VISIBLE
             } else {
                 additionalInfo.visibility = View.GONE
@@ -171,10 +164,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.edit_menu_button -> {
-                Log.d(getLogTag(),"Passing bundle of $trip")
+                Log.d(getLogTag(),"Passing bundle of ${tripDetailsViewModel.trip.value}")
                 findNavController().navigate(
                         R.id.action_tripDetailsFragment_to_tripEditFragment,
-                        bundleOf("trip" to Json.encodeToString(trip)))
+                        bundleOf("trip" to Json.encodeToString(tripDetailsViewModel.trip.value)))
             }
             else-> return super.onOptionsItemSelected(item)
         }
@@ -195,7 +188,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     private fun setEstimatedTime(){
-        val time = getEstimatedTime(trip.startDateTime, trip.endDateTime)
+        val time = getEstimatedTime(tripDetailsViewModel.trip.value!!.startDateTime, tripDetailsViewModel.trip.value!!.endDateTime)
         val hours = if (time.hour > 0) "${time.hour} h" else ""
         val minutes = if (time.minute > 0) "${time.minute} min" else ""
         estimatedTimeView.text = ("$hours $minutes")
