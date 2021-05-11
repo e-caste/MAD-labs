@@ -3,8 +3,10 @@ package it.polito.mad.group27.carpooling.ui.trip.tripfilter
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -136,7 +138,9 @@ class TripFilterFragment : BaseFragmentWithToolbar(
                 (startHourInput.editText?.text?.isNotBlank() == true)) {
                 startDayInput.error = getString(R.string.date_not_in_past)
             }else{
-                // TODO return viewModel.tripFiletr to otherTrips
+                findNavController().navigate(R.id.action_tripFilterFragment_to_othersTripList,
+                    bundleOf("filter" to viewModel.tripFilter)
+                )
             }
         }
 
