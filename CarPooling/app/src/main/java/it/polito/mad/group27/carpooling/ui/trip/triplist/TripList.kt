@@ -21,8 +21,8 @@ class TripList: BaseTripList() {
     override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
         // do not allow users to edit trips in the past
         if (trip.endDateTime <= Calendar.getInstance()) {
-            tripViewHolder.topRightButtonShadow.visibility = View.GONE
-            tripViewHolder.topRightButton.visibility = View.GONE
+            tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
+            tripViewHolder.topRightButton.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.setOnClickListener {}
             return
         }
