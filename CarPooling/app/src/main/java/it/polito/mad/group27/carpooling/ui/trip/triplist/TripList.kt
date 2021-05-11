@@ -1,8 +1,10 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
@@ -21,5 +23,10 @@ class TripList: BaseTripList() {
         tripViewHolder.topRightButton.setOnClickListener {
             findNavController().navigate(R.id.action_tripList_to_tripEditFragment, bundle)
         }
+    }
+
+    override fun setFab(view: View) {
+        val fab: FloatingActionButton = view.findViewById(R.id.fab)
+        fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
     }
 }

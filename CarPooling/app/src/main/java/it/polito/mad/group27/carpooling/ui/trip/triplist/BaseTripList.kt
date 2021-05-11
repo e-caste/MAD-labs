@@ -189,9 +189,11 @@ open class BaseTripList: BaseFragmentWithToolbar(
             }
             recyclerView.adapter = adapter
         }
+        setFab(view)
+    }
 
-        val fab: FloatingActionButton = view.findViewById(R.id.fab)
-        fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
+    protected open fun setFab(view: View) {
+        // overridden in TripList
     }
 
     override fun onStart() {
