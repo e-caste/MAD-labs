@@ -103,6 +103,9 @@ open class BaseTripList: BaseFragmentWithToolbar(
         fun _setCardInvisible() {
             view.visibility = View.GONE
         }
+        fun _setCardVisible() {
+            view.visibility = View.VISIBLE
+        }
     }
 
     protected inner class TripFirestoreRecyclerAdapter(
@@ -118,6 +121,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 tripViewHolder._setCardInvisible()
                 return
             }
+            // prevent quirks where RV recycles gone cards
+            tripViewHolder._setCardVisible()
             Log.d(getLogTag(), "adding trip to TripList: $trip")
 
             tripViewHolder.setPrice(trip.price)
