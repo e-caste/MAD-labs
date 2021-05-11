@@ -4,7 +4,9 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -102,6 +104,13 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
         fun _setCardInvisible() {
             view.visibility = View.GONE
+            view.layoutParams.height = 0
+        }
+
+        fun _setCardVisible() {
+            view.visibility = View.VISIBLE
+            // float should be same value as in fragment_trip.xml - this converts dp->px
+            view.layoutParams.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, DisplayMetrics()).toInt()
         }
     }
 
@@ -118,6 +127,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 tripViewHolder._setCardInvisible()
                 return
             }
+            // prevent quirks where RV recycles gone cards
+            tripViewHolder._setCardVisible()
             Log.d(getLogTag(), "adding trip to TripList: $trip")
 
             tripViewHolder.setPrice(trip.price)
