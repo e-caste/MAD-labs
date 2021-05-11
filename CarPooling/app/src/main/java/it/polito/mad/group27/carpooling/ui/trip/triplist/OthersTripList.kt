@@ -18,8 +18,7 @@ class OthersTripList: BaseTripList() {
         .setQuery(query, TripDB::class.java)
         .build()
 
-    override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: BaseTripList.TripViewHolder, bundle: Bundle) {
-        val trip = Json.decodeFromString<Trip>(requireArguments().getString("trip")!!)
+    override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         var icon: Int? = null
         if (trip.interestedUsersUids.contains(currentUserUid) || trip.acceptedUsersUids.contains(currentUserUid)) {
             icon = R.drawable.ic_baseline_done_24
