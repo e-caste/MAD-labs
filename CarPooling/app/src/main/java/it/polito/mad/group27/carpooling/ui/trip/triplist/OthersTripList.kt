@@ -28,7 +28,7 @@ class OthersTripList: BaseTripList() {
             icon = R.drawable.ic_baseline_add_24
             tripViewHolder.topRightButton.setOnClickListener {
                 trip.interestedUsersUids.add(currentUserUid)
-                db.collection(coll).document(trip.id).set(trip)  // TODO: trip.id should be String
+                db.collection(coll).document(trip.id!!).set(trip)
                     .addOnSuccessListener {
                         icon = R.drawable.ic_baseline_done_24
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
@@ -44,6 +44,7 @@ class OthersTripList: BaseTripList() {
     }
 
     override fun filterOutTrip(trip: Trip): Boolean {
-        return trip.ownerUid != currentUserUid
+        return trip.ownerUid != currentUserUid &&
+                trip.advertised
     }
 }
