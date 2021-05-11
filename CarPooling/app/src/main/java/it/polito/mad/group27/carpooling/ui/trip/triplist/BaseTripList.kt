@@ -55,7 +55,6 @@ open class BaseTripList: BaseFragmentWithToolbar(
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
-    private var hiddenCardsCounter: Int = 0
 
 
     protected inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -117,7 +116,6 @@ open class BaseTripList: BaseFragmentWithToolbar(
             if (filterOutTrip(trip)) {
                 Log.d(getLogTag(), "filtering out trip: $trip")
                 tripViewHolder._setCardInvisible()
-                hiddenCardsCounter++
                 return
             }
             Log.d(getLogTag(), "adding trip to TripList: $trip")
