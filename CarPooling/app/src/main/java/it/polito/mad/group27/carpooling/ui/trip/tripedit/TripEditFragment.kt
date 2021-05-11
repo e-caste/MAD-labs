@@ -24,9 +24,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
-import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.Watcher
-import it.polito.mad.group27.carpooling.getLogTag
+import com.google.firebase.auth.FirebaseAuth
+import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.EditFragment
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
@@ -92,7 +91,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 tripEditViewModel.trip= Trip()
             }
         }
-        if(tripEditViewModel.trip.id==-1)
+        if(tripEditViewModel.trip.id==null)
             updateTitle(getString(R.string.add_trip))
         tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
         Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
@@ -139,7 +138,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 setEstimatedTime()
             },
             {
-                from_date.error = null
+                to_date.error = null
                 to_hour.error = null
                 setEstimatedTime()
             }
@@ -223,23 +222,28 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         to_date.editText?.addTextChangedListener(dateTimeWatcher)
 
         passengers = view.findViewById<TextInputLayout>(R.id.editPeopleText)
-        tripEditViewModel.newTrip.totalSeats?.let { passengers.editText?.setText(it.toString()) }
+        tripEditViewModel.newTrip.totalSeats?.let {
+            passengers.editText?.setText(it.toString())
+            tripEditViewModel.totalSeats.value = it
+        }
         passengers.editText?.addTextChangedListener(Watcher(
-            { passengers.editText?.text?.isEmpty() ?: true },
-            { passengers.error = getString(R.string.insert_passengers)
+            { passengers.editText?.text?.isEmpty() ?: true
+                    || passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size },
+            { if(passengers.editText?.text?.isEmpty() ?: true ) {
+                passengers.error = getString(R.string.insert_passengers)
+            }
+                else{
+                passengers.error = resources.getQuantityString(R.plurals.already_accepted_n_travelers,
+                                                        tripEditViewModel.newTrip.acceptedUsersUids.size,
+                                                        tripEditViewModel.newTrip.acceptedUsersUids.size)
+            }
                 tripEditViewModel.newTrip.totalSeats = -1
-                // TODO make not stubbed when adding some logic
-                tripEditViewModel.newTrip.availableSeats = -1
              },
             { passengers.error = null
                 tripEditViewModel.newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
-                // TODO make not stubbed when adding some logic
-                tripEditViewModel.newTrip.availableSeats = (0 .. tripEditViewModel.newTrip.totalSeats!!).random()
+                tripEditViewModel.totalSeats.value = passengers.editText?.text?.toString()?.toInt()
                  }
         ))
-
-        //  TODO on change check that it cannot be < accepted users
-        // TODO on change update interested passengers ( accept buttons may need to be disabled)
 
         price = view.findViewById<TextInputLayout>(R.id.editPriceText)
         tripEditViewModel.newTrip.price?.let { price.editText?.setText(it.toString()) }
@@ -335,6 +339,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // TODO aggiungere stop advertise button
 
+        val passengersListWrapper = view.findViewById<LinearLayout>(R.id.passengers_list_wrapper)
+        if (tripEditViewModel.newTrip.id == null)
+            passengersListWrapper.visibility = View.GONE
+        else
+            passengersListWrapper.visibility = View.VISIBLE
+
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
@@ -360,33 +370,20 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun saveTrip(){
 
-        // TODO send notification to newly accepted users
+        for (uid in tripEditViewModel.newAcceptedUsers){
+            MessagingService.sendNotification(
+                tripEditViewModel.getProfileByUid(uid).notificationToken,
+                AndroidNotification("Request accepted",
+                    "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                    tripEditViewModel.newTrip.carImageUri.toString())
+            )
+        }
 
         val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
 
         var created =  false
-        // check id, if -1 take counter and increment
-        if(tripEditViewModel.newTrip.id == -1) {
+        if(tripEditViewModel.newTrip.id == null) {
             created = true
-            val counterKey = getString(R.string.trip_counter)
-            val counter = sharedPref.getInt(counterKey, 0)
-            tripEditViewModel.newTrip.id = counter
-            with(sharedPref.edit()) {
-                putInt(counterKey, (counter + 1))
-                apply()
-            }
-        }
-        val imageName = "${getString(R.string.car_image_prefix)}${tripEditViewModel.newTrip.id}"
-        if (tripEditViewModel.newTrip.carImageUri == null && image!=null){
-            val f = File(act.filesDir, imageName)
-            tripEditViewModel.newTrip.carImageUri = f.toUri()
-        }
-        if(image==null) {
-            if(tripEditViewModel.newTrip.carImageUri != null){
-                //delete old image
-                File(tripEditViewModel.newTrip.carImageUri!!.path!!).delete()
-            }
-            tripEditViewModel.newTrip.carImageUri = null
         }
 
         val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
@@ -402,20 +399,22 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val info = requireView().findViewById<TextInputEditText>(R.id.additionalInfo)
         info.setText(tripEditViewModel.newTrip.otherInformation ?: "")
 
-        Log.d(getLogTag(), Json.encodeToString(tripEditViewModel.newTrip))
-        writeParcelable(tripEditViewModel.newTrip, "${getString(R.string.trip_prefix)}${tripEditViewModel.newTrip.id}")
-//        saveImg(imageName)
-        // TODO manage save image
+        if(created) {
+            tripEditViewModel.newTrip.id = tripEditViewModel.getNewId()
+            tripEditViewModel.newTrip.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
+        }
 
+        val tripDB = tripEditViewModel.newTrip.toTripDB()
 
-        if(created)
-            TripList.notifyAdded(tripEditViewModel.newTrip)
-        else TripList.notifyModified(tripEditViewModel.newTrip.id, tripEditViewModel.newTrip)
+        saveImg("carImages",  tripDB.id!!){ uri:String?, changed:Boolean ->
+            if(changed)
+                tripDB.carImageUri = uri
+            tripEditViewModel.updateTrip(tripDB)
+        }
     }
 
 
     private fun validateFields(onlyRoute: Boolean = false): Boolean{
-        // TODO add check on total seats that has to be >= accepted users
 
         var valid = true
         if(tripEditViewModel.newTrip.from.trim() =="") {
@@ -436,6 +435,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if(!onlyRoute && (tripEditViewModel.newTrip.totalSeats == null || tripEditViewModel.newTrip.totalSeats!! < 0 )){
             passengers.error = getString(R.string.insert_passengers)
             valid= false
+        }else if(passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size) {
+            passengers.error = resources.getQuantityString(
+                R.plurals.already_accepted_n_travelers,
+                tripEditViewModel.newTrip.acceptedUsersUids.size,
+                tripEditViewModel.newTrip.acceptedUsersUids.size
+            )
+            valid=false
         }
 
         if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
@@ -449,7 +455,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid = false
         }
 
-        // TODO set as field
+        // TODO set as property
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
         for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){

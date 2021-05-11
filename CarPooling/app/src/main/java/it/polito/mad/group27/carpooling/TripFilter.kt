@@ -21,5 +21,5 @@ data class TripFilter(
     var priceMax: BigDecimal = BigDecimal("100.00"), //TODO define upper bound for trips
     @Serializable(with= CalendarSerializer::class)
     var dateTime: Calendar? = null,
-    val options: MutableMap<Option, Boolean> = Option.values().map{ it to false }.toMap(mutableMapOf())
+    var options: MutableMap<Option, Boolean> = Option.values().map{ it to false }.toMap(mutableMapOf())
 ): Parcelable

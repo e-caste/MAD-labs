@@ -16,6 +16,7 @@ data class Profile(
     var email: String = "john.smith@polito.it",
     var location: String = "Turin, Italy",
     var registrationDate: Timestamp = Timestamp.now(),
-    var rating: Float = 4.5f
+    var rating: Float = 4.5f,
+    var notificationToken: String?=null
     // TODO implement rating logic
 ):Parcelable

@@ -71,12 +71,14 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
+// TODO: do we need the Trip/TripDB id? YES, in OthersTripList
+// we should use the document id. How to get it automatically? DONE in saveTrip method of tripEditFragment
 
 @Serializable
 @Parcelize
 data class Trip(
     // primary keys
-    var id: Int = -1,  // TODO: this should be a String if we want to use the Firebase ids
+    var id: String? = null,
     var ownerUid: String = "testUid",
     // other fields
     @Serializable(with = UriSerializer::class)
@@ -98,10 +100,11 @@ data class Trip(
     var otherInformation: String? = null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
-    fun toTripDB():TripDB{
-        return TripDB(
-            id = "fakeID", //TODO ADAPT
+
+    fun toTripDB() = TripDB(
+            id = id,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
@@ -111,12 +114,12 @@ data class Trip(
             from = from,
             to = to,
             stops = stops.map { it.toStopDB() }.toMutableList(),
-            options = options,
+            options = options.map { it.ordinal.toLong() }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
-    }
 }
 
 @Serializable
@@ -156,7 +159,7 @@ enum class Option {
 @Parcelize
 data class TripDB(
     // primary keys
-    var id: String="",  // TODO: this should be a String if we want to use the Firebase ids
+    var id: String?=null,
     var ownerUid: String="",
     var carImageUri: String?=null,
     var totalSeats: Int=0,
@@ -166,14 +169,15 @@ data class TripDB(
     var from: String="",
     var to: String="",
     val stops: MutableList<StopDB> = mutableListOf(),
-    val options: MutableList<Option> = mutableListOf(),
+    val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
-    val interestedUsersUids: MutableList<String> = mutableListOf()
+    val interestedUsersUids: MutableList<String> = mutableListOf(),
+    var advertised: Boolean = true
 ) : Parcelable {
-    fun toTrip(): Trip {
-        return Trip(
-            id = -1, //TODO ADAPT
+
+    fun toTrip() = Trip(
+            id = id,
             ownerUid = ownerUid,
             carImageUri = if (carImageUri == null) null else Uri.parse(carImageUri),
             totalSeats = totalSeats,
@@ -183,12 +187,12 @@ data class TripDB(
             from = from,
             to = to,
             stops = stops.map { it.toStop() }.toMutableList(),
-            options = options,
+            options = options.map { Option.values()[it.toInt()] }.toMutableList(),
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
-            otherInformation = otherInformation
+            otherInformation = otherInformation,
+            advertised = advertised
         )
-    }
 }
 
 @Parcelize

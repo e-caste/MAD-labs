@@ -137,8 +137,9 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         profileTmp.email = emailEdit.editText!!.text.toString()
         profileTmp.location = locationEdit.editText!!.text.toString()
 
-         saveImg("profile",  profileTmp.uid!!){
-             profileTmp.profileImageUri = it
+         saveImg("profile",  profileTmp.uid!!){ uri:String?, changed:Boolean ->
+             if(changed)
+                 profileTmp.profileImageUri = uri
             profileViewModel.updateProfile(profileTmp)
         }
 
