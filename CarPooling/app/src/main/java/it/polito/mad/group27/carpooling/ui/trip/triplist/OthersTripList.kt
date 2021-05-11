@@ -1,6 +1,5 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
-import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -8,8 +7,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 class OthersTripList: BaseTripList() {
 
@@ -29,7 +26,7 @@ class OthersTripList: BaseTripList() {
             icon = R.drawable.ic_baseline_add_24
             tripViewHolder.topRightButton.setOnClickListener {
                 trip.interestedUsersUids.add(currentUserUid)
-                coll.document(trip.id!!).set(trip)
+                coll.document(trip.id!!).set(trip.toTripDB())
                     .addOnSuccessListener {
                         icon = R.drawable.ic_baseline_done_24
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
