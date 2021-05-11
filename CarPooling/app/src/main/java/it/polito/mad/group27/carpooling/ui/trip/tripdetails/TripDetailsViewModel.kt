@@ -4,18 +4,17 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
 class TripDetailsViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var tripDocument:DocumentReference
+    private lateinit var tripDocument:DocumentReference
     private val db = FirebaseFirestore.getInstance()
-    val trip: MutableLiveData<Trip?> = MutableLiveData(null)
+    val trip: MutableLiveData<Trip> = MutableLiveData(null)
 
-    fun loadTrip(tripId : String) {
+    fun loadTrip(tripId : String) : Trip {
         tripDocument = db.collection("trips").document(tripId)
         tripDocument.get().addOnSuccessListener {
 
@@ -25,7 +24,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
                 ).addOnFailureListener {
                     Toast.makeText(
                         getApplication<Application>().applicationContext,
-                        "Error in saving profile",
+                        "Error in saving trip details",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -33,7 +32,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
         }.addOnFailureListener {
             Toast.makeText(
                 getApplication<Application>().applicationContext,
-                "Error in loading profile",
+                "Error in loading trip details",
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -45,6 +44,9 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
                 trip.value = value!!.toObject(Trip::class.java)
             }
         }
+
+        return trip.value ?: Trip()
+
     }
 }
 
