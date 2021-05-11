@@ -50,7 +50,7 @@ class OthersTripList: BaseTripList() {
     }
 
     override fun filterOutTrip(trip: Trip): Boolean {
-        return trip.ownerUid != currentUserUid &&
-                trip.advertised
+        return !(trip.ownerUid != currentUserUid &&
+                trip.advertised)
     }
 }
