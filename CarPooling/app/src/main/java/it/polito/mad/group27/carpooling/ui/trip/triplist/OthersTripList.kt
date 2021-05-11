@@ -1,8 +1,10 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
@@ -41,6 +43,11 @@ class OthersTripList: BaseTripList() {
         }
         tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
         tripViewHolder.topRightButton.setImageResource(icon!!)
+    }
+
+    override fun setFab(view: View) {
+        val fab: FloatingActionButton = view.findViewById(R.id.fab)
+        fab.visibility = View.GONE
     }
 
     override fun filterOutTrip(trip: Trip): Boolean {
