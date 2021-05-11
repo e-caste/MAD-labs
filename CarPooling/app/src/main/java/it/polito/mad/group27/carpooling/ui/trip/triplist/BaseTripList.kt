@@ -108,6 +108,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
     protected inner class TripFirestoreRecyclerAdapter(
         options: FirestoreRecyclerOptions<TripDB>,
+        val showWarningMessage: () -> Unit,
     ) : FirestoreRecyclerAdapter<TripDB, TripViewHolder>(options) {
 
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
@@ -137,6 +138,15 @@ open class BaseTripList: BaseFragmentWithToolbar(
             val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_trip, parent, false)
             return TripViewHolder(view)
         }
+
+        override fun onDataChanged() {
+            super.onDataChanged()
+            showWarningMessage()
+        }
+
+        override fun getItemCount(): Int {
+            return super.getItemCount() - hiddenCardsCounter
+        }
     }
 
     protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
@@ -161,31 +171,31 @@ open class BaseTripList: BaseFragmentWithToolbar(
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         val warningMessageView = view.findViewById<LinearLayout>(R.id.warning_message_notrips)
 
-        adapter = TripFirestoreRecyclerAdapter(options)
-        // all trips are hidden -> show warning message
-//        Log.d(getLogTag(), "item count is ${adapter!!.itemCount}")
-        if (hiddenCardsCounter == adapter!!.itemCount) {
-            Log.d(getLogTag(), "TripList is empty, showing warning message to user")
-            recyclerView.visibility = View.GONE
-            warningMessageView.visibility = View.VISIBLE
-        } else {
-            recyclerView.visibility = View.VISIBLE
-            warningMessageView.visibility = View.GONE
+        adapter = TripFirestoreRecyclerAdapter(options) {
+            // all trips are hidden -> show warning message
+            if (hiddenCardsCounter == adapter!!.itemCount) {
+                Log.d(getLogTag(), "TripList is empty, showing warning message to user")
+                recyclerView.visibility = View.GONE
+                warningMessageView.visibility = View.VISIBLE
+            } else {
+                recyclerView.visibility = View.VISIBLE
+                warningMessageView.visibility = View.GONE
 
-            recyclerView.layoutManager = when (resources.configuration.orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    Log.d(
-                        getLogTag(),
-                        "orientation is landscape, using grid layout with 2 columns..."
-                    )
-                    GridLayoutManager(context, 2)
+                recyclerView.layoutManager = when (resources.configuration.orientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        Log.d(
+                            getLogTag(),
+                            "orientation is landscape, using grid layout with 2 columns..."
+                        )
+                        GridLayoutManager(context, 2)
+                    }
+                    else -> {
+                        Log.d(getLogTag(), "orientation is portrait, using linear layout...")
+                        LinearLayoutManager(context)
+                    }
                 }
-                else -> {
-                    Log.d(getLogTag(), "orientation is portrait, using linear layout...")
-                    LinearLayoutManager(context)
-                }
+                recyclerView.adapter = adapter
             }
-            recyclerView.adapter = adapter
         }
         setFab(view)
     }
