@@ -70,16 +70,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         super.onViewCreated(view, savedInstanceState)
 
         val stopsVisibility = savedInstanceState?.getInt("${getString(R.string.app_name)}.stateView")
-        //TODO to getString()
-        val tripId = arguments?.getParcelable<Trip>("trip")!!.id ?: ""
+        val tripId = arguments?.getString("tripId") ?: ""
+
+        Log.d(getLogTag(), "got tripId from bundle: $tripId")
 
         if(tripId.isEmpty()){
             throw Exception("Trip id was null")
         } else {
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
         }
-
-        Log.d(getLogTag(), "got from bundle: $tripId")
 
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
@@ -104,7 +103,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT)
             fragmentTitle = view.findViewById(R.id.trip_title_details)
 
-//        updateFields(tripDetailsViewModel.trip.value ?: Trip(), stopsVisibility ?: View.GONE)
+        updateFields(tripDetailsViewModel.trip.value ?: Trip(), stopsVisibility ?: View.GONE)
         tripDetailsViewModel.trip.observe(viewLifecycleOwner) {
             if (it != null) {
                 updateFields(it, stopsVisibility ?: View.GONE)
@@ -115,6 +114,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.edit_menu_button -> {
+                //TODO: check timestamp is not in the past
                 Log.d(getLogTag(),"Passing bundle of ${tripDetailsViewModel.trip.value}")
                 findNavController().navigate(
                         R.id.action_tripDetailsFragment_to_tripEditFragment,
