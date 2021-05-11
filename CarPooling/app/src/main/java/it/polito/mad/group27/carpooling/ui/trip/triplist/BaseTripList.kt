@@ -46,9 +46,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
     R.string.app_name
 ){
 
-    protected val coll = "trips"
-    protected val db = FirebaseFirestore.getInstance()
-    protected val queryBase = db.collection(coll)
+    protected val coll = FirebaseFirestore.getInstance().collection("trips")
+    protected val queryBase = coll
         .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
@@ -120,10 +119,6 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 hiddenCardsCounter++
                 return
             }
-
-            val bundle = bundleOf("trip" to Json.encodeToString(trip))
-            val bundleParcelable = bundleOf("trip" to trip)
-
             Log.d(getLogTag(), "adding trip to TripList: $trip")
 
             tripViewHolder.setPrice(trip.price)
@@ -132,8 +127,10 @@ open class BaseTripList: BaseFragmentWithToolbar(
             tripViewHolder.setTo(trip.to)
             tripViewHolder.setStartDateTime(trip.startDateTime)
 
-            tripViewHolder.carImageView.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripDetailsFragment, bundleParcelable) }
-            setTopRightButtonIconAndOnClickListener(tripViewHolder, bundle)
+            tripViewHolder.carImageView.setOnClickListener {
+                findNavController().navigate(R.id.action_tripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+            }
+            setTopRightButtonIconAndOnClickListener(tripViewHolder, trip)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
@@ -142,7 +139,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         }
     }
 
-    protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, bundle: Bundle) {
+    protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
         // to implement in subclasses
     }
 
@@ -166,6 +163,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
 
         adapter = TripFirestoreRecyclerAdapter(options)
         // all trips are hidden -> show warning message
+//        Log.d(getLogTag(), "item count is ${adapter!!.itemCount}")
         if (hiddenCardsCounter == adapter!!.itemCount) {
             Log.d(getLogTag(), "TripList is empty, showing warning message to user")
             recyclerView.visibility = View.GONE
@@ -189,9 +187,11 @@ open class BaseTripList: BaseFragmentWithToolbar(
             }
             recyclerView.adapter = adapter
         }
+        setFab(view)
+    }
 
-        val fab: FloatingActionButton = view.findViewById(R.id.fab)
-        fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
+    protected open fun setFab(view: View) {
+        // overridden in TripList
     }
 
     override fun onStart() {
