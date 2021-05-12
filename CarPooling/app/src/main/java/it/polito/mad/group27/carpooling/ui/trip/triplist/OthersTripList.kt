@@ -18,9 +18,12 @@ import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
-class OthersTripList: BaseTripList(
-    layout = R.layout.fragment_others_trip_list,
-    menu = R.menu.others_trip_list_menu,
+class OthersTripList(
+    layout: Int = R.layout.fragment_others_trip_list,
+    menu: Int = R.menu.others_trip_list_menu,
+): BaseTripList(
+    layout,
+    menu,
 ) {
 
     private val query = queryBase  // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.

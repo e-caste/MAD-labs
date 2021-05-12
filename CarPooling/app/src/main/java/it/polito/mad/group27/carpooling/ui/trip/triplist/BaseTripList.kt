@@ -39,7 +39,7 @@ import java.util.*
 
 
 open class BaseTripList(
-    layout: Int = R.layout.fragment_trip_list,
+    private val layout: Int = R.layout.fragment_trip_list,
     menu: Int = R.menu.base_trip_list_menu,
     title: Int = R.string.app_name,
     ): BaseFragmentWithToolbar(
@@ -172,7 +172,7 @@ open class BaseTripList(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_trip_list, container, false)
+        return inflater.inflate(layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
