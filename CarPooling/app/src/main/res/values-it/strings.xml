@@ -80,7 +80,7 @@
     <string name="date_and_time_both_present">Devi selezionare sia data che ora</string>
     <string name="date_not_in_past">Non è possibile ricercare nel passato</string>
     <string name="welcome">Benvenuto!</string>
-    <string name="warning_message_notrips">Non c\'è ancora nessun viaggio…<br/>Sii il primo a offrirne uno!</string>
+    <string name="warning_message_notrips">Non c\'è ancora nessun viaggio…<br />O hai applicato troppi filtri? 🤔</string>
     <string name="seats_finished">I posti sono finiti, aggiungine altri</string>
     <string name="warning_message_alreadybooked">Hai già prenotato questo viaggio!</string>
     <string name="success_message_booked">Hai prenotato questo viaggio!</string>
