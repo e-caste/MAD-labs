@@ -12,6 +12,8 @@
     app:cardMaxElevation="12dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    app:strokeColor="#00ff0000"
+    app:strokeWidth="1.5dp"
     >
     <!-- USE THE BLUEPRINT WHEN EDITING THIS LAYOUT -->
 

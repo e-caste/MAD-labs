@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,8 +31,6 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -42,10 +38,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class BaseTripList: BaseFragmentWithToolbar(
-    R.layout.fragment_trip_list,
-    R.menu.trip_list_menu,
-    R.string.app_name
+open class BaseTripList(
+    layout: Int = R.layout.fragment_trip_list,
+    menu: Int = R.menu.base_trip_list_menu,
+    title: Int = R.string.app_name,
+    ): BaseFragmentWithToolbar(
+    layout,
+    menu,
+    title,
 ){
 
     protected val coll = FirebaseFirestore.getInstance().collection("trips")
@@ -59,7 +59,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
     protected var adapter: TripFirestoreRecyclerAdapter? = null
 
 
-    protected inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    protected inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
@@ -110,7 +110,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         fun _setCardVisible() {
             view.visibility = View.VISIBLE
             // float should be same value as in fragment_trip.xml - this converts dp->px
-            view.layoutParams.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, DisplayMetrics()).toInt()
+            view.layoutParams.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, resources.displayMetrics).toInt()
         }
     }
 
@@ -140,7 +140,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
             tripViewHolder.carImageView.setOnClickListener {
                 findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
             }
-            setTopRightButtonIconAndOnClickListener(tripViewHolder, trip)
+            customizeCardView(tripViewHolder, trip)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
@@ -158,7 +158,8 @@ open class BaseTripList: BaseFragmentWithToolbar(
         }
     }
 
-    protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
+    // set top right button and its onClickListener, then customize the card if needed
+    protected open fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         // to implement in subclasses
     }
 
