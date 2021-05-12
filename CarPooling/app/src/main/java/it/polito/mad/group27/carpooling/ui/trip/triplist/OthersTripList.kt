@@ -1,14 +1,19 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.TripFilter
+import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
@@ -21,6 +26,7 @@ class OthersTripList: BaseTripList(
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
+    private lateinit var tripFilter: TripFilter
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         var icon: Int? = null
@@ -48,12 +54,25 @@ class OthersTripList: BaseTripList(
         tripViewHolder.topRightButton.setImageResource(icon!!)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.app_bar_search -> {
+                val bundle = bundleOf("filter" to tripFilter)
+                Log.d(getLogTag(), "opening trips filter fragment with bundle: $bundle")
+                findNavController().navigate(R.id.action_othersTripList_to_tripFilterFragment, bundle)
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val tripFilter: TripFilter? = arguments?.getParcelable("filter")
+        tripFilter = arguments?.getParcelable("filter") ?: TripFilter()
+        Log.d(getLogTag(), "OthersTripList trip filter: $tripFilter")
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
