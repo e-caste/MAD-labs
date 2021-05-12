@@ -1,21 +1,28 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
+import it.polito.mad.group27.carpooling.TripFilter
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
-class OthersTripList: BaseTripList() {
+class OthersTripList: BaseTripList(
+    layout = R.layout.fragment_trip_list,
+    menu = R.menu.others_trip_list_menu,
+) {
 
     private val query = queryBase  // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
 
-    override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
+    override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         var icon: Int? = null
         if (trip.interestedUsersUids.contains(currentUserUid) || trip.acceptedUsersUids.contains(currentUserUid)) {
             icon = R.drawable.ic_baseline_done_24
@@ -39,6 +46,15 @@ class OthersTripList: BaseTripList() {
         }
         tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
         tripViewHolder.topRightButton.setImageResource(icon!!)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val tripFilter: TripFilter? = arguments?.getParcelable("filter")
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun setFab(view: View) {
