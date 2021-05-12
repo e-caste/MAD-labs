@@ -134,7 +134,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
             tripViewHolder.setStartDateTime(trip.startDateTime)
 
             tripViewHolder.carImageView.setOnClickListener {
-                findNavController().navigate(R.id.action_tripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+                findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
             }
             setTopRightButtonIconAndOnClickListener(tripViewHolder, trip)
         }
