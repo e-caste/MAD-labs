@@ -100,6 +100,7 @@
     <string name="warning_message_alreadybooked">You have already booked this trip!</string>
     <string name="success_message_booked">You have successfully booked this trip!</string>
     <string name="warning_message_failedbooking">There was an error booking this trip…<br/>Please try again.</string>
+    <string name="search">Search</string>
     <plurals name="already_accepted_n_travelers">
         <item quantity="one">You already accepted %d traveler!</item>
         <item quantity="other">You already accepted %d travelers!</item>
