@@ -19,7 +19,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
 class OthersTripList: BaseTripList(
-    layout = R.layout.fragment_trip_list,
+    layout = R.layout.fragment_others_trip_list,
     menu = R.menu.others_trip_list_menu,
 ) {
 
