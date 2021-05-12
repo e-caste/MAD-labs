@@ -38,10 +38,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class BaseTripList: BaseFragmentWithToolbar(
-    R.layout.fragment_trip_list,
-    R.menu.base_trip_list_menu,
-    R.string.app_name
+open class BaseTripList(
+    layout: Int = R.layout.fragment_trip_list,
+    menu: Int = R.menu.base_trip_list_menu,
+    title: Int = R.string.app_name,
+    ): BaseFragmentWithToolbar(
+    layout,
+    menu,
+    title,
 ){
 
     protected val coll = FirebaseFirestore.getInstance().collection("trips")
