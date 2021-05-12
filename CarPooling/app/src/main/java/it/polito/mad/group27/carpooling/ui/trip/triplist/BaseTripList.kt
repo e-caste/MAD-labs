@@ -40,7 +40,7 @@ import java.util.*
 
 open class BaseTripList: BaseFragmentWithToolbar(
     R.layout.fragment_trip_list,
-    R.menu.trip_list_menu,
+    R.menu.base_trip_list_menu,
     R.string.app_name
 ){
 
