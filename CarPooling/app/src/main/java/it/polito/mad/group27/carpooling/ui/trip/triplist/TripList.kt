@@ -1,9 +1,11 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.graphics.Color
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.ui.trip.Trip
@@ -18,9 +20,9 @@ class TripList: BaseTripList() {
         .setQuery(query, TripDB::class.java)
         .build()
 
-    override fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
+    override fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         // do not allow users to edit trips in the past
-        if (trip.endDateTime <= Calendar.getInstance()) {
+        if (trip.endDateTime <= Calendar.getInstance() && trip.advertised) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.setOnClickListener {}
@@ -31,6 +33,12 @@ class TripList: BaseTripList() {
         tripViewHolder.topRightButton.setImageResource(icon)
         tripViewHolder.topRightButton.setOnClickListener {
             findNavController().navigate(R.id.action_tripList_to_tripEditFragment, bundleOf("trip" to trip))
+        }
+        // show red border around card
+        if (!trip.advertised) {
+            val v = tripViewHolder.view as MaterialCardView
+            v.strokeColor = Color.RED
+            v.invalidate()
         }
     }
 
