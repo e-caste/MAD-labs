@@ -14,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.TripFilter
 import it.polito.mad.group27.carpooling.getLogTag
+import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
@@ -72,6 +73,8 @@ class OthersTripList: BaseTripList(
         savedInstanceState: Bundle?
     ): View? {
         tripFilter = arguments?.getParcelable("filter") ?: TripFilter()
+        if (tripFilter.from == "") tripFilter.from = null
+        if (tripFilter.to == "") tripFilter.to = null
         Log.d(getLogTag(), "OthersTripList trip filter: $tripFilter")
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -82,7 +85,28 @@ class OthersTripList: BaseTripList(
     }
 
     override fun filterOutTrip(trip: Trip): Boolean {
+
+        fun applyTripFilter(): Boolean {
+            var res = true
+            if (tripFilter.from != null)
+                res = res && trip.from.contains(tripFilter.from!!, ignoreCase = true)
+            if (tripFilter.to != null)
+                res = res && trip.to.contains(tripFilter.to!!, ignoreCase = true)
+            if (trip.price != null)
+                res = res && trip.price!! >= tripFilter.priceMin
+                res = res && trip.price!! <= tripFilter.priceMax
+            if (tripFilter.dateTime != null)
+                res = res && trip.startDateTime >= tripFilter.dateTime!!
+            for (opt in Option.values()) {
+                if (tripFilter.options.contains(opt) && tripFilter.options[opt] == true) {
+                    res = res && trip.options.contains(opt)
+                }
+            }
+            return res
+        }
+
         return !(trip.ownerUid != currentUserUid &&
-                trip.advertised)
+                trip.advertised &&
+                applyTripFilter())
     }
 }
