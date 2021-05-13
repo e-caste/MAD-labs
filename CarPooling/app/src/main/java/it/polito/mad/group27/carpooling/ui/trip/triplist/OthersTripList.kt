@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.TripFilter
@@ -29,6 +31,9 @@ class OthersTripList(
         .setQuery(query, TripDB::class.java)
         .build()
     private lateinit var tripFilter: TripFilter
+    private val defaultTripFilter = TripFilter()
+    private lateinit var chipGroup: ChipGroup
+    private val chips: MutableSet<Chip> = mutableSetOf()
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         // the trip is full
@@ -86,9 +91,41 @@ class OthersTripList(
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun setFab(view: View) {
+    override fun customizeTripList(view: View) {
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
+        chipGroup = view.findViewById(R.id.trip_filter_chip_group)
         fab.visibility = View.GONE
+        if (tripFilter != defaultTripFilter) {
+            addChipsForEnabledFilters()
+            Log.d(getLogTag(), "trip filter is applied, showing chips: $chips")
+            chips.forEach{ chipGroup.addView(it) }
+            chipGroup.visibility = View.VISIBLE
+        }
+    }
+
+    private fun addChipsForEnabledFilters() {
+        fun addChip(text: String) {
+            val chip = layoutInflater.inflate(R.layout.chip_filter, null) as Chip
+            chip.text = text
+            chip.isChecked = true
+            chips.add(chip)
+        }
+
+        if (tripFilter.from != defaultTripFilter.from)
+            addChip(tripFilter.from!!)
+        if (tripFilter.to != defaultTripFilter.to)
+            addChip(tripFilter.to!!)
+        if (tripFilter.priceMin != defaultTripFilter.priceMin)
+            addChip(tripFilter.priceMin.toString())
+        if (tripFilter.priceMax != defaultTripFilter.priceMax)
+            addChip(tripFilter.priceMax.toString())
+        if (tripFilter.dateTime != defaultTripFilter.dateTime)
+            addChip(tripFilter.dateTime.toString())
+        for (opt in Option.values()) {
+            if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
+                addChip(opt.name)
+            }
+        }
     }
 
     override fun isFilteredOut(trip: Trip): Boolean {
