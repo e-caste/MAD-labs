@@ -33,6 +33,16 @@ class OthersTripList(
         .build()
     private lateinit var tripFilter: TripFilter
     private val defaultTripFilter = TripFilter()
+    private val checkedChips = mutableMapOf(
+        "from" to false,
+        "to" to false,
+        "priceMin" to false,
+        "priceMax" to false,
+        "dateTime" to false,
+        "luggage" to false,
+        "animals" to false,
+        "smoke" to false,
+    )
     private lateinit var chipGroup: ChipGroup
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
@@ -111,35 +121,55 @@ class OthersTripList(
             chipGroup.addView(chip)
         }
 
+        var k = ""
+
         if (tripFilter.from != defaultTripFilter.from)
+            k = "from"
+            checkedChips[k] = true
             addChip(tripFilter.from!!) {
-                Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled")
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled: ${checkedChips[k]}")
             }
 
         if (tripFilter.to != defaultTripFilter.to)
+            k = "to"
+            checkedChips[k] = true
             addChip(tripFilter.to!!) {
-                Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled")
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled: ${checkedChips[k]}")
             }
 
         if (tripFilter.priceMin != defaultTripFilter.priceMin)
+            k = "priceMin"
+            checkedChips[k] = true
             addChip(tripFilter.priceMin.toString()) {
-                Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled")
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled: ${checkedChips[k]}")
             }
 
         if (tripFilter.priceMax != defaultTripFilter.priceMax)
+            k = "priceMax"
+            checkedChips[k] = true
             addChip(tripFilter.priceMax.toString()) {
-                Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled")
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled: ${checkedChips[k]}")
             }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime)
+            k = "dateTime"
+            checkedChips[k] = true
             addChip(tripFilter.dateTime.toString()) {
-                Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled")
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled: ${checkedChips[k]}")
             }
 
         for (opt in Option.values()) {
             if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
-                addChip(opt.name.toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)) {
-                    Log.d(getLogTag(), "chip option ${opt.name} toggled")
+                val optionName = opt.name.toLowerCase(Locale.ROOT)
+                checkedChips[optionName] = true
+                addChip(optionName.capitalize(Locale.ROOT)) {
+                    checkedChips[optionName] = !checkedChips[optionName]!!
+                    Log.d(getLogTag(), "chip option $optionName toggled: ${checkedChips[optionName]}")
                 }
             }
         }
