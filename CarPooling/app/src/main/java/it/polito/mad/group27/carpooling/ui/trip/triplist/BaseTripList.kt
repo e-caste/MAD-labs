@@ -122,7 +122,7 @@ open class BaseTripList(
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
-            if (filterOutTrip(trip)) {
+            if (isFilteredOut(trip)) {
                 Log.d(getLogTag(), "filtering out trip: $trip")
                 tripViewHolder._setCardInvisible()
                 return
@@ -154,7 +154,7 @@ open class BaseTripList(
         }
 
         override fun getItemCount(): Int {
-            return this.snapshots.filter { !filterOutTrip(it.toTrip()) }.size
+            return this.snapshots.filter { !isFilteredOut(it.toTrip()) }.size
         }
     }
 
@@ -163,7 +163,7 @@ open class BaseTripList(
         // to implement in subclasses
     }
 
-    protected open fun filterOutTrip(trip: Trip): Boolean {
+    protected open fun isFilteredOut(trip: Trip): Boolean {
         return false
     }
 

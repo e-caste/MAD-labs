@@ -85,7 +85,7 @@ class OthersTripList(
         fab.visibility = View.GONE
     }
 
-    override fun filterOutTrip(trip: Trip): Boolean {
+    override fun isFilteredOut(trip: Trip): Boolean {
 
         fun applyTripFilter(): Boolean {
             var res = true
