@@ -88,27 +88,21 @@ class OthersTripList(
     override fun isFilteredOut(trip: Trip): Boolean {
 
         fun applyTripFilter(): Boolean {
-            var res = true
             if (tripFilter.from != null)
-                res = res && trip.from.contains(tripFilter.from!!, ignoreCase = true)
-                if (!res) return false
+                trip.from.contains(tripFilter.from!!, ignoreCase = true) || return false
             if (tripFilter.to != null)
-                res = res && trip.to.contains(tripFilter.to!!, ignoreCase = true)
-                if (!res) return false
+                trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
             if (trip.price != null)
-                res = res && trip.price!! >= tripFilter.priceMin
-                res = res && trip.price!! <= tripFilter.priceMax
-                if (!res) return false
+                trip.price!! >= tripFilter.priceMin || return false
+                trip.price!! <= tripFilter.priceMax || return false
             if (tripFilter.dateTime != null)
-                res = res && trip.startDateTime >= tripFilter.dateTime!!
-                if (!res) return false
+                trip.startDateTime >= tripFilter.dateTime!! || return false
             for (opt in Option.values()) {
                 if (tripFilter.options.contains(opt) && tripFilter.options[opt] == true) {
-                    res = res && trip.options.contains(opt)
-                    if (!res) return false
+                    trip.options.contains(opt) || return false
                 }
             }
-            return res
+            return true
         }
 
         return !(trip.ownerUid != currentUserUid &&
