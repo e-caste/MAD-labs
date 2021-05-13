@@ -19,6 +19,8 @@ import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class OthersTripList(
@@ -35,6 +37,8 @@ class OthersTripList(
     private val defaultTripFilter = TripFilter()
     private lateinit var checkedChips: MutableMap<String, Boolean>
     private lateinit var chipGroup: ChipGroup
+    private val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
+    private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         // the trip is full
@@ -115,74 +119,42 @@ class OthersTripList(
 
     private fun addChipsForEnabledFilters() {
 
-        fun addChip(text: String, lambda: (View) -> Unit) {
+        fun addChip(text: String, k: String, logParam: Any) {
             val chip = layoutInflater.inflate(R.layout.chip_filter, null) as Chip
             chip.text = text
-            chip.setOnClickListener(lambda)
+            checkedChips[k] = true
+            chip.setOnClickListener {
+                checkedChips[k] = !checkedChips[k]!!
+                Log.d(getLogTag(), "chip from ($logParam) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
+            }
             chipGroup.addView(chip)
         }
 
-        var k = ""
-
         if (tripFilter.from != defaultTripFilter.from) {
-            k = "from"
-            checkedChips[k] = true
-            addChip(tripFilter.from!!) {
-                checkedChips[k] = !checkedChips[k]!!
-                Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
-            }
+            addChip(tripFilter.from!!, "from", tripFilter.from!!)
         }
 
         if (tripFilter.to != defaultTripFilter.to) {
-            k = "to"
-            checkedChips[k] = true
-            addChip(tripFilter.to!!) {
-                checkedChips[k] = !checkedChips[k]!!
-                Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
-            }
+            addChip(tripFilter.to!!, "to", tripFilter.to!!)
         }
 
         if (tripFilter.priceMin != defaultTripFilter.priceMin) {
-            k = "priceMin"
-            checkedChips[k] = true
-            addChip(tripFilter.priceMin.toString()) {
-                checkedChips[k] = !checkedChips[k]!!
-                Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
-            }
+            addChip(nf.format(tripFilter.priceMin), "priceMin", nf.format(tripFilter.priceMin))
         }
 
         if (tripFilter.priceMax != defaultTripFilter.priceMax) {
-            k = "priceMax"
-            checkedChips[k] = true
-            addChip(tripFilter.priceMax.toString()) {
-                checkedChips[k] = !checkedChips[k]!!
-                Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
-            }
+            addChip(nf.format(tripFilter.priceMax), "priceMax", nf.format(tripFilter.priceMax))
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            k = "dateTime"
-            checkedChips[k] = true
-            addChip(tripFilter.dateTime.toString()) {
-                checkedChips[k] = !checkedChips[k]!!
-                Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
-            }
+            addChip(sdf.format(tripFilter.dateTime), "dateTime", sdf.format(tripFilter.dateTime))
         }
 
         for (opt in Option.values()) {
             if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
                 val optionName = opt.name.toLowerCase(Locale.ROOT)
-                checkedChips[optionName] = true
-                addChip(optionName.capitalize(Locale.ROOT)) {
-                    checkedChips[optionName] = !checkedChips[optionName]!!
-                    Log.d(getLogTag(), "chip option $optionName toggled: ${checkedChips[optionName]}")
-                    adapter?.notifyDataSetChanged()
-                }
+                addChip(optionName.capitalize(Locale.ROOT), optionName, optionName)
             }
         }
     }
