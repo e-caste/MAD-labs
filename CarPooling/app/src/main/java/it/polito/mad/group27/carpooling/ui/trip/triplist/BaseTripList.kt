@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -208,11 +209,11 @@ open class BaseTripList(
                 recyclerView.adapter = adapter
             }
         }
-        setFab(view)
+        customizeTripList(view)
     }
 
-    protected open fun setFab(view: View) {
-        // overridden in TripList
+    protected open fun customizeTripList(view: View) {
+        // set FAB, show Chips...
     }
 
     override fun onStart() {
