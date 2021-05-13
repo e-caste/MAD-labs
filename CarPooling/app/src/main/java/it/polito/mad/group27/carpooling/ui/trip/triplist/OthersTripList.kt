@@ -40,6 +40,9 @@ class OthersTripList(
         } else {
             icon = R.drawable.ic_baseline_add_24
             tripViewHolder.topRightButton.setOnClickListener {
+                if (trip.acceptedUsersUids.size == trip.totalSeats) {
+                    Toast.makeText(requireContext(), getString(R.string.warning_message_tripfull), Toast.LENGTH_LONG).show()
+                } else {
                 trip.interestedUsersUids.add(currentUserUid)
                 coll.document(trip.id!!).set(trip.toTripDB())
                     .addOnSuccessListener {
@@ -50,6 +53,7 @@ class OthersTripList(
                         icon = R.drawable.ic_baseline_add_24
                         Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
                     }
+                }
             }
         }
         tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
