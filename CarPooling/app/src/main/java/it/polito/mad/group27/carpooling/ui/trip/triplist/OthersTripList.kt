@@ -130,6 +130,7 @@ class OthersTripList(
             addChip(tripFilter.from!!) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -139,6 +140,7 @@ class OthersTripList(
             addChip(tripFilter.to!!) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -148,6 +150,7 @@ class OthersTripList(
             addChip(tripFilter.priceMin.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -157,6 +160,7 @@ class OthersTripList(
             addChip(tripFilter.priceMax.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -166,6 +170,7 @@ class OthersTripList(
             addChip(tripFilter.dateTime.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled: ${checkedChips[k]}")
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -176,6 +181,7 @@ class OthersTripList(
                 addChip(optionName.capitalize(Locale.ROOT)) {
                     checkedChips[optionName] = !checkedChips[optionName]!!
                     Log.d(getLogTag(), "chip option $optionName toggled: ${checkedChips[optionName]}")
+                    adapter?.notifyDataSetChanged()
                 }
             }
         }
@@ -184,17 +190,23 @@ class OthersTripList(
     override fun isFilteredOut(trip: Trip): Boolean {
 
         fun applyTripFilter(): Boolean {
-            if (tripFilter.from != null)
+            if (tripFilter.from != null && checkedChips["from"]!!) {
                 trip.from.contains(tripFilter.from!!, ignoreCase = true) || return false
-            if (tripFilter.to != null)
+            }
+            if (tripFilter.to != null && checkedChips["to"]!!) {
                 trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
-            if (trip.price != null)
+            }
+            if (trip.price != null && (checkedChips["priceMin"]!! || checkedChips["priceMax"]!!)) {
                 trip.price!! >= tripFilter.priceMin || return false
                 trip.price!! <= tripFilter.priceMax || return false
-            if (tripFilter.dateTime != null)
+            }
+            if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {
                 trip.startDateTime >= tripFilter.dateTime!! || return false
+            }
             for (opt in Option.values()) {
-                if (tripFilter.options.contains(opt) && tripFilter.options[opt] == true) {
+                if (tripFilter.options.contains(opt) &&
+                    tripFilter.options[opt] == true &&
+                    checkedChips[opt.name.toLowerCase(Locale.ROOT)]!!) {
                     trip.options.contains(opt) || return false
                 }
             }
