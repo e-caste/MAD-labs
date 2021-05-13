@@ -33,16 +33,7 @@ class OthersTripList(
         .build()
     private lateinit var tripFilter: TripFilter
     private val defaultTripFilter = TripFilter()
-    private val checkedChips = mutableMapOf(
-        "from" to false,
-        "to" to false,
-        "priceMin" to false,
-        "priceMax" to false,
-        "dateTime" to false,
-        "luggage" to false,
-        "animals" to false,
-        "smoke" to false,
-    )
+    private lateinit var checkedChips: MutableMap<String, Boolean>
     private lateinit var chipGroup: ChipGroup
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
@@ -94,6 +85,16 @@ class OthersTripList(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        checkedChips = mutableMapOf(
+            "from" to false,
+            "to" to false,
+            "priceMin" to false,
+            "priceMax" to false,
+            "dateTime" to false,
+            "luggage" to false,
+            "animals" to false,
+            "smoke" to false,
+        )
         tripFilter = arguments?.getParcelable("filter") ?: TripFilter()
         if (tripFilter.from == "") tripFilter.from = null
         if (tripFilter.to == "") tripFilter.to = null
@@ -123,45 +124,50 @@ class OthersTripList(
 
         var k = ""
 
-        if (tripFilter.from != defaultTripFilter.from)
+        if (tripFilter.from != defaultTripFilter.from) {
             k = "from"
             checkedChips[k] = true
             addChip(tripFilter.from!!) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled: ${checkedChips[k]}")
             }
+        }
 
-        if (tripFilter.to != defaultTripFilter.to)
+        if (tripFilter.to != defaultTripFilter.to) {
             k = "to"
             checkedChips[k] = true
             addChip(tripFilter.to!!) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled: ${checkedChips[k]}")
             }
+        }
 
-        if (tripFilter.priceMin != defaultTripFilter.priceMin)
+        if (tripFilter.priceMin != defaultTripFilter.priceMin) {
             k = "priceMin"
             checkedChips[k] = true
             addChip(tripFilter.priceMin.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled: ${checkedChips[k]}")
             }
+        }
 
-        if (tripFilter.priceMax != defaultTripFilter.priceMax)
+        if (tripFilter.priceMax != defaultTripFilter.priceMax) {
             k = "priceMax"
             checkedChips[k] = true
             addChip(tripFilter.priceMax.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled: ${checkedChips[k]}")
             }
+        }
 
-        if (tripFilter.dateTime != defaultTripFilter.dateTime)
+        if (tripFilter.dateTime != defaultTripFilter.dateTime) {
             k = "dateTime"
             checkedChips[k] = true
             addChip(tripFilter.dateTime.toString()) {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled: ${checkedChips[k]}")
             }
+        }
 
         for (opt in Option.values()) {
             if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
