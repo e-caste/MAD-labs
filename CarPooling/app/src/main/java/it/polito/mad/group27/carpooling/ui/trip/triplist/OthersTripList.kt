@@ -19,6 +19,7 @@ import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import java.util.*
 
 class OthersTripList(
     menu: Int = R.menu.others_trip_list_menu,
@@ -33,7 +34,6 @@ class OthersTripList(
     private lateinit var tripFilter: TripFilter
     private val defaultTripFilter = TripFilter()
     private lateinit var chipGroup: ChipGroup
-    private val chips: MutableSet<Chip> = mutableSetOf()
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         // the trip is full
@@ -97,33 +97,50 @@ class OthersTripList(
         fab.visibility = View.GONE
         if (tripFilter != defaultTripFilter) {
             addChipsForEnabledFilters()
-            Log.d(getLogTag(), "trip filter is applied, showing chips: $chips")
-            chips.forEach{ chipGroup.addView(it) }
+            Log.d(getLogTag(), "trip filter is applied, showing chips: ${chipGroup.checkedChipIds}")
             chipGroup.visibility = View.VISIBLE
         }
     }
 
     private fun addChipsForEnabledFilters() {
-        fun addChip(text: String) {
+
+        fun addChip(text: String, lambda: (View) -> Unit) {
             val chip = layoutInflater.inflate(R.layout.chip_filter, null) as Chip
             chip.text = text
-            chip.isChecked = true
-            chips.add(chip)
+            chip.setOnClickListener(lambda)
+            chipGroup.addView(chip)
         }
 
         if (tripFilter.from != defaultTripFilter.from)
-            addChip(tripFilter.from!!)
+            addChip(tripFilter.from!!) {
+                Log.d(getLogTag(), "chip from (${tripFilter.from}) toggled")
+            }
+
         if (tripFilter.to != defaultTripFilter.to)
-            addChip(tripFilter.to!!)
+            addChip(tripFilter.to!!) {
+                Log.d(getLogTag(), "chip to (${tripFilter.to}) toggled")
+            }
+
         if (tripFilter.priceMin != defaultTripFilter.priceMin)
-            addChip(tripFilter.priceMin.toString())
+            addChip(tripFilter.priceMin.toString()) {
+                Log.d(getLogTag(), "chip priceMin (${tripFilter.priceMin}) toggled")
+            }
+
         if (tripFilter.priceMax != defaultTripFilter.priceMax)
-            addChip(tripFilter.priceMax.toString())
+            addChip(tripFilter.priceMax.toString()) {
+                Log.d(getLogTag(), "chip priceMax (${tripFilter.priceMax}) toggled")
+            }
+
         if (tripFilter.dateTime != defaultTripFilter.dateTime)
-            addChip(tripFilter.dateTime.toString())
+            addChip(tripFilter.dateTime.toString()) {
+                Log.d(getLogTag(), "chip dateTime (${tripFilter.dateTime}) toggled")
+            }
+
         for (opt in Option.values()) {
             if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
-                addChip(opt.name)
+                addChip(opt.name.toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)) {
+                    Log.d(getLogTag(), "chip option ${opt.name} toggled")
+                }
             }
         }
     }
