@@ -90,4 +90,5 @@
         <item quantity="other">Hai già accettato %d passeggeri!</item>
     </plurals>
     <string name="search">Cerca</string>
+    <string name="warning_message_tripfull">Non ci sono più posti disponibili per questo viaggio! Prova a cercarne un altro.</string>
 </resources>

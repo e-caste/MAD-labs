@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,7 +40,7 @@ import java.util.*
 
 
 open class BaseTripList(
-    layout: Int = R.layout.fragment_trip_list,
+    private val layout: Int = R.layout.fragment_trip_list,
     menu: Int = R.menu.base_trip_list_menu,
     title: Int = R.string.app_name,
     ): BaseFragmentWithToolbar(
@@ -122,7 +123,7 @@ open class BaseTripList(
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
-            if (filterOutTrip(trip)) {
+            if (isFilteredOut(trip)) {
                 Log.d(getLogTag(), "filtering out trip: $trip")
                 tripViewHolder._setCardInvisible()
                 return
@@ -154,7 +155,7 @@ open class BaseTripList(
         }
 
         override fun getItemCount(): Int {
-            return this.snapshots.filter { !filterOutTrip(it.toTrip()) }.size
+            return this.snapshots.filter { !isFilteredOut(it.toTrip()) }.size
         }
     }
 
@@ -163,7 +164,7 @@ open class BaseTripList(
         // to implement in subclasses
     }
 
-    protected open fun filterOutTrip(trip: Trip): Boolean {
+    protected open fun isFilteredOut(trip: Trip): Boolean {
         return false
     }
 
@@ -172,7 +173,7 @@ open class BaseTripList(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_trip_list, container, false)
+        return inflater.inflate(layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -208,11 +209,11 @@ open class BaseTripList(
                 recyclerView.adapter = adapter
             }
         }
-        setFab(view)
+        customizeTripList(view)
     }
 
-    protected open fun setFab(view: View) {
-        // overridden in TripList
+    protected open fun customizeTripList(view: View) {
+        // set FAB, show Chips...
     }
 
     override fun onStart() {

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,12 +25,27 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/trip_filter_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        android:background="@drawable/bottom_border"
+        app:selectionRequired="false"
+        app:singleSelection="false"
+        android:visibility="gone">
+
+    </com.google.android.material.chip.ChipGroup>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:name="it.polito.mad.group27.carpooling.ui.triplist.TripList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.trip.triplist.TripList"
         tools:layout_editor_absoluteX="16dp"
@@ -49,4 +66,4 @@
         tools:layout_editor_absoluteX="314dp"
         tools:layout_editor_absoluteY="659dp" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
