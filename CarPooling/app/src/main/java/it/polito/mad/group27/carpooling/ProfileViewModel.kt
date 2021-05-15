@@ -74,19 +74,5 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
         }
     }
 
-    fun updateProfile(profileTmp: Profile) {
-        profileDocument.set(profileTmp).addOnFailureListener{
-            Toast.makeText(
-                getApplication<Application>().applicationContext,
-                "Error in saving profile",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-
-
-
-
 }
 
