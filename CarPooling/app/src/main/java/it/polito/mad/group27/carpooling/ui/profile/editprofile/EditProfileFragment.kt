@@ -21,17 +21,20 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     private lateinit var emailEdit: TextInputLayout
     private lateinit var locationEdit: TextInputLayout
 
-    private lateinit var profileTmp: Profile
 
-    private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var profileViewModel: EditProfileViewModel
 
     // TODO back should not go back to Edit
+    // TODO loading
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        profileViewModel = ViewModelProvider(act).get(ProfileViewModel::class.java)
-        profileTmp = profileViewModel.profile.value?.copy() ?: Profile()
+        var profile = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value!!.copy()
+        profileViewModel = ViewModelProvider(this).get(EditProfileViewModel::class.java)
+
+
+        profileViewModel.profile = profile
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -63,14 +66,13 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
 
 
-        if(profileTmp.profileImageUri!=null) {
-            Glide.with(this).load(profileTmp.profileImageUri).into(imageView)
-            imagePresent = true
+        if(profileViewModel.profile.profileImageUri!=null) {
+            setImage(profileViewModel.profile.profileImageUri, true)
         }
-        fullNameEdit.editText!!.setText(profileTmp.fullName)
-        nickNameEdit.editText!!.setText(profileTmp.nickName)
-        emailEdit.editText!!.setText(profileTmp.email)
-        locationEdit.editText!!.setText(profileTmp.location)
+        fullNameEdit.editText!!.setText(profileViewModel.profile.fullName)
+        nickNameEdit.editText!!.setText(profileViewModel.profile.nickName)
+        emailEdit.editText!!.setText(profileViewModel.profile.email)
+        locationEdit.editText!!.setText(profileViewModel.profile.location)
 
 
         registerForContextMenu(imageButton)
@@ -132,15 +134,15 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
     private fun saveProfile() {
 
-        profileTmp.fullName = fullNameEdit.editText!!.text.toString()
-        profileTmp.nickName = nickNameEdit.editText!!.text.toString()
-        profileTmp.email = emailEdit.editText!!.text.toString()
-        profileTmp.location = locationEdit.editText!!.text.toString()
+        profileViewModel.profile.fullName = fullNameEdit.editText!!.text.toString()
+        profileViewModel.profile.nickName = nickNameEdit.editText!!.text.toString()
+        profileViewModel.profile.email = emailEdit.editText!!.text.toString()
+        profileViewModel.profile.location = locationEdit.editText!!.text.toString()
 
-         saveImg("profile",  profileTmp.uid!!){ uri:String?, changed:Boolean ->
+         saveImg("profile",  profileViewModel.profile.uid!!){ uri:String?, changed:Boolean ->
              if(changed)
-                 profileTmp.profileImageUri = uri
-            profileViewModel.updateProfile(profileTmp)
+                 profileViewModel.profile.profileImageUri = uri
+            profileViewModel.updateProfile()
         }
 
     }
