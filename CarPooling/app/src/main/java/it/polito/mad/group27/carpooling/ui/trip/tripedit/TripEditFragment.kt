@@ -114,11 +114,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
-        if(tripEditViewModel.newTrip.carImageUri != null){
-            image = MediaStore.Images.Media.getBitmap(act.contentResolver, tripEditViewModel.newTrip.carImageUri)
-            if(image != null)
-                imageView.setImageBitmap(image)
-        }
+        setImage(tripEditViewModel.newTrip.carImageUri.toString(), true)
+
 
         // from and to datetime check
         val dateTimeWatcher = Watcher(
