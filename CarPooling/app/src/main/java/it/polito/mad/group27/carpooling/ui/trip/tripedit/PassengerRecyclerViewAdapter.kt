@@ -95,10 +95,10 @@ class PassengerRecyclerViewAdapter(
         viewModel.downloadUsers{
             passengers.addAll(
             if(acceptedAdapter == null)
-                viewModel.newTrip.interestedUsersUids.map {
+                viewModel.newTrip.acceptedUsersUids.map {
                     viewModel.getProfileByUid(it)
                 } as MutableList<Profile>
-            else viewModel.newTrip.acceptedUsersUids.map {
+            else viewModel.newTrip.interestedUsersUids.map {
                 viewModel.getProfileByUid(it)
             } as MutableList<Profile> )
             this.notifyDataSetChanged()
