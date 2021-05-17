@@ -96,9 +96,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
         Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
 
-        tripEditViewModel.newTrip.acceptedUsersUids.add("LnfgLCgnr8WrA3L2qm7Ae50FXt43")
-
-        tripEditViewModel.newTrip.interestedUsersUids.add("pn9OUkY2S9gekrCRJZR2NJ6W9wQ2")
 
         // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
