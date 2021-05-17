@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -330,7 +331,25 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             expandButtonClickListener(interested_rv, it as ImageView)
         }
 
-        // TODO aggiungere stop advertise button
+        val stopAdvertiseButton = view.findViewById<Button>(R.id.stop_advertising)
+        stopAdvertiseButton.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.alert_title))
+                .setMessage(resources.getString(R.string.alert_message))
+                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                    // Respond to neutral button press
+                }
+                .setPositiveButton(resources.getString(R.string.yes)) { dialog, which ->
+                    // Respond to positive button press
+                    tripEditViewModel.newTrip.advertised = false
+                    saveTrip()
+                    findNavController().navigate(
+                        R.id.action_tripEditFragment_to_tripDetailsFragment,
+                        bundleOf("tripId" to tripEditViewModel.newTrip.id)
+                    )
+                }
+                .show()
+        }
 
         val passengersListWrapper = view.findViewById<LinearLayout>(R.id.passengers_list_wrapper)
         if (tripEditViewModel.newTrip.id == null)
@@ -363,17 +382,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun saveTrip(){
 
-        for (uid in tripEditViewModel.newAcceptedUsers){
-            MessagingService.sendNotification(
-                tripEditViewModel.getProfileByUid(uid).notificationToken,
-                AndroidNotification("Request accepted",
-                    "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
-                    tripEditViewModel.newTrip.carImageUri.toString())
-            )
-        }
-
-        val sharedPref = act.getPreferences(Context.MODE_PRIVATE)!!
-
         var created =  false
         if(tripEditViewModel.newTrip.id == null) {
             created = true
@@ -403,7 +411,18 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             if(changed)
                 tripDB.carImageUri = uri
             tripEditViewModel.updateTrip(tripDB)
+
+            // send notifications to newly accepted users
+            for (uid in tripEditViewModel.newAcceptedUsers){
+                MessagingService.sendNotification(
+                    tripEditViewModel.getProfileByUid(uid).notificationToken,
+                    AndroidNotification("Request accepted",
+                        "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                        tripEditViewModel.newTrip.carImageUri.toString())
+                )
+            }
         }
+
     }
 
 
