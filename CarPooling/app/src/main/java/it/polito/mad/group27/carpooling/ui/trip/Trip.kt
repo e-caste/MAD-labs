@@ -89,10 +89,11 @@ data class Trip(
     @Serializable(with = BigDecimalSerializer::class)
     var price: BigDecimal? = null,
     @Serializable(with = CalendarSerializer::class)
-    var startDateTime: Calendar = Calendar.getInstance(),
+    var startDateTime: Calendar = (Calendar.getInstance()
+        .clone() as Calendar).also { it.add(Calendar.HOUR, +1) },
     @Serializable(with = CalendarSerializer::class)
     var endDateTime: Calendar = (Calendar.getInstance()
-        .clone() as Calendar).also { it.add(Calendar.HOUR, +1) },
+        .clone() as Calendar).also { it.add(Calendar.HOUR, +2) },
     var from: String = "",
     var to: String = "",
     val stops: MutableList<Stop> = mutableListOf(),
