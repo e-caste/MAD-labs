@@ -261,7 +261,9 @@ open class EditFragment(layoutId: Int,
     }
 
     protected fun setImage(imgURI:String?, firstTime: Boolean  = false){
-        Glide.with(this).load(imgURI).into(imageView)
+        if(imgURI!=null) {
+            Glide.with(this).load(imgURI).into(imageView)
+        }
         editViewModel.imagePresent = imgURI != null
         if(!firstTime)
             editViewModel.imageChanged = true
