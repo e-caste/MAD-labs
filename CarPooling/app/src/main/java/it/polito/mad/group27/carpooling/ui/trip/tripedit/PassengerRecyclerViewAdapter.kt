@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.AndroidNotification
 import it.polito.mad.group27.carpooling.MessagingService
@@ -29,8 +32,9 @@ class PassengerRecyclerViewAdapter(
     ) : RecyclerView.ViewHolder(v) {
 
         private val nicknameView: TextView = v.findViewById(R.id.nicknameView)
-        private val viewProfile: TextView = v.findViewById(R.id.viewProfileLink)
+        private val viewProfile: LinearLayout = v.findViewById(R.id.viewProfileLink)
         private val button: Button = v.findViewById(R.id.accept_button)
+        private val image: ImageView = v.findViewById(R.id.passenger_image)
 
         fun bind(
             context: Context,
@@ -40,6 +44,9 @@ class PassengerRecyclerViewAdapter(
             this_rv: PassengerRecyclerViewAdapter,
             other_rv: PassengerRecyclerViewAdapter?
         ) {
+
+            if (passenger.profileImageUri != null)
+                Glide.with(context).load(passenger.profileImageUri ).into(image)
 
             nicknameView.text = passenger.nickName
             if (other_rv != null) {
