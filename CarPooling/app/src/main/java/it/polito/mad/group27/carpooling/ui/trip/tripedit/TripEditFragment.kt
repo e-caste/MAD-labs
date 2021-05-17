@@ -187,6 +187,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
+        // TODO an additional check should be done in order not to create a trip in a today's past hour
 
         to_place.hint = getString(R.string.to)
         to_place.editText?.setText(tripEditViewModel.newTrip.to)
@@ -411,18 +412,54 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             if(changed)
                 tripDB.carImageUri = uri
             tripEditViewModel.updateTrip(tripDB)
+            sendNotifications()
+        }
 
-            // send notifications to newly accepted users
-            for (uid in tripEditViewModel.newAcceptedUsers){
+    }
+
+    private fun sendNotifications(){
+        // send notifications to newly accepted users
+        for (uid in tripEditViewModel.newAcceptedUsers){
+            MessagingService.sendNotification(
+                tripEditViewModel.getProfileByUid(uid).notificationToken,
+                AndroidNotification("Request accepted",
+                    "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                    tripEditViewModel.newTrip.carImageUri.toString())
+            )
+        }
+
+        //send notifications to interested users if trip has finished places
+        if (tripEditViewModel.newTrip.acceptedUsersUids.size >= tripEditViewModel.newTrip.totalSeats ?: 0
+            && tripEditViewModel.newAcceptedUsers.size > 0){ // with the newly accepted users, seats are finished
+            for (uid in tripEditViewModel.newTrip.interestedUsersUids){
                 MessagingService.sendNotification(
                     tripEditViewModel.getProfileByUid(uid).notificationToken,
-                    AndroidNotification("Request accepted",
-                        "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                    AndroidNotification("Seats finished!",
+                        "Seats are finished for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
                         tripEditViewModel.newTrip.carImageUri.toString())
                 )
             }
         }
 
+        // send notifications to accepted users if driver has stopped advertising the trip
+        if (!tripEditViewModel.newTrip.advertised) {
+            for (uid in tripEditViewModel.newTrip.acceptedUsersUids) {
+                if (!tripEditViewModel.newAcceptedUsers.contains(uid)) {
+                    MessagingService.sendNotification(
+                        tripEditViewModel.getProfileByUid(uid).notificationToken,
+                        AndroidNotification(
+                            "Trip cancelled",
+                            "Driver has cancelled the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${
+                                df.format(
+                                    tripEditViewModel.newTrip.startDateTime.time
+                                )
+                            } ",
+                            tripEditViewModel.newTrip.carImageUri.toString()
+                        )
+                    )
+                }
+            }
+        }
     }
 
 
