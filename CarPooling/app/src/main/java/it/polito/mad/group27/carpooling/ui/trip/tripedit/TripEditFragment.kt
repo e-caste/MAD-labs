@@ -110,7 +110,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
-        setImage(tripEditViewModel.newTrip.carImageUri.toString(), true)
+        setImage(tripEditViewModel.newTrip.carImageUri?.toString(), true)
 
 
         // from and to datetime check
