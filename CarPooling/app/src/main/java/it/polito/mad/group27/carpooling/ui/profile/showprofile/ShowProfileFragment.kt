@@ -8,6 +8,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
@@ -79,9 +80,17 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
             else {
                 fullNameView?.text = profile.fullName
             }
-            if (profile.profileImageUri != null)
-                Glide.with(this).load(profile.profileImageUri ).into(profileImageView)
-            else
+            if (profile.profileImageUri != null) {
+                val circularProgressDrawable = CircularProgressDrawable(requireContext())
+                circularProgressDrawable.strokeWidth = 5f
+                circularProgressDrawable.centerRadius = 30f
+                circularProgressDrawable.start()
+
+                Glide.with(this).load(profile.profileImageUri)
+                    .placeholder(circularProgressDrawable)
+                    .into(profileImageView)
+
+            }else
                 profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
             nickNameView.text = profile.nickName
             if(!privateMode) {
