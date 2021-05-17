@@ -139,9 +139,13 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         profileViewModel.profile.email = emailEdit.editText!!.text.toString()
         profileViewModel.profile.location = locationEdit.editText!!.text.toString()
 
-         saveImg("profile",  profileViewModel.profile.uid!!){ uri:String?, changed:Boolean ->
-             if(changed)
+        val mainProfileViewModel =  ViewModelProvider(act).get(ProfileViewModel::class.java)
+        mainProfileViewModel.profile.value = profileViewModel.profile
+        saveImg("profile",  profileViewModel.profile.uid!!){ uri:String?, changed:Boolean ->
+             if(changed) {
                  profileViewModel.profile.profileImageUri = uri
+                 mainProfileViewModel.profile.value = profileViewModel.profile
+             }
             profileViewModel.updateProfile()
         }
 

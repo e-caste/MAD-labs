@@ -93,6 +93,7 @@
     <string name="search">Cerca</string>
     <string name="warning_message_tripfull">Non ci sono più posti disponibili per questo viaggio! Prova a cercarne un altro.</string>
     <string name="alert_title">Sei sicuro?</string>
+    <string name="also_travelled_with_me">Ha viaggiato con me:</string>
     <string name="alert_message">Quest\'azione non può essere annullata!</string>
     <string name="cancel">ANNULLA</string>
     <string name="yes">SI</string>
