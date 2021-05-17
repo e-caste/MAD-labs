@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,10 +39,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class BaseTripList: BaseFragmentWithToolbar(
-    R.layout.fragment_trip_list,
-    R.menu.trip_list_menu,
-    R.string.app_name
+open class BaseTripList(
+    private val layout: Int = R.layout.fragment_trip_list,
+    menu: Int = R.menu.base_trip_list_menu,
+    title: Int = R.string.app_name,
+    ): BaseFragmentWithToolbar(
+    layout,
+    menu,
+    title,
 ){
 
     protected val coll = FirebaseFirestore.getInstance().collection("trips")
@@ -55,7 +60,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
     protected var adapter: TripFirestoreRecyclerAdapter? = null
 
 
-    protected inner class TripViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    protected inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
@@ -118,7 +123,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
-            if (filterOutTrip(trip)) {
+            if (isFilteredOut(trip)) {
                 Log.d(getLogTag(), "filtering out trip: $trip")
                 tripViewHolder._setCardInvisible()
                 return
@@ -136,7 +141,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
             tripViewHolder.carImageView.setOnClickListener {
                 findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
             }
-            setTopRightButtonIconAndOnClickListener(tripViewHolder, trip)
+            customizeCardView(tripViewHolder, trip)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
@@ -150,15 +155,16 @@ open class BaseTripList: BaseFragmentWithToolbar(
         }
 
         override fun getItemCount(): Int {
-            return this.snapshots.filter { !filterOutTrip(it.toTrip()) }.size
+            return this.snapshots.filter { !isFilteredOut(it.toTrip()) }.size
         }
     }
 
-    protected open fun setTopRightButtonIconAndOnClickListener(tripViewHolder: TripViewHolder, trip: Trip) {
+    // set top right button and its onClickListener, then customize the card if needed
+    protected open fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         // to implement in subclasses
     }
 
-    protected open fun filterOutTrip(trip: Trip): Boolean {
+    protected open fun isFilteredOut(trip: Trip): Boolean {
         return false
     }
 
@@ -167,7 +173,7 @@ open class BaseTripList: BaseFragmentWithToolbar(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_trip_list, container, false)
+        return inflater.inflate(layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -203,11 +209,11 @@ open class BaseTripList: BaseFragmentWithToolbar(
                 recyclerView.adapter = adapter
             }
         }
-        setFab(view)
+        customizeTripList(view)
     }
 
-    protected open fun setFab(view: View) {
-        // overridden in TripList
+    protected open fun customizeTripList(view: View) {
+        // set FAB, show Chips...
     }
 
     override fun onStart() {
