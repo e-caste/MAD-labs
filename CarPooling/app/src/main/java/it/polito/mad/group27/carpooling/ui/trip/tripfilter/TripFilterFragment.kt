@@ -22,6 +22,7 @@ import it.polito.mad.group27.carpooling.ui.trip.tripedit.clearHour
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getDatePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getTimePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.updateTime
+import java.math.BigDecimal
 import java.util.*
 
 class TripFilterFragment : BaseFragmentWithToolbar(
@@ -121,6 +122,15 @@ class TripFilterFragment : BaseFragmentWithToolbar(
         fab.setOnClickListener {
             viewModel.tripFilter.from = extractText(fromInput)
             viewModel.tripFilter.to = extractText(toInput)
+
+            //TODO manage corner cases
+//            viewModel.tripFilter.priceMin = if(minPriceText.text== "0 €") null
+//                        else BigDecimal(minPriceText.text.split(" ")[0])
+//            viewModel.tripFilter.priceMax = if(minPriceText.text== "100 €") null
+//                        else BigDecimal(maxPriceText.text.split(" ")[0])
+
+            viewModel.tripFilter.priceMin =  BigDecimal(minPriceText.text.split(" ")[0])
+            viewModel.tripFilter.priceMax =  BigDecimal(maxPriceText.text.split(" ")[0])
 
             viewModel.tripFilter.options = optionsChip.children
                 .map { Option.valueOf((it.tag as String).toUpperCase()) to (it as Chip).isChecked }
