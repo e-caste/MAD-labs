@@ -340,5 +340,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        <Button
+            android:id="@+id/stop_advertising"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_advertising"
+            style="?attr/materialButtonOutlinedStyle"
+            app:strokeColor="#FF0000"
+            android:textColor="#FF0000"
+            android:layout_gravity="center"
+            android:layout_margin="32dp"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

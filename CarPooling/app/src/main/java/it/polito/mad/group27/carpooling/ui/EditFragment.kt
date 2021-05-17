@@ -3,11 +3,8 @@ package it.polito.mad.group27.carpooling.ui
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,23 +16,22 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.File
 
 open class EditFragment(layoutId: Int,
                         optionsMenuId: Int,
                         titleId: Int?): BaseFragmentWithToolbar(layoutId, optionsMenuId, titleId) {
 
-    private var imageUri: Uri? = null
-    private var imageChanged: Boolean = false
-    protected var image: Bitmap? = null
-    protected var imagePresent : Boolean = false
+
     protected lateinit var imageView: ImageView
+
+    private lateinit var editViewModel: EditViewModel
 
 
     private enum class RequestCodes {
@@ -43,6 +39,11 @@ open class EditFragment(layoutId: Int,
         PERMISSION_STORAGE,
         TAKE_PHOTO,
         SELECT_IMAGE_IN_ALBUM
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        editViewModel = ViewModelProvider(this).get(EditViewModel::class.java)
     }
 
     private fun checkCameraPermissionAndTakePhoto() {
@@ -68,7 +69,7 @@ open class EditFragment(layoutId: Int,
         }
     }
 
-    protected fun checkStoragePermissionAndGetPhoto() {
+    private fun checkStoragePermissionAndGetPhoto() {
         val storagePermission =
             ContextCompat.checkSelfPermission(act, Manifest.permission.READ_EXTERNAL_STORAGE)
         if (storagePermission == PackageManager.PERMISSION_GRANTED) {
@@ -130,12 +131,12 @@ open class EditFragment(layoutId: Int,
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
-        imageUri = act.contentResolver.insert(
+        editViewModel.imageUri = act.contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
         )
-        Log.d(getLogTag(), "$imageUri")
+        Log.d(getLogTag(), "$editViewModel.imageUri")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, editViewModel.imageUri)
         if(this is EditProfileFragment) {
             intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
             intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
@@ -172,10 +173,10 @@ open class EditFragment(layoutId: Int,
             RequestCodes.TAKE_PHOTO.ordinal -> {
                 Log.d(
                     getLogTag(),
-                    "returned $resultCode from camera with ${imageUri ?: "no image"}"
+                    "returned $resultCode from camera with ${editViewModel.imageUri ?: "no image"}"
                 )
-                if (resultCode == Activity.RESULT_OK && imageUri != null) {
-                    runCropper(imageUri!!)
+                if (resultCode == Activity.RESULT_OK && editViewModel.imageUri != null) {
+                    runCropper(editViewModel.imageUri!!)
                 }
             }
             RequestCodes.SELECT_IMAGE_IN_ALBUM.ordinal -> {
@@ -190,10 +191,8 @@ open class EditFragment(layoutId: Int,
                 val result = CropImage.getActivityResult(data)
                 if (resultCode == Activity.RESULT_OK) {
                     val resultUri: Uri? = result?.uriContent
-                    image = MediaStore.Images.Media.getBitmap(act.contentResolver, resultUri)
-                    imageView.setImageURI(result?.uriContent)
-                    imageChanged = true
-                    imagePresent = true
+                    editViewModel.image = MediaStore.Images.Media.getBitmap(act.contentResolver, resultUri)
+                    setImage(result?.uriContent.toString())
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Snackbar.make(requireView(), getString(R.string.crop_error),
                         Snackbar.LENGTH_LONG)
@@ -215,7 +214,7 @@ open class EditFragment(layoutId: Int,
         inflater.inflate(R.menu.select_image_source_menu, menu)
 
         val deleteItem = menu.findItem(R.id.delete)
-        deleteItem.isVisible = imagePresent
+        deleteItem.isVisible = editViewModel.imagePresent
 
         Log.d(getLogTag(), "context menu created")
     }
@@ -238,9 +237,9 @@ open class EditFragment(layoutId: Int,
                     imageView.setImageResource(R.drawable.ic_baseline_person_24)
                 else
                     imageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
-                image = null
-                imageChanged = true
-                imagePresent = false
+                editViewModel.image = null
+                editViewModel.imageChanged = true
+                editViewModel.imagePresent = false
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -248,11 +247,11 @@ open class EditFragment(layoutId: Int,
     }
 
     protected fun saveImg(baseDir: String, id:String, callback: (String?, Boolean)->Unit) {
-        if (imageChanged) {
-            if (image != null) {
-                uploadBitmap(image!!,  id, baseDir, callback )
+        if (editViewModel.imageChanged) {
+            if (editViewModel.image != null) {
+                editViewModel.uploadBitmap(editViewModel.image!!,  id, baseDir, callback )
             } else{
-                deleteImage(id, baseDir, callback)
+                editViewModel.deleteImage(id, baseDir, callback)
             }
             File(act.filesDir, getString(R.string.temporary_edit_image_file))
         }else {
@@ -261,38 +260,13 @@ open class EditFragment(layoutId: Int,
         }
     }
 
-    protected inline fun <reified T> writeParcelable(parcelable: T, name: String){
-        val sharedPref = act.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putString(name, Json.encodeToString(parcelable))
-            apply()
+    protected fun setImage(imgURI:String?, firstTime: Boolean  = false){
+        if(imgURI!=null) {
+            Glide.with(this).load(imgURI).into(imageView)
         }
+        editViewModel.imagePresent = imgURI != null
+        if(!firstTime)
+            editViewModel.imageChanged = true
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(getString(R.string.image_changed_flag), imageChanged)
-        Log.d(getLogTag(), "saved to bundle: $imageChanged")
-        if(imageChanged && image!=null)
-            act.openFileOutput(getString(R.string.temporary_edit_image_file), Context.MODE_PRIVATE).use {
-                it.writeBitmap(image!!)
-            }
-    }
-
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        imageChanged = savedInstanceState?.getBoolean(getString(R.string.image_changed_flag)) ?: false
-        Log.d(getLogTag(), "got from bundle: $imageChanged")
-        if (imageChanged) {
-            val imageFile = File(act.filesDir, getString(R.string.temporary_edit_image_file))
-            image = if(imageFile.exists()) {
-                BitmapFactory.decodeFile(imageFile.absolutePath)
-            }else{
-                null
-            }
-
-            imageView.setImageBitmap(image)
-        }
-    }
 }
