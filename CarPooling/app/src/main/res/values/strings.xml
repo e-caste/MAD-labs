@@ -100,6 +100,7 @@
     <string name="warning_message_alreadybooked">You have already booked this trip!</string>
     <string name="success_message_booked">You have successfully booked this trip!</string>
     <string name="warning_message_failedbooking">There was an error booking this trip…<br/>Please try again.</string>
+    <string name="stop_advertising">STOP ADVERTISING</string>
     <string name="search">Search</string>
     <string name="warning_message_tripfull">This trip has already reached full passenger capacity. Please look for another one.</string>
     <string name="also_travelled_with_me">Also travelled with me:</string>

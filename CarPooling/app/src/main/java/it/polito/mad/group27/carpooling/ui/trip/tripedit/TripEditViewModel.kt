@@ -16,7 +16,6 @@ import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
 class TripEditViewModel(application: Application) : AndroidViewModel(application)  {
 
-    lateinit var trip: Trip
     lateinit var newTrip : Trip
 
     val newAcceptedUsers = mutableListOf<String>()
@@ -33,16 +32,18 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
     fun downloadUsers(callback : ( Map<String, Profile> )-> Unit){
         val mapTmp : MutableMap<String, Profile> = mutableMapOf()
         val allUids : List<String> = newTrip.acceptedUsersUids + newTrip.interestedUsersUids
-
-        users.whereIn("uid", allUids).get().addOnSuccessListener {
-            value ->
-                for (doc in value!!){
-                    val profile = doc.toObject(Profile::class.java)
-                    mapTmp[profile.uid!!] = profile
+        if (allUids.isNotEmpty())
+            users.whereIn("uid", allUids).get().addOnSuccessListener {
+                value ->
+                if (value != null){
+                    for (doc in value){
+                        val profile = doc.toObject(Profile::class.java)
+                        mapTmp[profile.uid!!] = profile
+                    }
+                    userProfiles = mapTmp.toMap()
+                    callback(userProfiles)
                 }
-                userProfiles = mapTmp.toMap()
-                callback(userProfiles)
-        }
+            }
     }
 
     fun getProfileByUid(uid:String): Profile{

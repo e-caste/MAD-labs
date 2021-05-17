@@ -89,6 +89,7 @@
         <item quantity="one">Hai già accettato %d passeggero!</item>
         <item quantity="other">Hai già accettato %d passeggeri!</item>
     </plurals>
+    <string name="stop_advertising">ANNULLA VIAGGIO</string>
     <string name="search">Cerca</string>
     <string name="warning_message_tripfull">Non ci sono più posti disponibili per questo viaggio! Prova a cercarne un altro.</string>
     <string name="also_travelled_with_me">Ha viaggiato con me:</string>

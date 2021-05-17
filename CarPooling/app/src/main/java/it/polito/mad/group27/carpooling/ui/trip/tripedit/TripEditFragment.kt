@@ -81,24 +81,20 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
 
         // get trip from bundle
-        if(arguments?.getString("trip")==null) {
-            tripEditViewModel.trip =  Trip()
+        if(arguments?.getParcelable<Trip>("trip")==null) {
+            tripEditViewModel.newTrip =  Trip()
         }else {
             try{
-                tripEditViewModel.trip = Json.decodeFromString<Trip>(requireArguments().getString("trip")!!) ?: Trip()
+                tripEditViewModel.newTrip = arguments?.getParcelable("trip") ?: Trip()
 
             }catch (e:Throwable){
-                tripEditViewModel.trip= Trip()
+                tripEditViewModel.newTrip = Trip()
             }
         }
-        if(tripEditViewModel.trip.id==null)
+        if(tripEditViewModel.newTrip.id==null)
             updateTitle(getString(R.string.add_trip))
-        tripEditViewModel.newTrip = tripEditViewModel.trip.copy()
-        Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.trip}")
 
-        tripEditViewModel.newTrip.acceptedUsersUids.add("LnfgLCgnr8WrA3L2qm7Ae50FXt43")
-
-        tripEditViewModel.newTrip.interestedUsersUids.add("pn9OUkY2S9gekrCRJZR2NJ6W9wQ2")
+        Log.d(getLogTag(), "got from bundle trip: ${tripEditViewModel.newTrip}")
 
         // add action to fab
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)
@@ -509,7 +505,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     // detect where to go if added or modified
                     findNavController().navigate(
                         R.id.action_tripEditFragment_to_tripDetailsFragment,
-                        bundleOf("trip" to tripEditViewModel.newTrip)
+                        bundleOf("tripId" to tripEditViewModel.newTrip.id)
                     )
                 }else{
                     Snackbar.make(requireView(),getString(R.string.fix_all_errors), Snackbar.LENGTH_LONG).show()
