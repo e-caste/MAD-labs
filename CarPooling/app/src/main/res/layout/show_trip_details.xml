@@ -367,7 +367,13 @@
 
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/traveller_details_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -384,9 +390,11 @@
             android:background="@android:color/darker_gray"/>
 
         <LinearLayout
+            android:id="@+id/interested_users_expand_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
@@ -410,16 +418,18 @@
         </LinearLayout>
 
         <include
-            android:id="@+id/accepted_rv"
+            android:id="@+id/interested_list"
             layout="@layout/passengers_list_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
         <LinearLayout
+            android:id="@+id/accepted_users_expand_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
@@ -443,11 +453,13 @@
         </LinearLayout>
 
         <include
-            android:id="@+id/accepted_rv"
+            android:id="@+id/accepted_list"
             layout="@layout/passengers_list_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
