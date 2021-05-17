@@ -89,4 +89,5 @@
         <item quantity="one">Hai già accettato %d passeggero!</item>
         <item quantity="other">Hai già accettato %d passeggeri!</item>
     </plurals>
+    <string name="stop_advertising">ANNULLA VIAGGIO</string>
 </resources>
