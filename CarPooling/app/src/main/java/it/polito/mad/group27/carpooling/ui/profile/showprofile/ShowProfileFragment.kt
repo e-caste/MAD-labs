@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -104,7 +105,12 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 .setQuery(queryBase, TripDB::class.java)
                 .build()
 
-            adapter = TripsRecyclerAdapter(options)
+            adapter = TripsRecyclerAdapter(options){
+                if(adapter!!.itemCount == 0)
+                    view.findViewById<ViewGroup>(R.id.travelled_with).visibility=View.GONE
+                else
+                    view.findViewById<ViewGroup>(R.id.travelled_with).visibility=View.VISIBLE
+            }
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -159,7 +165,7 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     }
 
     private inner class TripsRecyclerAdapter(
-        options: FirestoreRecyclerOptions<TripDB>
+        options: FirestoreRecyclerOptions<TripDB>, val updateCallback: ()->Unit
     ) : FirestoreRecyclerAdapter<TripDB, TripViewHolder>(options) {
 
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
@@ -172,6 +178,11 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_trip, parent, false)
             return TripViewHolder(view)
+        }
+
+        override fun onDataChanged() {
+            super.onDataChanged()
+            updateCallback()
         }
 
         override fun getItemCount(): Int {
