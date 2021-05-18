@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class BaseTripList(
+abstract class BaseTripList(
     private val layout: Int = R.layout.fragment_trip_list,
     menu: Int = R.menu.base_trip_list_menu,
     title: Int = R.string.app_name,
@@ -60,7 +60,7 @@ open class BaseTripList(
     protected var adapter: TripFirestoreRecyclerAdapter? = null
 
 
-    protected inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
         private val priceFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
@@ -157,9 +157,7 @@ open class BaseTripList(
     }
 
     // set top right button and its onClickListener, then customize the card if needed
-    protected open fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
-        // to implement in subclasses
-    }
+    abstract fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip)
 
     protected open fun isFilteredOut(trip: Trip): Boolean {
         return false
@@ -209,9 +207,8 @@ open class BaseTripList(
         customizeTripList(view)
     }
 
-    protected open fun customizeTripList(view: View) {
-        // set FAB, show Chips...
-    }
+    // set FAB, show Chips...
+    abstract fun customizeTripList(view: View)
 
     override fun onStart() {
         super.onStart()
