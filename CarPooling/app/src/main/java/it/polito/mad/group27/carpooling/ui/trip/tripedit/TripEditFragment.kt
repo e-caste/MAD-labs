@@ -504,6 +504,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid = false
         }
 
+        if(tripEditViewModel.newTrip.otherInformation?.length ?: 0 > 100)
+            valid = false
+
         if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
             to_date.error = getString(R.string.date_error)
             to_hour.error = null
