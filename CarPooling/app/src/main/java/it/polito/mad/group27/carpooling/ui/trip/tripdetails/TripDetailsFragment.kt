@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +21,6 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.tripedit.PassengerRecyclerViewAdapter
 import java.text.DateFormat
 import java.util.*
 
@@ -95,8 +95,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
         }
 
-        privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
-        tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
+        checkPrivateMode()
+        checkAdvertised()
 
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
@@ -137,8 +137,24 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
     }
 
+    private fun checkAdvertised(): Boolean {
+        tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
+        Log.d(getLogTag(),"advertised: $tripIsAdvertised")
+        return tripIsAdvertised
+    }
+
+    private fun checkPrivateMode(): Boolean {
+        Log.d(getLogTag(),"ownerUid: ${tripDetailsViewModel.trip.value!!.ownerUid}")
+        Log.d(getLogTag(),"currentUid: ${FirebaseAuth.getInstance().currentUser!!.uid}")
+        privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
+        Log.d(getLogTag(),"privateMode: $privateMode")
+        return privateMode
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if(privateMode && tripIsAdvertised){
+            Log.d(getLogTag(),"menu created")
+            menu.clear()
             inflater.inflate(optionsMenuId, menu)
         }
     }
@@ -149,7 +165,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 Log.d(getLogTag(), "Passing bundle of ${tripDetailsViewModel.trip.value}")
                 findNavController().navigate(
                     R.id.action_tripDetailsFragment_to_tripEditFragment,
-                    //TODO: test
                     bundleOf("trip" to tripDetailsViewModel.trip.value)
                 )
             }
@@ -170,6 +185,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         else {
             "${getString(R.string.trip_to)} ${trip.to}".also { fragmentTitle.text = it }
         }
+
+        if(checkPrivateMode() || !checkAdvertised())
+            requireActivity().invalidateOptionsMenu()
 
         // Display basic info
         if (trip.carImageUri == null) {
