@@ -27,7 +27,8 @@ import java.util.*
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
 
-    private var privateMode = true
+    private var privateMode = false
+    private var tripIsAdvertised = true
 
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
@@ -94,7 +95,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
         }
 
-        privateMode = tripDetailsViewModel.trip.value!!.ownerUid != FirebaseAuth.getInstance().currentUser!!.uid
+        privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
+        tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
 
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
@@ -136,7 +138,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if(privateMode){
+        if(privateMode && tripIsAdvertised){
             val inflater: MenuInflater = inflater
             inflater.inflate(optionsMenuId, menu)
         }
