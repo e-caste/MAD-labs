@@ -25,7 +25,7 @@ class TripList: BaseTripList() {
             findNavController().navigate(R.id.action_tripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
         }
         // do not allow users to edit trips in the past
-        if (trip.endDateTime <= Calendar.getInstance() && trip.advertised) {
+        if ((trip.endDateTime <= Calendar.getInstance() && trip.advertised) || !trip.advertised) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.setOnClickListener {}
