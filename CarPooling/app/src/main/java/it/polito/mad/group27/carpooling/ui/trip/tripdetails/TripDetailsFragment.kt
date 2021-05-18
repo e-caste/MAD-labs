@@ -144,8 +144,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     private fun checkPrivateMode(): Boolean {
-        Log.d(getLogTag(),"ownerUid: ${tripDetailsViewModel.trip.value!!.ownerUid}")
-        Log.d(getLogTag(),"currentUid: ${FirebaseAuth.getInstance().currentUser!!.uid}")
         privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
         Log.d(getLogTag(),"privateMode: $privateMode")
         return privateMode
@@ -153,7 +151,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if(privateMode && tripIsAdvertised){
-            Log.d(getLogTag(),"menu created")
             menu.clear()
             inflater.inflate(optionsMenuId, menu)
         }
