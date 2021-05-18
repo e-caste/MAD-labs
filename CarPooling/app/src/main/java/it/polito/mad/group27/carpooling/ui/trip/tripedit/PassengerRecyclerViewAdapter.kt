@@ -46,7 +46,7 @@ class PassengerRecyclerViewAdapter(
         ) {
 
             if (passenger.profileImageUri != null)
-                Glide.with(context).load(passenger.profileImageUri ).into(image)
+                Glide.with(context).load(passenger.profileImageUri ).circleCrop().into(image)
 
             nicknameView.text = passenger.nickName
             if (other_rv != null) {
