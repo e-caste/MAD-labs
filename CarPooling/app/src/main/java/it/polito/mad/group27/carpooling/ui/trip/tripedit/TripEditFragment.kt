@@ -490,7 +490,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if(!onlyRoute && (tripEditViewModel.newTrip.totalSeats == null || tripEditViewModel.newTrip.totalSeats!! < 0 )){
             passengers.error = getString(R.string.insert_passengers)
             valid= false
-        }else if(passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size) {
+        }else if(passengers.editText?.text?.toString()?.toIntOrNull() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size) {
             passengers.error = resources.getQuantityString(
                 R.plurals.already_accepted_n_travelers,
                 tripEditViewModel.newTrip.acceptedUsersUids.size,
