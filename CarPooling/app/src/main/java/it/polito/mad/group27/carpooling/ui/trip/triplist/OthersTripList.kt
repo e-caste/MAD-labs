@@ -151,7 +151,7 @@ class OthersTripList(
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            addChip(sdf.format(tripFilter.dateTime), "dateTime", sdf.format(tripFilter.dateTime))
+            addChip(sdf.format(tripFilter.dateTime?.time), "dateTime", sdf.format(tripFilter.dateTime?.time))
         }
 
         for (opt in Option.values()) {
