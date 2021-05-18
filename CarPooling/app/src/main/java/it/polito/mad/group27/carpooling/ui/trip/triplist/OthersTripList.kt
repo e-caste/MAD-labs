@@ -41,6 +41,9 @@ class OthersTripList(
     private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
+        tripViewHolder.carImageView.setOnClickListener {
+            findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+        }
         // the trip is full
         if (trip.acceptedUsersUids.size == trip.totalSeats) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
