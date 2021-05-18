@@ -306,4 +306,3 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 }
 
 //TODO: FAB only for other users
-//TODO: tripDetails without users and edit button fot unadvertised trips
