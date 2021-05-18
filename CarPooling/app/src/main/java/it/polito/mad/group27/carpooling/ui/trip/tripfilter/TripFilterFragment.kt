@@ -1,6 +1,8 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripfilter
 
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -16,13 +18,17 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.TripFilter
 import it.polito.mad.group27.carpooling.Watcher
+import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.clearHour
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getDatePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getTimePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.updateTime
 import java.math.BigDecimal
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TripFilterFragment : BaseFragmentWithToolbar(
@@ -48,18 +54,28 @@ class TripFilterFragment : BaseFragmentWithToolbar(
 
     private var timePicker: MaterialTimePicker? = null
 
+    private val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(TripFilterViewModel::class.java)
-
+        if(arguments?.getParcelable<TripFilter>("filter")==null)
+            Log.d(getLogTag(), "No filter, applying default")
         viewModel.tripFilter = arguments?.getParcelable("filter") ?: TripFilter()
 
         toInput = view.findViewById(R.id.to_place)
+        toInput.editText?.setText(viewModel.tripFilter.to)
         fromInput = view.findViewById(R.id.from_place)
+        fromInput.editText?.setText(viewModel.tripFilter.from)
+
 
         startDayInput = view.findViewById(R.id.start_date)
         val datePicker =
-            getDatePicker(viewModel.tripFilter.dateTime ?: Calendar.getInstance(), startDayInput)
+            getDatePicker(viewModel.tripFilter.dateTime, startDayInput) {
+                viewModel.tripFilter.dateTime = Calendar.getInstance()
+                viewModel.tripFilter.dateTime!!.clearHour()
+                viewModel.tripFilter.dateTime!!
+            }
         startDayInput.editText?.setOnClickListener {
             if (!datePicker.isVisible)
                 datePicker.show(requireActivity().supportFragmentManager, "datePickerTag")
@@ -86,6 +102,10 @@ class TripFilterFragment : BaseFragmentWithToolbar(
             }
         }
 
+        if(viewModel.tripFilter.dateTime!=null) {
+            startDayInput.editText?.setText(df.format(viewModel.tripFilter.dateTime!!.time))
+            startHourInput.editText?.setText(Hour(viewModel.tripFilter.dateTime!!).toString())
+        }
         startHourInput.setEndIconOnClickListener {
             viewModel.tripFilter.dateTime?.clearHour()
             startHourInput.editText?.text =null
@@ -106,6 +126,11 @@ class TripFilterFragment : BaseFragmentWithToolbar(
         maxPriceText.text = formatCurrency(viewModel.tripFilter.priceMax.toFloat())
 
         optionsChip = view.findViewById(R.id.options_chip)
+        optionsChip.children.forEach {
+            val tag = Option.valueOf((it.tag as String).toUpperCase())
+            if(viewModel.tripFilter.options[tag] == true)
+                (it as Chip).isChecked = true
+        }
 
         priceRange.values = listOf(
             viewModel.tripFilter.priceMin.toFloat(),
