@@ -139,7 +139,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if(privateMode && tripIsAdvertised){
-            val inflater: MenuInflater = inflater
             inflater.inflate(optionsMenuId, menu)
         }
     }
