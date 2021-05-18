@@ -13,37 +13,47 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import it.polito.mad.group27.carpooling.ui.trip.tripedit.PassengerRecyclerViewAdapter
 import java.text.DateFormat
 import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
-    private lateinit var fragmentTitle : TextView
+    private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
-    private lateinit var dropdownListButton : LinearLayout
-    private lateinit var expandButton : ImageView
+    private lateinit var dropdownListButton: LinearLayout
+    private lateinit var expandButton: ImageView
+    private lateinit var interestedExpandButton: ImageView
+    private lateinit var acceptedExpandButton: ImageView
 
-    private lateinit var seatsView : TextView
-    private lateinit var dateView : TextView
+    private lateinit var seatsView: TextView
+    private lateinit var dateView: TextView
     private lateinit var estimatedTimeView: TextView
-    private lateinit var priceView : TextView
-    private lateinit var departureDateTime : TextView
-    private lateinit var departureLocation : TextView
-    private lateinit var destinationDateTime : TextView
-    private lateinit var destinationLocation : TextView
-    private lateinit var luggageView : LinearLayout
-    private lateinit var animalsView : LinearLayout
-    private lateinit var smokersView : LinearLayout
+    private lateinit var priceView: TextView
+    private lateinit var departureDateTime: TextView
+    private lateinit var departureLocation: TextView
+    private lateinit var destinationDateTime: TextView
+    private lateinit var destinationLocation: TextView
+    private lateinit var luggageView: LinearLayout
+    private lateinit var animalsView: LinearLayout
+    private lateinit var smokersView: LinearLayout
     private lateinit var additionalInfo: LinearLayout
-    private lateinit var optionsView : LinearLayout
-    private lateinit var infoText : TextView
-    private lateinit var carImageView : ImageView
-    private lateinit var stopsRecyclerView : RecyclerView
+    private lateinit var optionsView: LinearLayout
+    private lateinit var travellersDetails: LinearLayout
+    private lateinit var interestedUsers: LinearLayout
+    private lateinit var acceptedUsers: LinearLayout
+    private lateinit var infoText: TextView
+    private lateinit var carImageView: ImageView
+    private lateinit var stopsRecyclerView: RecyclerView
+    private lateinit var interestedUsersRecyclerView: RecyclerView
+    private lateinit var acceptedUsersRecyclerView: RecyclerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,9 +63,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.trip_details_fragment, container, false)
         if (view is RecyclerView) {
@@ -69,12 +79,13 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val stopsVisibility = savedInstanceState?.getInt("${getString(R.string.app_name)}.stateView")
+        val stopsVisibility =
+            savedInstanceState?.getInt("${getString(R.string.app_name)}.stateView")
         val tripId = arguments?.getString("tripId") ?: ""
 
         Log.d(getLogTag(), "got tripId from bundle: $tripId")
 
-        if(tripId.isEmpty()){
+        if (tripId.isEmpty()) {
             throw Exception("Trip id was null")
         } else {
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
@@ -99,6 +110,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         optionsView = view.findViewById(R.id.trip_options_details)
         infoText = view.findViewById(R.id.extra_info_text_details)
         stopsRecyclerView = view.findViewById(R.id.tripStopList)
+        travellersDetails = view.findViewById(R.id.traveller_details_view)
+        interestedUsers = view.findViewById(R.id.interested_users_expand_view)
+        acceptedUsers = view.findViewById(R.id.accepted_users_expand_view)
+        interestedUsersRecyclerView = view.findViewById(R.id.interested_list)
+        acceptedUsersRecyclerView = view.findViewById(R.id.accepted_list)
 
         if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT)
             fragmentTitle = view.findViewById(R.id.trip_title_details)
@@ -111,17 +127,24 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if(tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser.uid){
+            val inflater: MenuInflater = inflater
+            inflater.inflate(optionsMenuId, menu)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.edit_menu_button -> {
-                //TODO: check timestamp is not in the past
-                Log.d(getLogTag(),"Passing bundle of ${tripDetailsViewModel.trip.value}")
+                Log.d(getLogTag(), "Passing bundle of ${tripDetailsViewModel.trip.value}")
                 findNavController().navigate(
-                        R.id.action_tripDetailsFragment_to_tripEditFragment,
-                          //TODO: test
-                        bundleOf("trip" to tripDetailsViewModel.trip.value))
+                    R.id.action_tripDetailsFragment_to_tripEditFragment,
+                    //TODO: test
+                    bundleOf("trip" to tripDetailsViewModel.trip.value)
+                )
             }
-            else-> return super.onOptionsItemSelected(item)
+            else -> return super.onOptionsItemSelected(item)
         }
         return true
     }
@@ -131,71 +154,112 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         outState.putInt("${getString(R.string.app_name)}.stateView", stopsRecyclerView.visibility)
     }
 
-    private fun updateFields(trip: Trip, visibility : Int) {
+    private fun updateFields(trip: Trip, visibility: Int) {
         // Update title only in portrait orientation
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             updateTitle("${getString(R.string.trip_to)} ${trip.to}")
-        else{
+        else {
             "${getString(R.string.trip_to)} ${trip.to}".also { fragmentTitle.text = it }
         }
 
-            // Display basic info
-            if (trip.carImageUri == null) {
-                carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
-                carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
-            } else {
-                carImageView.setImageURI(trip.carImageUri)
-            }
+        // Display basic info
+        if (trip.carImageUri == null) {
+            carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
+            carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
+        } else {
+            Glide.with(this).load(trip.carImageUri).into(carImageView)
+        }
 
-            (trip.acceptedUsersUids.size.toString() + "/" + trip.totalSeats).also { seatsView.text = it }
-            dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(tripDetailsViewModel.trip.value!!.startDateTime.time)
-            setEstimatedTime(trip)
-            priceView.text = trip.price.toString()
-            departureDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.startDateTime)
-            departureLocation.text = trip.from
-            destinationDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.endDateTime)
-            destinationLocation.text = trip.to
+        (trip.acceptedUsersUids.size.toString() + "/" + trip.totalSeats).also {
+            seatsView.text = it
+        }
+        dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+            .format(tripDetailsViewModel.trip.value!!.startDateTime.time)
+        setEstimatedTime(trip)
+        priceView.text = trip.price.toString()
+        departureDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.startDateTime)
+        departureLocation.text = trip.from
+        destinationDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.endDateTime)
+        destinationLocation.text = trip.to
 
-            // Additional stops visualization
-            if (trip.stops.size > 0) {
-                stopsRecyclerView.visibility = visibility
-                stopsRecyclerView.layoutManager = LinearLayoutManager(context)
-                stopsRecyclerView.adapter =
-                    TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
+        // Additional stops visualization
+        if (trip.stops.size > 0) {
+            stopsRecyclerView.visibility = visibility
+            stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+            stopsRecyclerView.adapter =
+                TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
-                dropdownListButton.setOnClickListener {
-                    Log.d(getLogTag(), "Touched route list")
-                    stopsRecyclerView.visibility =
-                        when (stopsRecyclerView.visibility) {
-                            View.GONE -> {
-                                expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                                View.VISIBLE
-                            }
-                            else -> {
-                                expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                                View.GONE
-                            }
+            dropdownListButton.setOnClickListener {
+                stopsRecyclerView.visibility =
+                    when (stopsRecyclerView.visibility) {
+                        View.GONE -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                            View.VISIBLE
                         }
-                }
-            } else expandButton.visibility = View.INVISIBLE
-
-            // Display additional info
-            if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
-                luggageView.visibility = if (trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
-                animalsView.visibility = if (trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
-                smokersView.visibility = if (trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
-
-                if (trip.otherInformation != null && trip.otherInformation!!.trim() != "") {
-                    infoText.text = trip.otherInformation
-                    additionalInfo.visibility = View.VISIBLE
-                } else {
-                    additionalInfo.visibility = View.GONE
-                }
-            } else {
-                optionsView.visibility = View.GONE
+                        else -> {
+                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                            View.GONE
+                        }
+                    }
             }
-    }
+        } else expandButton.visibility = View.INVISIBLE
 
+        // Display additional info
+        if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
+            luggageView.visibility =
+                if (trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
+            animalsView.visibility =
+                if (trip.options.contains(Option.ANIMALS)) View.VISIBLE else View.GONE
+            smokersView.visibility =
+                if (trip.options.contains(Option.SMOKE)) View.VISIBLE else View.GONE
+
+            if (trip.otherInformation != null && trip.otherInformation!!.trim() != "") {
+                infoText.text = trip.otherInformation
+                additionalInfo.visibility = View.VISIBLE
+            } else {
+                additionalInfo.visibility = View.GONE
+            }
+        } else {
+            optionsView.visibility = View.GONE
+        }
+
+        // Users visualization (only for owner of the trip)
+        if (trip.acceptedUsersUids.size > 0 || trip.interestedUsersUids.size > 0) {
+            travellersDetails.visibility = View.VISIBLE
+
+            if (trip.interestedUsersUids.size > 0) {
+                interestedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                interestedUsersRecyclerView.adapter =
+                    TripUserDetailsViewAdapter(trip.interestedUsersUids)
+
+                interestedUsersRecyclerView.visibility = View.VISIBLE
+            }
+
+            if (trip.acceptedUsersUids.size > 0) {
+                acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                acceptedUsersRecyclerView.adapter =
+                    TripUserDetailsViewAdapter(trip.acceptedUsersUids)
+
+                acceptedUsersRecyclerView.visibility = View.VISIBLE
+            }
+        }
+
+//            dropdownListButton.setOnClickListener {
+//                stopsRecyclerView.visibility =
+//                    when (stopsRecyclerView.visibility) {
+//                        View.GONE -> {
+//                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+//                            View.VISIBLE
+//                        }
+//                        else -> {
+//                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+//                            View.GONE
+//                        }
+//                    }
+//            }
+//        } else expandButton.visibility = View.INVISIBLE
+
+    }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
         val deltaMinutes = (end.timeInMillis - start.timeInMillis) / (1000*60)
@@ -218,7 +282,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
 }
-//TODO: pass Trip as string to Edit, get id from TripList
+
 //TODO: show users only for owner
 //TODO: FAB only for other users
 //TODO: tripDetails without users and edit button fot unadvertised trips
