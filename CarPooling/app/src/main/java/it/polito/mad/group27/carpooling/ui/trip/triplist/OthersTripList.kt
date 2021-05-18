@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
@@ -66,33 +67,29 @@ class OthersTripList(
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
                         // try sending notification to trip owner
                         var tripOwner: Profile? = null
-                        var me: Profile? = null
                         usersColl
                             .document(trip.ownerUid)
                             .get()
                             .addOnSuccessListener {
+                                Log.d(getLogTag(), "reservation notification: tripOwner is $tripOwner")
                                 if (it != null) {
                                     tripOwner = it.toObject(Profile::class.java)
+                                    val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
+                                    if (tripOwner != null && me != null) {
+                                        MessagingService.sendNotification(
+                                            tripOwner!!.notificationToken,
+                                            AndroidNotification(
+                                                "New trip reservation!",
+                                                "User ${me.fullName} has just booked your trip from " +
+                                                        "${trip.from} to ${trip.to} on ${trip.startDateTime}",
+                                                trip.carImageUri.toString()
+                                            )
+                                        )
+                                        Log.d(getLogTag(), "reservation notification: sent " +
+                                                "from ${me.fullName} (${me.uid}) " +
+                                                "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
                                 }
                             }
-                        usersColl
-                            .document(currentUserUid)
-                            .get()
-                            .addOnSuccessListener {
-                                if (it != null) {
-                                    me = it.toObject(Profile::class.java)
-                                }
-                            }
-                        if (tripOwner != null && me != null) {
-                            MessagingService.sendNotification(
-                                tripOwner!!.notificationToken,
-                                AndroidNotification(
-                                    "New trip reservation!",
-                                    "User ${me!!.fullName} has just booked your trip from " +
-                                            "${trip.from} to ${trip.to} on ${trip.startDateTime}",
-                                    trip.carImageUri.toString()
-                                )
-                            )
                         }
                     }
                     .addOnFailureListener {
