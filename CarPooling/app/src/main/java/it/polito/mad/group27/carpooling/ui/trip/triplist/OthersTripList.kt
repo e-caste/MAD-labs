@@ -41,6 +41,9 @@ class OthersTripList(
     private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
+        tripViewHolder.carImageView.setOnClickListener {
+            findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+        }
         // the trip is full
         if (trip.acceptedUsersUids.size == trip.totalSeats) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
@@ -148,7 +151,7 @@ class OthersTripList(
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            addChip(sdf.format(tripFilter.dateTime), "dateTime", sdf.format(tripFilter.dateTime))
+            addChip(sdf.format(tripFilter.dateTime?.time), "dateTime", sdf.format(tripFilter.dateTime?.time))
         }
 
         for (opt in Option.values()) {
@@ -168,8 +171,10 @@ class OthersTripList(
             if (tripFilter.to != null && checkedChips["to"]!!) {
                 trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
             }
-            if (trip.price != null && (checkedChips["priceMin"]!! || checkedChips["priceMax"]!!)) {
+            if (trip.price != null && checkedChips["priceMin"]!!) {
                 trip.price!! >= tripFilter.priceMin || return false
+            }
+            if (trip.price != null && checkedChips["priceMax"]!!) {
                 trip.price!! <= tripFilter.priceMax || return false
             }
             if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {

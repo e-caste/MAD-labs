@@ -138,9 +138,6 @@ open class BaseTripList(
             tripViewHolder.setTo(trip.to)
             tripViewHolder.setStartDateTime(trip.startDateTime)
 
-            tripViewHolder.carImageView.setOnClickListener {
-                findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
-            }
             customizeCardView(tripViewHolder, trip)
         }
 
