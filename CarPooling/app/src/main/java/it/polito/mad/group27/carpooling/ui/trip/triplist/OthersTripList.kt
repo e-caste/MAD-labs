@@ -13,9 +13,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.TripFilter
-import it.polito.mad.group27.carpooling.getLogTag
+import com.google.firebase.firestore.FirebaseFirestore
+import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
@@ -33,6 +32,7 @@ class OthersTripList(
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
+    private val usersColl = FirebaseFirestore.getInstance().collection("users")
     private lateinit var tripFilter: TripFilter
     private val defaultTripFilter = TripFilter()
     private lateinit var checkedChips: MutableMap<String, Boolean>
@@ -64,6 +64,36 @@ class OthersTripList(
                     .addOnSuccessListener {
                         icon = R.drawable.ic_baseline_done_24
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                        // try sending notification to trip owner
+                        var tripOwner: Profile? = null
+                        var me: Profile? = null
+                        usersColl
+                            .document(trip.ownerUid)
+                            .get()
+                            .addOnSuccessListener {
+                                if (it != null) {
+                                    tripOwner = it.toObject(Profile::class.java)
+                                }
+                            }
+                        usersColl
+                            .document(currentUserUid)
+                            .get()
+                            .addOnSuccessListener {
+                                if (it != null) {
+                                    me = it.toObject(Profile::class.java)
+                                }
+                            }
+                        if (tripOwner != null && me != null) {
+                            MessagingService.sendNotification(
+                                tripOwner!!.notificationToken,
+                                AndroidNotification(
+                                    "New trip reservation!",
+                                    "User ${me!!.fullName} has just booked your trip from " +
+                                            "${trip.from} to ${trip.to} on ${trip.startDateTime}",
+                                    trip.carImageUri.toString()
+                                )
+                            )
+                        }
                     }
                     .addOnFailureListener {
                         icon = R.drawable.ic_baseline_add_24
