@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/Theme.CarPooling.AppBarOverlay">
-
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
-            app:popupTheme="@style/Theme.CarPooling.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/trip_filter_chip_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingLeft="8dp"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp"
-        android:background="@drawable/bottom_border"
-        app:selectionRequired="false"
-        app:singleSelection="false"
-        android:visibility="gone">
-
-    </com.google.android.material.chip.ChipGroup>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="it.polito.mad.group27.carpooling.ui.triplist.TripList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".ui.trip.triplist.TripList"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        tools:listitem="@layout/fragment_trip" />
+        android:orientation="vertical">
 
-    <include
-        layout="@layout/warning_message_notrips"
-        android:visibility="gone" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/Theme.CarPooling.AppBarOverlay">
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                app:contentScrim="?attr/colorPrimary"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/Theme.CarPooling.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/trip_filter_chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:background="@drawable/bottom_border"
+            app:selectionRequired="false"
+            app:singleSelection="false"
+            android:visibility="gone">
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:name="it.polito.mad.group27.carpooling.ui.triplist.TripList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".ui.trip.triplist.TripList"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp"
+            tools:listitem="@layout/fragment_trip" />
+
+        <include
+            layout="@layout/warning_message_notrips"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -66,4 +71,4 @@
         tools:layout_editor_absoluteX="314dp"
         tools:layout_editor_absoluteY="659dp" />
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
