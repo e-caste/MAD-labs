@@ -171,8 +171,10 @@ class OthersTripList(
             if (tripFilter.to != null && checkedChips["to"]!!) {
                 trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
             }
-            if (trip.price != null && (checkedChips["priceMin"]!! || checkedChips["priceMax"]!!)) {
+            if (trip.price != null && checkedChips["priceMin"]!!) {
                 trip.price!! >= tripFilter.priceMin || return false
+            }
+            if (trip.price != null && checkedChips["priceMax"]!!) {
                 trip.price!! <= tripFilter.priceMax || return false
             }
             if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {
