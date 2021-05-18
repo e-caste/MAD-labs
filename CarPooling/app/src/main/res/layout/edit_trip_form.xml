@@ -245,14 +245,17 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5">
+                android:layout_weight="5"
+                app:counterEnabled="true"
+                app:counterMaxLength="100">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/additionalInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/additional_information"
-                    android:inputType="textMultiLine" />
+                    android:inputType="textMultiLine"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -303,6 +306,7 @@
             </LinearLayout>
 
             <include
+                android:focusable="true"
                 android:id="@+id/interested_rv"
                 layout="@layout/passengers_list"
                 android:layout_width="match_parent"
@@ -335,20 +339,23 @@
             </LinearLayout>
 
             <include
+                android:focusable="true"
                 android:id="@+id/accepted_rv"
                 layout="@layout/passengers_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:focusable="true"
+                android:id="@+id/stop_advertising"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stop_advertising"
+                style="?attr/materialButtonOutlinedStyle"
+                app:strokeColor="#FF0000"
+                android:textColor="#FF0000"
+                android:layout_gravity="center"
+                android:layout_margin="32dp"/>
         </LinearLayout>
-        <Button
-            android:id="@+id/stop_advertising"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stop_advertising"
-            style="?attr/materialButtonOutlinedStyle"
-            app:strokeColor="#FF0000"
-            android:textColor="#FF0000"
-            android:layout_gravity="center"
-            android:layout_margin="32dp"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

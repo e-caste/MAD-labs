@@ -117,15 +117,21 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         // from and to datetime check
         val dateTimeWatcher = Watcher(
             {
+                Log.d(getLogTag(), YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time).toString()+" "+YYYYMMDD.format(Calendar.getInstance().time).toString())
                 YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
                         || (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) == YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
                         && from_hour.editText?.text.toString() > to_hour.editText?.text.toString())
+                        || tripEditViewModel.newTrip.startDateTime <= Calendar.getInstance()
             },
             {
+                if( tripEditViewModel.newTrip.startDateTime <= Calendar.getInstance()  )
+                    from_date.error = getString(R.string.start_date_not_in_past)
+                else from_date.error = null
                 if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
                     to_date.error = getString(R.string.date_error)
                     to_hour.error = null
-                } else {
+                } else if(YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) == YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)
+                    && from_hour.editText?.text.toString() > to_hour.editText?.text.toString()){
                     to_hour.error = getString(R.string.edit_to_hour_error)
                     to_date.error = null
                 }
@@ -134,6 +140,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             {
                 to_date.error = null
                 to_hour.error = null
+                from_date.error = null
                 setEstimatedTime()
             }
         )
@@ -187,7 +194,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
-        // TODO an additional check should be done in order not to create a trip in a today's past hour
 
         to_place.hint = getString(R.string.to)
         to_place.editText?.setText(tripEditViewModel.newTrip.to)
@@ -493,6 +499,14 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid=false
         }
 
+        if( tripEditViewModel.newTrip.startDateTime <= Calendar.getInstance() ) {
+            from_date.error = getString(R.string.start_date_not_in_past)
+            valid = false
+        }
+
+        if(tripEditViewModel.newTrip.otherInformation?.length ?: 0 > 100)
+            valid = false
+
         if (YYYYMMDD.format(tripEditViewModel.newTrip.startDateTime.time) > YYYYMMDD.format(tripEditViewModel.newTrip.endDateTime.time)) {
             to_date.error = getString(R.string.date_error)
             to_hour.error = null
@@ -504,7 +518,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             valid = false
         }
 
-        // TODO set as property
         val stops_rv = requireView().findViewById<RecyclerView>(R.id.stop_list_rv)
 
         for ((idx, stop) in tripEditViewModel.newTrip.stops.withIndex()){
