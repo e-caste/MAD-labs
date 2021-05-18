@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
@@ -126,10 +127,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if(tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser.uid){
+            val inflater: MenuInflater = inflater
+            inflater.inflate(optionsMenuId, menu)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit_menu_button -> {
-                //TODO: check timestamp is not in the past
                 Log.d(getLogTag(), "Passing bundle of ${tripDetailsViewModel.trip.value}")
                 findNavController().navigate(
                     R.id.action_tripDetailsFragment_to_tripEditFragment,
@@ -275,7 +282,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
 }
-//TODO: pass Trip as string to Edit, get id from TripList
+
 //TODO: show users only for owner
 //TODO: FAB only for other users
 //TODO: tripDetails without users and edit button fot unadvertised trips
