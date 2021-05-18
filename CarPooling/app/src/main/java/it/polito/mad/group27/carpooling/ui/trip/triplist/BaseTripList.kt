@@ -152,6 +152,10 @@ abstract class BaseTripList(
         }
 
         override fun getItemCount(): Int {
+            return this.snapshots.size
+        }
+
+        fun getShownItemNumber(): Int {
             return this.snapshots.filter { !isFilteredOut(it.toTrip()) }.size
         }
     }
@@ -180,7 +184,7 @@ abstract class BaseTripList(
         adapter = TripFirestoreRecyclerAdapter(options) {
             // all trips are hidden -> show warning message
             Log.d(getLogTag(), "item count: ${adapter!!.itemCount}")
-            if (adapter!!.itemCount == 0) {
+            if (adapter!!.getShownItemNumber() == 0) {
                 Log.d(getLogTag(), "TripList is empty, showing warning message to user")
                 recyclerView.visibility = View.GONE
                 warningMessageView.visibility = View.VISIBLE
