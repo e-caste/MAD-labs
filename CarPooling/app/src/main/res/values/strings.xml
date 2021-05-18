@@ -108,6 +108,7 @@
     <string name="alert_message">This action can not be undone!</string>
     <string name="cancel">CANCEL</string>
     <string name="yes">YES</string>
+    <string name="upto">Up to</string>
     <plurals name="already_accepted_n_travelers">
         <item quantity="one">You already accepted %d traveler!</item>
         <item quantity="other">You already accepted %d travelers!</item>

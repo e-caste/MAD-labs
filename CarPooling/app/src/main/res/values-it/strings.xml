@@ -97,4 +97,5 @@
     <string name="alert_message">Quest\'azione non può essere annullata!</string>
     <string name="cancel">ANNULLA</string>
     <string name="yes">SI</string>
+    <string name="upto">Fino a</string>
 </resources>
