@@ -26,6 +26,10 @@ import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
+
+    private var privateMode = false
+    private var tripIsAdvertised = true
+
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
     private lateinit var dropdownListButton: LinearLayout
@@ -54,7 +58,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var stopsRecyclerView: RecyclerView
     private lateinit var interestedUsersRecyclerView: RecyclerView
     private lateinit var acceptedUsersRecyclerView: RecyclerView
-
+    private lateinit var noTravellerInfoMessage: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +95,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
         }
 
+        privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
+        tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
+
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
         expandButton = view.findViewById(R.id.expandButton)
@@ -117,6 +124,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         acceptedUsersRecyclerView = view.findViewById(R.id.accepted_list)
         interestedExpandButton = view.findViewById(R.id.expand_interested_button)
         acceptedExpandButton = view.findViewById(R.id.expand_accepted_button)
+        noTravellerInfoMessage = view.findViewById(R.id.no_traveller_info_message)
 
         if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT)
             fragmentTitle = view.findViewById(R.id.trip_title_details)
@@ -130,8 +138,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if(tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser.uid){
-            val inflater: MenuInflater = inflater
+        if(privateMode && tripIsAdvertised){
             inflater.inflate(optionsMenuId, menu)
         }
     }
@@ -214,27 +221,35 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             optionsView.visibility = View.GONE
         }
 
-        // Users visualization (only for owner of the trip)
-        if (trip.acceptedUsersUids.size > 0 || trip.interestedUsersUids.size > 0) {
+        if(privateMode){
             travellersDetails.visibility = View.VISIBLE
+            if (trip.acceptedUsersUids.size > 0 || trip.interestedUsersUids.size > 0) {
+                noTravellerInfoMessage.visibility = View.GONE
 
-            if (trip.interestedUsersUids.size > 0) {
-                interestedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                interestedUsersRecyclerView.adapter =
-                    TripUserDetailsViewAdapter(trip.interestedUsersUids)
+                if (trip.interestedUsersUids.size > 0) {
+                    interestedUsers.visibility = View.VISIBLE
+                    interestedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                    interestedUsersRecyclerView.adapter =
+                        TripUserDetailsViewAdapter(trip.interestedUsersUids)
 
-                setOnClickListenerDropdown(interestedUsers, interestedUsersRecyclerView, interestedExpandButton)
+                    setOnClickListenerDropdown(interestedUsers, interestedUsersRecyclerView, interestedExpandButton)
+                } else interestedUsers.visibility = View.GONE
+
+                if (trip.acceptedUsersUids.size > 0) {
+                    acceptedUsers.visibility = View.VISIBLE
+                    acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                    acceptedUsersRecyclerView.adapter =
+                        TripUserDetailsViewAdapter(trip.acceptedUsersUids)
+
+                    setOnClickListenerDropdown(acceptedUsers, acceptedUsersRecyclerView, acceptedExpandButton)
+                } else acceptedUsers.visibility = View.GONE
+
+            } else {
+                acceptedUsers.visibility = View.GONE
+                interestedUsers.visibility = View.GONE
+                noTravellerInfoMessage.visibility = View.VISIBLE
             }
-
-            if (trip.acceptedUsersUids.size > 0) {
-                acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                acceptedUsersRecyclerView.adapter =
-                    TripUserDetailsViewAdapter(trip.acceptedUsersUids)
-
-                setOnClickListenerDropdown(acceptedUsers, acceptedUsersRecyclerView, acceptedExpandButton)
-            }
-        }
-
+        } else travellersDetails.visibility = View.GONE
     }
 
     private fun setOnClickListenerDropdown(dropdownView : View, contentToHide: View, dropdownImage : ImageView) {
@@ -275,6 +290,5 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
 }
 
-//TODO: show users only for owner
 //TODO: FAB only for other users
 //TODO: tripDetails without users and edit button fot unadvertised trips
