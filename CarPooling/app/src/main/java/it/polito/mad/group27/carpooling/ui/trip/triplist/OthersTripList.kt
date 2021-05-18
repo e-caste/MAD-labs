@@ -41,6 +41,9 @@ class OthersTripList(
     private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
+        tripViewHolder.carImageView.setOnClickListener {
+            findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+        }
         // the trip is full
         if (trip.acceptedUsersUids.size == trip.totalSeats) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
@@ -126,29 +129,36 @@ class OthersTripList(
             chip.setOnClickListener {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip from ($logParam) toggled: ${checkedChips[k]}")
-                adapter?.notifyDataSetChanged()
+                adapter!!.notifyDataSetChanged()
             }
             chipGroup.addView(chip)
         }
 
+        var s = ""
+
         if (tripFilter.from != defaultTripFilter.from) {
-            addChip(tripFilter.from!!, "from", tripFilter.from!!)
+            s = "${getString(R.string.from)} ${tripFilter.from!!}"
+            addChip(s, "from", s)
         }
 
         if (tripFilter.to != defaultTripFilter.to) {
-            addChip(tripFilter.to!!, "to", tripFilter.to!!)
+            s = "${getString(R.string.to)} ${tripFilter.to!!}"
+            addChip(s, "to", s)
         }
 
         if (tripFilter.priceMin != defaultTripFilter.priceMin) {
-            addChip(nf.format(tripFilter.priceMin), "priceMin", nf.format(tripFilter.priceMin))
+            s = "${getString(R.string.from)} ${nf.format(tripFilter.priceMin)}"
+            addChip(s, "priceMin", s)
         }
 
         if (tripFilter.priceMax != defaultTripFilter.priceMax) {
-            addChip(nf.format(tripFilter.priceMax), "priceMax", nf.format(tripFilter.priceMax))
+            s = "${getString(R.string.upto)} ${nf.format(tripFilter.priceMax)}"
+            addChip(s, "priceMax", s)
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            addChip(sdf.format(tripFilter.dateTime), "dateTime", sdf.format(tripFilter.dateTime))
+            s = "${getString(R.string.since)} ${sdf.format(tripFilter.dateTime?.time!!)}"
+            addChip(s, "dateTime", s)
         }
 
         for (opt in Option.values()) {
@@ -168,8 +178,10 @@ class OthersTripList(
             if (tripFilter.to != null && checkedChips["to"]!!) {
                 trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
             }
-            if (trip.price != null && (checkedChips["priceMin"]!! || checkedChips["priceMax"]!!)) {
+            if (trip.price != null && checkedChips["priceMin"]!!) {
                 trip.price!! >= tripFilter.priceMin || return false
+            }
+            if (trip.price != null && checkedChips["priceMax"]!!) {
                 trip.price!! <= tripFilter.priceMax || return false
             }
             if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {

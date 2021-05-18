@@ -44,22 +44,28 @@ fun getTimePicker(view: EditText, hour: Calendar, context: Context, update: (Mat
     return timePicker
 }
 
-fun getDatePicker(calendar: Calendar, view: TextInputLayout) : MaterialDatePicker<Long> {
+fun getDatePicker(calendar: Calendar?, view: TextInputLayout,
+                  init:()->Calendar = {Calendar.getInstance()}) : MaterialDatePicker<Long> {
     val constraintsBuilder =
         CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
     val datePicker =
         MaterialDatePicker.Builder.datePicker()
-            .setSelection(calendar.timeInMillis)
+            .setSelection(calendar?.timeInMillis ?: Calendar.getInstance().timeInMillis)
             .setCalendarConstraints(constraintsBuilder.build())
             .build()
     datePicker.addOnPositiveButtonClickListener {
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-        calendar.timeInMillis = datePicker.selection!!
-        calendar.set(Calendar.HOUR_OF_DAY, hour)
-        calendar.set(Calendar.MINUTE, minute)
-        view.editText?.setText(df.format(calendar.time))
+        lateinit var tmpCalendar: Calendar
+        if (calendar == null)
+            tmpCalendar = init()
+        else tmpCalendar = calendar
+
+        val hour = tmpCalendar.get(Calendar.HOUR_OF_DAY)
+        val minute = tmpCalendar.get(Calendar.MINUTE)
+        tmpCalendar.timeInMillis = datePicker.selection!!
+        tmpCalendar.set(Calendar.HOUR_OF_DAY, hour)
+        tmpCalendar.set(Calendar.MINUTE, minute)
+        view.editText?.setText(df.format(tmpCalendar.time))
     }
     return datePicker
 }
