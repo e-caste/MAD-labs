@@ -115,6 +115,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         acceptedUsers = view.findViewById(R.id.accepted_users_expand_view)
         interestedUsersRecyclerView = view.findViewById(R.id.interested_list)
         acceptedUsersRecyclerView = view.findViewById(R.id.accepted_list)
+        interestedExpandButton = view.findViewById(R.id.expand_interested_button)
+        acceptedExpandButton = view.findViewById(R.id.expand_accepted_button)
 
         if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT)
             fragmentTitle = view.findViewById(R.id.trip_title_details)
@@ -189,19 +191,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             stopsRecyclerView.adapter =
                 TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
-            dropdownListButton.setOnClickListener {
-                stopsRecyclerView.visibility =
-                    when (stopsRecyclerView.visibility) {
-                        View.GONE -> {
-                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                            View.VISIBLE
-                        }
-                        else -> {
-                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                            View.GONE
-                        }
-                    }
-            }
+            expandButton.visibility = View.VISIBLE
+            setOnClickListenerDropdown(dropdownListButton, stopsRecyclerView, expandButton)
         } else expandButton.visibility = View.INVISIBLE
 
         // Display additional info
@@ -232,7 +223,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 interestedUsersRecyclerView.adapter =
                     TripUserDetailsViewAdapter(trip.interestedUsersUids)
 
-                interestedUsersRecyclerView.visibility = View.VISIBLE
+                setOnClickListenerDropdown(interestedUsers, interestedUsersRecyclerView, interestedExpandButton)
             }
 
             if (trip.acceptedUsersUids.size > 0) {
@@ -240,25 +231,26 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 acceptedUsersRecyclerView.adapter =
                     TripUserDetailsViewAdapter(trip.acceptedUsersUids)
 
-                acceptedUsersRecyclerView.visibility = View.VISIBLE
+                setOnClickListenerDropdown(acceptedUsers, acceptedUsersRecyclerView, acceptedExpandButton)
             }
         }
 
-//            dropdownListButton.setOnClickListener {
-//                stopsRecyclerView.visibility =
-//                    when (stopsRecyclerView.visibility) {
-//                        View.GONE -> {
-//                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-//                            View.VISIBLE
-//                        }
-//                        else -> {
-//                            expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-//                            View.GONE
-//                        }
-//                    }
-//            }
-//        } else expandButton.visibility = View.INVISIBLE
+    }
 
+    private fun setOnClickListenerDropdown(dropdownView : View, contentToHide: View, dropdownImage : ImageView) {
+        dropdownView.setOnClickListener {
+            contentToHide.visibility =
+                when (contentToHide.visibility) {
+                    View.GONE -> {
+                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                        View.VISIBLE
+                    }
+                    else -> {
+                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                        View.GONE
+                    }
+                }
+        }
     }
 
     private fun getEstimatedTime(start: Calendar, end: Calendar): Hour {
