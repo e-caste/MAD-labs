@@ -134,24 +134,31 @@ class OthersTripList(
             chipGroup.addView(chip)
         }
 
+        var s = ""
+
         if (tripFilter.from != defaultTripFilter.from) {
-            addChip(tripFilter.from!!, "from", tripFilter.from!!)
+            s = "${getString(R.string.from)} ${tripFilter.from!!}"
+            addChip(s, "from", s)
         }
 
         if (tripFilter.to != defaultTripFilter.to) {
-            addChip(tripFilter.to!!, "to", tripFilter.to!!)
+            s = "${getString(R.string.to)} ${tripFilter.to!!}"
+            addChip(s, "to", s)
         }
 
         if (tripFilter.priceMin != defaultTripFilter.priceMin) {
-            addChip(nf.format(tripFilter.priceMin), "priceMin", nf.format(tripFilter.priceMin))
+            s = "${getString(R.string.from)} ${nf.format(tripFilter.priceMin)}"
+            addChip(s, "priceMin", s)
         }
 
         if (tripFilter.priceMax != defaultTripFilter.priceMax) {
-            addChip(nf.format(tripFilter.priceMax), "priceMax", nf.format(tripFilter.priceMax))
+            s = "${getString(R.string.upto)} ${nf.format(tripFilter.priceMax)}"
+            addChip(s, "priceMax", s)
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            addChip(sdf.format(tripFilter.dateTime?.time!!), "dateTime", sdf.format(tripFilter.dateTime?.time!!))
+            s = "${getString(R.string.since)} ${sdf.format(tripFilter.dateTime?.time!!)}"
+            addChip(s, "dateTime", s)
         }
 
         for (opt in Option.values()) {
