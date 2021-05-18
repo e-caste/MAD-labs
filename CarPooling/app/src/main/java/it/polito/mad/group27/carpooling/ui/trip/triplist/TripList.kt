@@ -47,6 +47,7 @@ class TripList: BaseTripList() {
 
     override fun customizeTripList(view: View) {
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
+        fab.visibility = View.VISIBLE
         fab.setOnClickListener { findNavController().navigate(R.id.action_tripList_to_tripEditFragment) }
     }
 }
