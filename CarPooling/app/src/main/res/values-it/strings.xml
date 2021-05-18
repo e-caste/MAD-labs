@@ -98,4 +98,5 @@
     <string name="cancel">ANNULLA</string>
     <string name="yes">SI</string>
     <string name="start_date_not_in_past">Non può essere nel passato</string>
+    <string name="no_passengers_message">Nessun passeggero (per ora)</string>
 </resources>
