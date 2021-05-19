@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
@@ -29,6 +32,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private var privateMode = false
     private var tripIsAdvertised = true
+    private val currentUserUid = FirebaseAuth.getInstance().currentUser.uid
 
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
@@ -133,17 +137,119 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 updateFields(it)
             }
         }
+
+        val dropdownClickListener : (View, ImageView) -> Unit = {
+                dropdownView, button ->
+            if(dropdownView.visibility == View.VISIBLE){
+                dropdownView.visibility = View.GONE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
+            else{
+                dropdownView.visibility = View.VISIBLE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+            }
+        }
+
+        dropdownListButton.setOnClickListener{
+            dropdownClickListener(stopsRecyclerView,expandButton)
+            tripDetailsViewModel.stopsExpanded = stopsRecyclerView.visibility
+        }
+
+        interestedUsers.setOnClickListener{
+            dropdownClickListener(interestedUsersRecyclerView, interestedExpandButton)
+            tripDetailsViewModel.interestedExpanded = interestedUsersRecyclerView.visibility
+        }
+
+        acceptedUsers.setOnClickListener{
+            dropdownClickListener(acceptedUsersRecyclerView, acceptedExpandButton)
+            tripDetailsViewModel.acceptedExpanded = acceptedUsersRecyclerView.visibility
+        }
+
+        tripDetailsViewModel.interestedList.observe(viewLifecycleOwner){
+            interestedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
+        tripDetailsViewModel.acceptedList.observe(viewLifecycleOwner){
+            acceptedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
+        if(!checkPrivateMode()){
+            if(currentUserUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids ||
+                    currentUserUid in tripDetailsViewModel.trip.value!!.interestedUsersUids){
+                bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                bookingFAB.setOnClickListener{
+                    Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG).show()
+                }
+            } else {
+                bookingFAB.setOnClickListener {
+                    tripDetailsViewModel.trip.value!!.interestedUsersUids.add(currentUserUid)
+                    FirebaseFirestore.getInstance().collection("trips")
+                        .document(tripDetailsViewModel.trip.value!!.id!!)
+                        .set(tripDetailsViewModel.trip.value!!.toTripDB())
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.success_message_booked),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            var tripOwner: Profile? = null
+                            FirebaseFirestore.getInstance().collection("users")
+                                .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
+                                .addOnSuccessListener {
+                                    Log.d(
+                                        getLogTag(),
+                                        "reservation notification: tripOwner is $tripOwner"
+                                    )
+                                    if (it != null) {
+                                        tripOwner = it.toObject(Profile::class.java)
+                                        val me =
+                                            ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
+                                        if (tripOwner != null && me != null) {
+                                            MessagingService.sendNotification(
+                                                tripOwner!!.notificationToken,
+                                                AndroidNotification(
+                                                    "New trip reservation!",
+                                                    "User ${me.fullName} has just booked your trip from " +
+                                                            "${tripDetailsViewModel.trip.value!!.from} " +
+                                                            "to ${tripDetailsViewModel.trip.value!!.to} " +
+                                                            "on ${
+                                                                SimpleDateFormat("dd/MM/yyyy HH:mm").format(
+                                                                    tripDetailsViewModel.trip.value!!.startDateTime
+                                                                )
+                                                            }",
+                                                    tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                                )
+                                            )
+                                            Log.d(
+                                                getLogTag(), "reservation notification: sent " +
+                                                        "from ${me.fullName} (${me.uid}) " +
+                                                        "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!"
+                                            )
+                                        }
+                                    }
+                                    bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                                }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.warning_message_failedbooking),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                }
+            }
+        }
+
     }
 
     private fun checkAdvertised(): Boolean {
         tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
-//        Log.d(getLogTag(),"advertised: $tripIsAdvertised")
         return tripIsAdvertised
     }
 
     private fun checkPrivateMode(): Boolean {
         privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
-//        Log.d(getLogTag(),"privateMode: $privateMode")
         return privateMode
     }
 
@@ -210,8 +316,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
             expandButton.visibility = View.VISIBLE
-            setOnClickListenerDropdown(dropdownListButton, stopsRecyclerView, expandButton
-            ) { visibility -> tripDetailsViewModel.stopsExpanded = visibility }
         } else expandButton.visibility = View.INVISIBLE
 
         // Display additional info
@@ -234,7 +338,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             optionsView.visibility = View.GONE
         }
 
-        if(privateMode){
+        if(checkPrivateMode()){
             bookingFAB.visibility = View.GONE
             travellersDetails.visibility = View.VISIBLE
 
@@ -245,22 +349,20 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     interestedUsers.visibility = View.VISIBLE
                     interestedUsersRecyclerView.visibility = tripDetailsViewModel.interestedExpanded
                     interestedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                    interestedUsersRecyclerView.adapter =
-                        TripUserDetailsViewAdapter(tripDetailsViewModel.loadInterestedUsers(), requireContext())
-
-                    setOnClickListenerDropdown(interestedUsers, interestedUsersRecyclerView, interestedExpandButton
-                    ) { visibility -> tripDetailsViewModel.interestedExpanded = visibility }
+                    tripDetailsViewModel.loadInterestedUsers {
+                        interestedUsersRecyclerView.adapter =
+                            TripUserDetailsViewAdapter(tripDetailsViewModel.interestedList.value!!, requireContext())
+                    }
                 } else interestedUsers.visibility = View.GONE
 
                 if (trip.acceptedUsersUids.size > 0) {
                     acceptedUsers.visibility = View.VISIBLE
-                    acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                    acceptedUsersRecyclerView.adapter =
-                        TripUserDetailsViewAdapter(tripDetailsViewModel.loadAcceptedUsers(), requireContext())
-
                     acceptedUsersRecyclerView.visibility = tripDetailsViewModel.acceptedExpanded
-                    setOnClickListenerDropdown(acceptedUsers, acceptedUsersRecyclerView, acceptedExpandButton
-                    ) { visibility -> tripDetailsViewModel.acceptedExpanded = visibility }
+                    acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                    tripDetailsViewModel.loadAcceptedUsers {
+                        acceptedUsersRecyclerView.adapter =
+                            TripUserDetailsViewAdapter(tripDetailsViewModel.acceptedList.value!!, requireContext())
+                    }
                 } else acceptedUsers.visibility = View.GONE
 
             } else {
@@ -271,24 +373,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         } else {
             travellersDetails.visibility = View.GONE
             bookingFAB.visibility = View.VISIBLE
-        }
-    }
-
-    private fun setOnClickListenerDropdown(dropdownView : View, contentToHide: View, dropdownImage : ImageView, callback: (Int) -> Unit ) {
-        dropdownView.setOnClickListener {
-            contentToHide.visibility =
-                when (contentToHide.visibility) {
-                    View.GONE -> {
-                        callback(View.VISIBLE)
-                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                        View.VISIBLE
-                    }
-                    else -> {
-                        callback(View.GONE)
-                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                        View.GONE
-                    }
-                }
         }
     }
 
@@ -313,5 +397,3 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
 }
-
-//TODO: FAB only for other users
