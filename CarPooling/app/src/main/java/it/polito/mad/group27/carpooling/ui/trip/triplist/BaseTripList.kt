@@ -150,9 +150,8 @@ abstract class BaseTripList(
 
             //bringing back scrollview to correct position
             val tmpScroll = verticalScroll
-            recyclerView!!.scrollBy(0,tmpScroll)
+            recyclerView?.scrollBy(0,tmpScroll)
             verticalScroll -= tmpScroll
-
         }
 
         override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -161,12 +160,10 @@ abstract class BaseTripList(
            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                    super.onScrolled(recyclerView, dx, dy)
-                   verticalScroll+=dy
+                   verticalScroll += dy
                }
            })
-
-
-    }
+        }
 
         override fun getItemCount(): Int {
             return this.snapshots.size
