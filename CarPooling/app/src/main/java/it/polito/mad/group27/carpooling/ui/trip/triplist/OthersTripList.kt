@@ -203,34 +203,35 @@ class OthersTripList(
 
     override fun isFilteredOut(trip: Trip): Boolean {
 
-        fun applyTripFilter(): Boolean {
+        // returns true when at least 1 filter does not correspond to one of the trip's fields
+        fun isFilteredOutByTripFilter(): Boolean {
             if (tripFilter.from != null && checkedChips["from"]!!) {
-                trip.from.contains(tripFilter.from!!, ignoreCase = true) || return false
+                trip.from.contains(tripFilter.from!!, ignoreCase = true) && return true
             }
             if (tripFilter.to != null && checkedChips["to"]!!) {
-                trip.to.contains(tripFilter.to!!, ignoreCase = true) || return false
+                trip.to.contains(tripFilter.to!!, ignoreCase = true) && return true
             }
             if (trip.price != null && checkedChips["priceMin"]!!) {
-                trip.price!! >= tripFilter.priceMin || return false
+                trip.price!! >= tripFilter.priceMin && return true
             }
             if (trip.price != null && checkedChips["priceMax"]!!) {
-                trip.price!! <= tripFilter.priceMax || return false
+                trip.price!! <= tripFilter.priceMax && return true
             }
             if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {
-                trip.startDateTime >= tripFilter.dateTime!! || return false
+                trip.startDateTime >= tripFilter.dateTime!! && return true
             }
             for (opt in Option.values()) {
                 if (tripFilter.options.contains(opt) &&
                     tripFilter.options[opt] == true &&
                     checkedChips[opt.name.toLowerCase(Locale.ROOT)]!!) {
-                    trip.options.contains(opt) || return false
+                    trip.options.contains(opt) && return true
                 }
             }
-            return true
+            return false
         }
 
         return !(trip.ownerUid != currentUserUid &&
                 trip.advertised &&
-                applyTripFilter())
+                !isFilteredOutByTripFilter())
     }
 }
