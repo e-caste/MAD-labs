@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -28,6 +29,10 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
 
     private val context by lazy { getApplication<Application>().applicationContext }
 
+    var accepted_visibility = View.VISIBLE
+    var interested_visibility = View.VISIBLE
+    var accepted_expand_visibility = MutableLiveData(View.VISIBLE)
+    var interested_expand_visibility = MutableLiveData(View.VISIBLE)
 
     fun downloadUsers(callback : ( Map<String, Profile> )-> Unit){
         val mapTmp : MutableMap<String, Profile> = mutableMapOf()

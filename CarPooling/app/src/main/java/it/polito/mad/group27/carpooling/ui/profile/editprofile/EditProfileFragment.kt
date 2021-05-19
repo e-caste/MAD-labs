@@ -24,8 +24,6 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
 
     private lateinit var profileViewModel: EditProfileViewModel
 
-    // TODO back should not go back to Edit
-    // TODO loading
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
