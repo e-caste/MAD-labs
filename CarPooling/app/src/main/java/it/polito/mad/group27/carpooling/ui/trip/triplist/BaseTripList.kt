@@ -6,23 +6,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
+import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.chip.ChipGroup
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -104,15 +97,17 @@ abstract class BaseTripList(
 
         fun _setCardInvisible() {
             view.visibility = View.GONE
-            view.layoutParams.height = 0
-            view.layoutParams.width = 0
+            view.layoutParams =  LinearLayout.LayoutParams(0,
+                0)
         }
 
         fun _setCardVisible() {
             view.visibility = View.VISIBLE
             // float should be same value as in fragment_trip.xml - this converts dp->px
-            view.layoutParams.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, resources.displayMetrics).toInt()
-            view.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            view.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, resources.displayMetrics).toInt()
+            )
         }
     }
 
@@ -121,6 +116,8 @@ abstract class BaseTripList(
         val showWarningMessage: () -> Unit,
     ) : FirestoreRecyclerAdapter<TripDB, TripViewHolder>(options) {
 
+        var recyclerView: RecyclerView? =null
+        var verticalScroll:Int = 0
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
@@ -150,7 +147,26 @@ abstract class BaseTripList(
         override fun onDataChanged() {
             super.onDataChanged()
             showWarningMessage()
+
+            //bringing back scrollview to correct position
+            val tmpScroll = verticalScroll
+            recyclerView!!.scrollBy(0,tmpScroll)
+            verticalScroll -= tmpScroll
+
         }
+
+        override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+            super.onAttachedToRecyclerView(recyclerView)
+            this.recyclerView = recyclerView
+           recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+               override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                   super.onScrolled(recyclerView, dx, dy)
+                   verticalScroll+=dy
+               }
+           })
+
+
+    }
 
         override fun getItemCount(): Int {
             return this.snapshots.size
@@ -199,7 +215,7 @@ abstract class BaseTripList(
                             getLogTag(),
                             "orientation is landscape, using grid layout with 2 columns..."
                         )
-                        GridLayoutManager(context, 2)
+                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                     }
                     else -> {
                         Log.d(getLogTag(), "orientation is portrait, using linear layout...")
