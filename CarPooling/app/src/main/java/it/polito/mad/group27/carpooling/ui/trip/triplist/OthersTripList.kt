@@ -86,7 +86,7 @@ class OthersTripList(
                                             AndroidNotification(
                                                 "New trip reservation!",
                                                 "User ${me.fullName} has just booked your trip from " +
-                                                        "${trip.from} to ${trip.to} on ${trip.startDateTime}",
+                                                        "${trip.from} to ${trip.to} on ${sdf.format(trip.startDateTime.time)}",
                                                 trip.carImageUri.toString()
                                             )
                                         )
