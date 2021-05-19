@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
@@ -59,6 +60,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var interestedUsersRecyclerView: RecyclerView
     private lateinit var acceptedUsersRecyclerView: RecyclerView
     private lateinit var noTravellerInfoMessage: TextView
+    private lateinit var unadvertisedTripMessage: TextView
+    private lateinit var bookingFAB: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,9 +98,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             tripDetailsViewModel.trip.value = tripDetailsViewModel.loadTrip(tripId)
         }
 
-        checkPrivateMode()
-        checkAdvertised()
-
         // Find views
         dropdownListButton = view.findViewById(R.id.startTripView)
         expandButton = view.findViewById(R.id.expandButton)
@@ -125,6 +125,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         interestedExpandButton = view.findViewById(R.id.expand_interested_button)
         acceptedExpandButton = view.findViewById(R.id.expand_accepted_button)
         noTravellerInfoMessage = view.findViewById(R.id.no_traveller_info_message)
+        unadvertisedTripMessage = view.findViewById(R.id.unadvertised_trip_message)
+        bookingFAB = view.findViewById(R.id.sign_as_interested_fab)
+
+        checkPrivateMode()
+        checkAdvertised()
 
         if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT)
             fragmentTitle = view.findViewById(R.id.trip_title_details)
@@ -140,7 +145,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private fun checkAdvertised(): Boolean {
         tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
         Log.d(getLogTag(),"advertised: $tripIsAdvertised")
-
         return tripIsAdvertised
     }
 
@@ -186,6 +190,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         if(checkPrivateMode() || !checkAdvertised())
             requireActivity().invalidateOptionsMenu()
+
+        if(!checkAdvertised())
+            unadvertisedTripMessage.visibility = if(tripIsAdvertised) View.GONE else View.VISIBLE
 
         // Display basic info
         if (trip.carImageUri == null) {
@@ -239,7 +246,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         if(privateMode){
+            bookingFAB.visibility = View.GONE
             travellersDetails.visibility = View.VISIBLE
+
             if (trip.acceptedUsersUids.size > 0 || trip.interestedUsersUids.size > 0) {
                 noTravellerInfoMessage.visibility = View.GONE
 
@@ -266,7 +275,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 interestedUsers.visibility = View.GONE
                 noTravellerInfoMessage.visibility = View.VISIBLE
             }
-        } else travellersDetails.visibility = View.GONE
+        } else {
+            travellersDetails.visibility = View.GONE
+            bookingFAB.visibility = View.VISIBLE
+        }
     }
 
     private fun setOnClickListenerDropdown(dropdownView : View, contentToHide: View, dropdownImage : ImageView) {
