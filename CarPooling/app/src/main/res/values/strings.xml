@@ -123,5 +123,5 @@
     <string name="seats_finished_message">Seats are finished for the trip from %s to %s of %s</string>
     <string name="request_accepted_message">Driver has accepted your request for the trip from %s to %s of %s</string>
     <string name="trip_cancelled_message">Driver has cancelled the trip from %s to %s of %s</string>
-    <string name="error_equal_destination_departure">Cannot perform a search with equal start and destination</string>
+    <string name="error_equal_destination_departure">Cannot be equal to departure location</string>
 </resources>
