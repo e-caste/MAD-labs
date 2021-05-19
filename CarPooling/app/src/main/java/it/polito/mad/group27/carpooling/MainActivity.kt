@@ -1,12 +1,7 @@
 package it.polito.mad.group27.carpooling
 
-import android.accounts.AccountManager
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -77,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        currentFocus?.clearFocus()
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
