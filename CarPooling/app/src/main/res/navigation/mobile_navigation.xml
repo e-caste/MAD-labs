@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_othersTripList_to_tripDetailsFragment"
             app:destination="@id/tripDetailsFragment" />
+        <action
+            android:id="@+id/action_othersTripList_self"
+            app:destination="@id/othersTripList" />
     </fragment>
     <fragment
         android:id="@+id/tripFilterFragment"
@@ -82,6 +85,8 @@
         android:label="TripFilterFragment" >
         <action
             android:id="@+id/action_tripFilterFragment_to_othersTripList"
-            app:destination="@id/othersTripList" />
+            app:destination="@id/othersTripList"
+            app:popUpTo="@id/othersTripList"
+            app:popUpToInclusive="false" />
     </fragment>
 </navigation>

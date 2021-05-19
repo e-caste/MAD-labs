@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -139,6 +141,23 @@ class OthersTripList(
         if (tripFilter.to == "") tripFilter.to = null
         Log.d(getLogTag(), "OthersTripList trip filter: $tripFilter")
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true // default to enabled
+        ) {
+            override fun handleOnBackPressed() {
+                if (tripFilter == TripFilter())
+                    requireActivity().finish()
+                else
+                    findNavController().navigate(R.id.action_othersTripList_self)
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this,callback)
     }
 
     override fun customizeTripList(view: View) {
