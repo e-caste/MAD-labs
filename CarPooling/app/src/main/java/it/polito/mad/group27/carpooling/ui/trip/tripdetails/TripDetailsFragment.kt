@@ -135,6 +135,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         tripDetailsViewModel.trip.observe(viewLifecycleOwner) {
             if (it != null) {
                 updateFields(it)
+                if(it.acceptedUsersUids.size == it.totalSeats){
+                    bookingFAB.visibility = View.GONE
+                }
             }
         }
 
@@ -148,6 +151,68 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 dropdownView.visibility = View.VISIBLE
                 button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
+        }
+
+        val bookingFABListenerBooked : (View) -> Unit = {
+            if (currentUserUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids ||
+                currentUserUid in tripDetailsViewModel.trip.value!!.interestedUsersUids
+            ) {
+                Log.d(getLogTag(), "already booked on view created")
+                bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                bookingFAB.setOnClickListener {
+                    Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+
+        val bookingFABListenerNotBooked : (View) -> Unit = {
+            tripDetailsViewModel.trip.value!!.interestedUsersUids.add(currentUserUid)
+            FirebaseFirestore.getInstance().collection("trips")
+                .document(tripDetailsViewModel.trip.value!!.id!!)
+                .set(tripDetailsViewModel.trip.value!!.toTripDB())
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                    var tripOwner: Profile? = null
+                    FirebaseFirestore.getInstance().collection("users")
+                        .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
+                        .addOnSuccessListener {
+                            if (it != null) {
+                                tripOwner = it.toObject(Profile::class.java)
+                                val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
+                                if (tripOwner != null && me != null) {
+                                    MessagingService.sendNotification(
+                                        tripOwner!!.notificationToken,
+                                        AndroidNotification(
+                                            "New trip reservation!",
+                                            "User ${me.fullName} has just booked your trip from " +
+                                                    "${tripDetailsViewModel.trip.value!!.from} " +
+                                                    "to ${tripDetailsViewModel.trip.value!!.to} " +
+                                                    "on ${
+                                                        SimpleDateFormat("dd/MM/yyyy HH:mm").format(
+                                                            tripDetailsViewModel.trip.value!!.startDateTime.time
+                                                        )
+                                                    }",
+                                            tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                        )
+                                    )
+                                    Log.d(getLogTag(), "reservation notification: sent " +
+                                            "from ${me.fullName} (${me.uid}) " +
+                                            "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
+                                    tripDetailsViewModel.userIsBooked.value = true
+                                }
+                            }
+                            bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                        }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.warning_message_failedbooking),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
         }
 
         dropdownListButton.setOnClickListener{
@@ -173,74 +238,17 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             acceptedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
-        if(!checkPrivateMode()){
-            if(currentUserUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids ||
-                    currentUserUid in tripDetailsViewModel.trip.value!!.interestedUsersUids){
-                bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
-                bookingFAB.setOnClickListener{
-                    Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG).show()
-                }
-            } else {
-                bookingFAB.setOnClickListener {
-                    tripDetailsViewModel.trip.value!!.interestedUsersUids.add(currentUserUid)
-                    FirebaseFirestore.getInstance().collection("trips")
-                        .document(tripDetailsViewModel.trip.value!!.id!!)
-                        .set(tripDetailsViewModel.trip.value!!.toTripDB())
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.success_message_booked),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            var tripOwner: Profile? = null
-                            FirebaseFirestore.getInstance().collection("users")
-                                .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
-                                .addOnSuccessListener {
-                                    Log.d(
-                                        getLogTag(),
-                                        "reservation notification: tripOwner is $tripOwner"
-                                    )
-                                    if (it != null) {
-                                        tripOwner = it.toObject(Profile::class.java)
-                                        val me =
-                                            ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
-                                        if (tripOwner != null && me != null) {
-                                            MessagingService.sendNotification(
-                                                tripOwner!!.notificationToken,
-                                                AndroidNotification(
-                                                    "New trip reservation!",
-                                                    "User ${me.fullName} has just booked your trip from " +
-                                                            "${tripDetailsViewModel.trip.value!!.from} " +
-                                                            "to ${tripDetailsViewModel.trip.value!!.to} " +
-                                                            "on ${
-                                                                SimpleDateFormat("dd/MM/yyyy HH:mm").format(
-                                                                    tripDetailsViewModel.trip.value!!.startDateTime
-                                                                )
-                                                            }",
-                                                    tripDetailsViewModel.trip.value!!.carImageUri.toString()
-                                                )
-                                            )
-                                            Log.d(
-                                                getLogTag(), "reservation notification: sent " +
-                                                        "from ${me.fullName} (${me.uid}) " +
-                                                        "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!"
-                                            )
-                                        }
-                                    }
-                                    bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
-                                }
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.warning_message_failedbooking),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                }
-            }
+        tripDetailsViewModel.userIsBooked.observe(viewLifecycleOwner){
+            bookingFAB.setImageResource(
+                if(it) R.drawable.ic_baseline_done_24 else R.drawable.ic_baseline_add_24)
+            bookingFAB.setOnClickListener(
+                if(it) bookingFABListenerBooked else bookingFABListenerNotBooked
+            )
         }
 
+        if(!checkPrivateMode()) {
+            tripDetailsViewModel.checkBookedUser(currentUserUid)
+        }
     }
 
     private fun checkAdvertised(): Boolean {
@@ -373,6 +381,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         } else {
             travellersDetails.visibility = View.GONE
             bookingFAB.visibility = View.VISIBLE
+            tripDetailsViewModel.checkBookedUser(currentUserUid)
         }
     }
 

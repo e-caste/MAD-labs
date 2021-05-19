@@ -1,12 +1,14 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
 import android.app.Application
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.Profile
+import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
@@ -22,6 +24,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     var stopsExpanded: Int = View.GONE
     var interestedExpanded: Int = View.GONE
     var acceptedExpanded: Int = View.GONE
+    var userIsBooked: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun loadTrip(tripId : String) : Trip {
         tripDocument = db.collection("trips").document(tripId)
@@ -55,6 +58,9 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
+    fun checkBookedUser(currentUid: String){
+        userIsBooked.value = trip.value!!.acceptedUsersUids.contains(currentUid) || trip.value!!.interestedUsersUids.contains(currentUid)
+    }
 
 }
 
