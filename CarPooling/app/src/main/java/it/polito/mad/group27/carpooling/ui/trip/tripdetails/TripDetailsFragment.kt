@@ -32,6 +32,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private var privateMode = false
     private var tripIsAdvertised = true
+    private val currentUserUid = FirebaseAuth.getInstance().currentUser.uid
 
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
@@ -173,43 +174,70 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         if(!checkPrivateMode()){
-            bookingFAB.setOnClickListener {
-                tripDetailsViewModel.trip.value!!.interestedUsersUids.add(FirebaseAuth.getInstance().currentUser!!.uid)
-                FirebaseFirestore.getInstance().collection("trips")
-                        .document(tripDetailsViewModel.trip.value!!.id!!).set(tripDetailsViewModel.trip.value!!.toTripDB())
+            if(currentUserUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids ||
+                    currentUserUid in tripDetailsViewModel.trip.value!!.interestedUsersUids){
+                bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                bookingFAB.setOnClickListener{
+                    Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG).show()
+                }
+            } else {
+                bookingFAB.setOnClickListener {
+                    tripDetailsViewModel.trip.value!!.interestedUsersUids.add(currentUserUid)
+                    FirebaseFirestore.getInstance().collection("trips")
+                        .document(tripDetailsViewModel.trip.value!!.id!!)
+                        .set(tripDetailsViewModel.trip.value!!.toTripDB())
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.success_message_booked),
+                                Toast.LENGTH_LONG
+                            ).show()
                             var tripOwner: Profile? = null
                             FirebaseFirestore.getInstance().collection("users")
                                 .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
                                 .addOnSuccessListener {
-                                    Log.d(getLogTag(), "reservation notification: tripOwner is $tripOwner")
+                                    Log.d(
+                                        getLogTag(),
+                                        "reservation notification: tripOwner is $tripOwner"
+                                    )
                                     if (it != null) {
                                         tripOwner = it.toObject(Profile::class.java)
-                                        val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
+                                        val me =
+                                            ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
                                         if (tripOwner != null && me != null) {
                                             MessagingService.sendNotification(
                                                 tripOwner!!.notificationToken,
                                                 AndroidNotification(
                                                     "New trip reservation!",
                                                     "User ${me.fullName} has just booked your trip from " +
-                                                            "${tripDetailsViewModel.trip.value!!.from} "+
+                                                            "${tripDetailsViewModel.trip.value!!.from} " +
                                                             "to ${tripDetailsViewModel.trip.value!!.to} " +
-                                                            "on ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(tripDetailsViewModel.trip.value!!.startDateTime)}",
+                                                            "on ${
+                                                                SimpleDateFormat("dd/MM/yyyy HH:mm").format(
+                                                                    tripDetailsViewModel.trip.value!!.startDateTime
+                                                                )
+                                                            }",
                                                     tripDetailsViewModel.trip.value!!.carImageUri.toString()
                                                 )
                                             )
-                                            Log.d(getLogTag(), "reservation notification: sent " +
-                                                    "from ${me.fullName} (${me.uid}) " +
-                                                    "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
+                                            Log.d(
+                                                getLogTag(), "reservation notification: sent " +
+                                                        "from ${me.fullName} (${me.uid}) " +
+                                                        "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!"
+                                            )
                                         }
                                     }
                                     bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
-                            }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
-                    }
+                                }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.warning_message_failedbooking),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                }
             }
         }
 
