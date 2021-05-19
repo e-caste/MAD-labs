@@ -26,8 +26,10 @@ import java.util.*
 
 class OthersTripList(
     menu: Int = R.menu.others_trip_list_menu,
+    title: Int = R.string.otherstriplist_title,
 ): BaseTripList(
     menu = menu,
+    title = title,
 ) {
 
     private val query = queryBase
