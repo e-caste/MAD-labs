@@ -32,7 +32,7 @@ class TripUserDetailsViewAdapter (
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val viewProfile: LinearLayout  = view.findViewById(R.id.viewProfileLink)
+        private val viewProfile: LinearLayout  = view.findViewById(R.id.viewProfileLink)
         val nickname: TextView = view.findViewById(R.id.nickname_details)
         val image: ImageView = view.findViewById(R.id.passenger_image_details)
 

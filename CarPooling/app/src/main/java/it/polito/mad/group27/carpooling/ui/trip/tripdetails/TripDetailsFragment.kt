@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
@@ -135,13 +138,13 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         val dropdownClickListener : (View, ImageView) -> Unit = {
-                view, button ->
-            if(view.visibility == View.VISIBLE){
-                view.visibility = View.GONE
+                dropdownView, button ->
+            if(dropdownView.visibility == View.VISIBLE){
+                dropdownView.visibility = View.GONE
                 button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             }
             else{
-                view.visibility = View.VISIBLE
+                dropdownView.visibility = View.VISIBLE
                 button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
         }
@@ -167,6 +170,47 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.acceptedList.observe(viewLifecycleOwner){
             acceptedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
+        if(!checkPrivateMode()){
+            bookingFAB.setOnClickListener {
+                tripDetailsViewModel.trip.value!!.interestedUsersUids.add(FirebaseAuth.getInstance().currentUser!!.uid)
+                FirebaseFirestore.getInstance().collection("trips")
+                        .document(tripDetailsViewModel.trip.value!!.id!!).set(tripDetailsViewModel.trip.value!!.toTripDB())
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                            var tripOwner: Profile? = null
+                            FirebaseFirestore.getInstance().collection("users")
+                                .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
+                                .addOnSuccessListener {
+                                    Log.d(getLogTag(), "reservation notification: tripOwner is $tripOwner")
+                                    if (it != null) {
+                                        tripOwner = it.toObject(Profile::class.java)
+                                        val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
+                                        if (tripOwner != null && me != null) {
+                                            MessagingService.sendNotification(
+                                                tripOwner!!.notificationToken,
+                                                AndroidNotification(
+                                                    "New trip reservation!",
+                                                    "User ${me.fullName} has just booked your trip from " +
+                                                            "${tripDetailsViewModel.trip.value!!.from} "+
+                                                            "to ${tripDetailsViewModel.trip.value!!.to} " +
+                                                            "on ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(tripDetailsViewModel.trip.value!!.startDateTime)}",
+                                                    tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                                )
+                                            )
+                                            Log.d(getLogTag(), "reservation notification: sent " +
+                                                    "from ${me.fullName} (${me.uid}) " +
+                                                    "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
+                                        }
+                                    }
+                                    bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                            }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
+                    }
+            }
         }
 
     }
