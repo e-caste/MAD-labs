@@ -108,4 +108,5 @@
     <string name="seats_finished_message">I posti sono terminati per il viaggio da %s a %s del %s</string>
     <string name="request_accepted_message">L\'autista ha accettato la tua richiesta per il viaggio da %s a %s del %s</string>
     <string name="trip_cancelled_message">L\'autista ha annullato il viaggio da %s a %s del %s</string>
+    <string name="error_equal_destination_departure">Non può essere uguale alla partenza</string>
 </resources>
