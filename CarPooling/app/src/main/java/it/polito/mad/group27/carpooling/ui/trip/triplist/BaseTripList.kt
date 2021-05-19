@@ -51,7 +51,6 @@ abstract class BaseTripList(
 
     protected val coll = FirebaseFirestore.getInstance().collection("trips")
     protected val queryBase = coll
-        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
     protected open val options = FirestoreRecyclerOptions.Builder<TripDB>()
@@ -106,12 +105,14 @@ abstract class BaseTripList(
         fun _setCardInvisible() {
             view.visibility = View.GONE
             view.layoutParams.height = 0
+            view.layoutParams.width = 0
         }
 
         fun _setCardVisible() {
             view.visibility = View.VISIBLE
             // float should be same value as in fragment_trip.xml - this converts dp->px
             view.layoutParams.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, resources.displayMetrics).toInt()
+            view.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
 

@@ -13,7 +13,11 @@ import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import java.util.*
 
 
-class TripList: BaseTripList() {
+class TripList(
+    title: Int = R.string.triplist_title,
+): BaseTripList(
+    title = title,
+) {
 
     private val query = queryBase.whereEqualTo("ownerUid", currentUserUid)
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()

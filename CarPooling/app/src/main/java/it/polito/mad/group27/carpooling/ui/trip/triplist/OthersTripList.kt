@@ -14,6 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.trip.Option
@@ -25,11 +26,15 @@ import java.util.*
 
 class OthersTripList(
     menu: Int = R.menu.others_trip_list_menu,
+    title: Int = R.string.otherstriplist_title,
 ): BaseTripList(
     menu = menu,
+    title = title,
 ) {
 
-    private val query = queryBase  // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
+    private val query = queryBase
+        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
+    // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
@@ -63,7 +68,7 @@ class OthersTripList(
                 trip.interestedUsersUids.add(currentUserUid)
                 coll.document(trip.id!!).set(trip.toTripDB())
                     .addOnSuccessListener {
-                        icon = R.drawable.ic_baseline_done_24
+//                        icon = R.drawable.ic_baseline_done_24
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
                         // try sending notification to trip owner
                         var tripOwner: Profile? = null
@@ -93,13 +98,13 @@ class OthersTripList(
                         }
                     }
                     .addOnFailureListener {
-                        icon = R.drawable.ic_baseline_add_24
+//                        icon = R.drawable.ic_baseline_add_24
                         Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
                     }
                 }
         }
-        tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
-        tripViewHolder.topRightButton.setImageResource(icon!!)
+        tripViewHolder.topRightButtonShadow.setImageResource(icon)
+        tripViewHolder.topRightButton.setImageResource(icon)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
