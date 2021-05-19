@@ -63,8 +63,8 @@
         android:layout_marginLeft="8dp"
         android:layout_weight="2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:startIconDrawable="@drawable/ic_round_access_time_24">
+        android:layout_height="wrap_content">
+<!--        app:startIconDrawable="@drawable/ic_round_access_time_24">-->
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"

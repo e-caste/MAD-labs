@@ -396,7 +396,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/interested_users"
@@ -431,7 +432,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/accepted_users"
@@ -461,6 +463,19 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/no_traveller_info_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="8sp"
+            android:layout_marginBottom="8sp"
+            android:paddingStart="8sp"
+            android:paddingEnd="8sp"
+            android:text="@string/no_passengers_message"
+            android:textColor="#636363"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

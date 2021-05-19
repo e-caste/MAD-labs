@@ -156,7 +156,7 @@ class OthersTripList(
             chip.setOnClickListener {
                 checkedChips[k] = !checkedChips[k]!!
                 Log.d(getLogTag(), "chip from ($logParam) toggled: ${checkedChips[k]}")
-                adapter!!.notifyDataSetChanged()
+                adapter!!.onDataChanged()
             }
             chipGroup.addView(chip)
         }

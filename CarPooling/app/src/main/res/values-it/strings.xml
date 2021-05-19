@@ -97,5 +97,7 @@
     <string name="alert_message">Quest\'azione non può essere annullata!</string>
     <string name="cancel">ANNULLA</string>
     <string name="yes">SI</string>
+    <string name="no_passengers_message">Nessun passeggero (per ora)</string>
     <string name="upto">Fino a</string>
+    <string name="start_date_not_in_past">Non può essere nel passato</string>
 </resources>
