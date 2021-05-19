@@ -203,35 +203,52 @@ class OthersTripList(
 
     override fun isFilteredOut(trip: Trip): Boolean {
 
-        // returns true when at least 1 filter does not correspond to one of the trip's fields
-        fun isFilteredOutByTripFilter(): Boolean {
+        // returns true when a trip is not filtered out by any field of the trip filter
+        // returns false when at least 1 filter does not correspond to one of the trip's fields
+        fun isNotFilteredOutByTripFilter(): Boolean {
+            var fromStopIndex: Int? = null
+            var fromStop: String? = null
+            val stops = trip.stops.map { it.place }.toMutableList()
+            stops.add(0, trip.from)
+            stops.add(trip.to)
+            Log.d(getLogTag(), "stops list is: $stops")
+
             if (tripFilter.from != null && checkedChips["from"]!!) {
-                trip.from.contains(tripFilter.from!!, ignoreCase = true) && return true
+                val sublist = stops.subList(0, stops.size - 1)
+//                Log.d(getLogTag(), "stops: $stops - " +
+//                        "sublist: $sublist - " +
+//                        "from: ${tripFilter.from!!} - " +
+//                        "contains: ${sublist.any { it.contains(tripFilter.from!!, ignoreCase = true) }}")
+                fromStop = sublist.find { it.contains(tripFilter.from!!, ignoreCase = true) }
+                if (fromStop != null) {
+                    fromStopIndex = sublist.indexOf(fromStop)
+                } else return false
             }
             if (tripFilter.to != null && checkedChips["to"]!!) {
-                trip.to.contains(tripFilter.to!!, ignoreCase = true) && return true
+                val sublist = stops.subList(fromStopIndex ?: 1, stops.size)
+                sublist.any {  it.contains(tripFilter.to!!, ignoreCase = true) } || return false
             }
             if (trip.price != null && checkedChips["priceMin"]!!) {
-                trip.price!! >= tripFilter.priceMin && return true
+                trip.price!! >= tripFilter.priceMin || return false
             }
             if (trip.price != null && checkedChips["priceMax"]!!) {
-                trip.price!! <= tripFilter.priceMax && return true
+                trip.price!! <= tripFilter.priceMax || return false
             }
             if (tripFilter.dateTime != null && checkedChips["dateTime"]!!) {
-                trip.startDateTime >= tripFilter.dateTime!! && return true
+                trip.startDateTime >= tripFilter.dateTime!! || return false
             }
             for (opt in Option.values()) {
                 if (tripFilter.options.contains(opt) &&
                     tripFilter.options[opt] == true &&
                     checkedChips[opt.name.toLowerCase(Locale.ROOT)]!!) {
-                    trip.options.contains(opt) && return true
+                    trip.options.contains(opt) || return false
                 }
             }
-            return false
+            return true
         }
 
         return !(trip.ownerUid != currentUserUid &&
                 trip.advertised &&
-                !isFilteredOutByTripFilter())
+                isNotFilteredOutByTripFilter())
     }
 }
