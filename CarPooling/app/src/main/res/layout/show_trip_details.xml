@@ -15,6 +15,16 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/unadvertised_trip_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FF0000"
+            android:text="This trip is unadvertised"
+            android:visibility="gone"/>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
