@@ -255,7 +255,6 @@ open class EditFragment(layoutId: Int,
             }
             File(act.filesDir, getString(R.string.temporary_edit_image_file))
         }else {
-            //TODO manage it
             callback(null, false)
         }
     }

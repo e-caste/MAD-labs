@@ -29,7 +29,6 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
     }
 
     lateinit var profileDocument:DocumentReference
-    // TODO add loading flag
     private val db = FirebaseFirestore.getInstance()
 
 
@@ -40,7 +39,6 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
             if (!it.exists()) {
                 profileDocument.set(
                     Profile(
-                        //TODO set default displayName
                         currentUser.uid,
                         currentUser.photoUrl?.toString(),
                         currentUser.displayName ?: "",
