@@ -150,8 +150,9 @@ abstract class BaseTripList(
 
             //bringing back scrollview to correct position
             val tmpScroll = verticalScroll
-            recyclerView!!.scrollBy(0,tmpScroll)
-            verticalScroll -= tmpScroll
+            recyclerView?.scrollBy(0,tmpScroll)
+            if (recyclerView != null)
+                verticalScroll -= tmpScroll
 
         }
 
