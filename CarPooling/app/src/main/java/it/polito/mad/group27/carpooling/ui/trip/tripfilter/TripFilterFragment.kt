@@ -148,14 +148,11 @@ class TripFilterFragment : BaseFragmentWithToolbar(
             viewModel.tripFilter.from = extractText(fromInput)
             viewModel.tripFilter.to = extractText(toInput)
 
-            //TODO manage corner cases
-//            viewModel.tripFilter.priceMin = if(minPriceText.text== "0 €") null
-//                        else BigDecimal(minPriceText.text.split(" ")[0])
-//            viewModel.tripFilter.priceMax = if(minPriceText.text== "100 €") null
-//                        else BigDecimal(maxPriceText.text.split(" ")[0])
+            viewModel.tripFilter.priceMin = if(minPriceText.text== "0 €") BigDecimal("0.00")
+                        else BigDecimal(minPriceText.text.split(" ")[0])
+            viewModel.tripFilter.priceMax = if(maxPriceText.text== "100 €") BigDecimal("100.00")
+                        else BigDecimal(maxPriceText.text.split(" ")[0])
 
-            viewModel.tripFilter.priceMin =  BigDecimal(minPriceText.text.split(" ")[0])
-            viewModel.tripFilter.priceMax =  BigDecimal(maxPriceText.text.split(" ")[0])
 
             viewModel.tripFilter.options = optionsChip.children
                 .map { Option.valueOf((it.tag as String).toUpperCase()) to (it as Chip).isChecked }
@@ -170,7 +167,11 @@ class TripFilterFragment : BaseFragmentWithToolbar(
                 viewModel.tripFilter.dateTime!! < Calendar.getInstance() &&
                 (startHourInput.editText?.text?.isNotBlank() == true)) {
                 startDayInput.error = getString(R.string.date_not_in_past)
-            }else{
+            }else if (viewModel.tripFilter.from!=null
+                && viewModel.tripFilter.from == viewModel.tripFilter.to ){
+                toInput.error = getString(R.string.error_equal_destination_departure)
+                Log.d(getLogTag(), "From is ${viewModel.tripFilter.from}")
+            }else {
                 findNavController().navigate(R.id.action_tripFilterFragment_to_othersTripList,
                     bundleOf("filter" to viewModel.tripFilter)
                 )
@@ -185,7 +186,7 @@ class TripFilterFragment : BaseFragmentWithToolbar(
                 (startHourInput.editText?.text ?: "").trim().isNotBlank()
 
     private fun extractText(input: TextInputLayout) =
-        if (input.editText?.text?.trim() == "") null else input.editText?.text.toString()
+        if ((input.editText?.text?.toString() ?: "").trim() == "") null else input.editText?.text.toString()
 
     private fun formatCurrency(value: Float) =
         String.format("%.0f €", value)
