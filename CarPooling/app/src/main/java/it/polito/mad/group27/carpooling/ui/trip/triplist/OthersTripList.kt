@@ -63,7 +63,7 @@ class OthersTripList(
                 trip.interestedUsersUids.add(currentUserUid)
                 coll.document(trip.id!!).set(trip.toTripDB())
                     .addOnSuccessListener {
-                        icon = R.drawable.ic_baseline_done_24
+//                        icon = R.drawable.ic_baseline_done_24
                         Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
                         // try sending notification to trip owner
                         var tripOwner: Profile? = null
@@ -93,13 +93,13 @@ class OthersTripList(
                         }
                     }
                     .addOnFailureListener {
-                        icon = R.drawable.ic_baseline_add_24
+//                        icon = R.drawable.ic_baseline_add_24
                         Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
                     }
                 }
         }
-        tripViewHolder.topRightButtonShadow.setImageResource(icon!!)
-        tripViewHolder.topRightButton.setImageResource(icon!!)
+        tripViewHolder.topRightButtonShadow.setImageResource(icon)
+        tripViewHolder.topRightButton.setImageResource(icon)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
