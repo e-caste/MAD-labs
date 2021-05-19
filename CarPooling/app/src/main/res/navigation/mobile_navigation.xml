@@ -85,6 +85,8 @@
         android:label="TripFilterFragment" >
         <action
             android:id="@+id/action_tripFilterFragment_to_othersTripList"
-            app:destination="@id/othersTripList" />
+            app:destination="@id/othersTripList"
+            app:popUpTo="@id/othersTripList"
+            app:popUpToInclusive="false" />
     </fragment>
 </navigation>
