@@ -102,4 +102,10 @@
     <string name="start_date_not_in_past">Non può essere nel passato</string>
     <string name="triplist_title">I Miei Viaggi</string>
     <string name="otherstriplist_title">Viaggi Disponibili</string>
+    <string name="request_accepted_title">Richiesta accettata</string>
+    <string name="seats_finished_title">Posti terminati</string>
+    <string name="trip_cancelled_title">Viaggio annullato</string>
+    <string name="seats_finished_message">I posti sono terminati per il viaggio da %s a %s del %s</string>
+    <string name="request_accepted_message">L\'autista ha accettato la tua richiesta per il viaggio da %s a %s del %s</string>
+    <string name="trip_cancelled_message">L\'autista ha annullato il viaggio da %s a %s del %s</string>
 </resources>

@@ -449,8 +449,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         for (uid in tripEditViewModel.newAcceptedUsers){
             MessagingService.sendNotification(
                 tripEditViewModel.getProfileByUid(uid).notificationToken,
-                AndroidNotification("Request accepted",
-                    "Driver has accepted your request for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                AndroidNotification(getString(R.string.request_accepted_title),
+                    getString(R.string.request_accepted_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
                     tripEditViewModel.newTrip.carImageUri.toString())
             )
         }
@@ -461,8 +461,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             for (uid in tripEditViewModel.newTrip.interestedUsersUids){
                 MessagingService.sendNotification(
                     tripEditViewModel.getProfileByUid(uid).notificationToken,
-                    AndroidNotification("Seats finished!",
-                        "Seats are finished for the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${df.format(tripEditViewModel.newTrip.startDateTime.time)} ",
+                    AndroidNotification(getString(R.string.seats_finished_title),
+                        getString(R.string.seats_finished_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
                         tripEditViewModel.newTrip.carImageUri.toString())
                 )
             }
@@ -475,12 +475,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     MessagingService.sendNotification(
                         tripEditViewModel.getProfileByUid(uid).notificationToken,
                         AndroidNotification(
-                            "Trip cancelled",
-                            "Driver has cancelled the trip from ${tripEditViewModel.newTrip.from} to ${tripEditViewModel.newTrip.to} of ${
-                                df.format(
-                                    tripEditViewModel.newTrip.startDateTime.time
-                                )
-                            } ",
+                            getString(R.string.trip_cancelled_title),
+                            getString(R.string.trip_cancelled_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
                             tripEditViewModel.newTrip.carImageUri.toString()
                         )
                     )

@@ -117,4 +117,10 @@
         <item quantity="one">You already accepted %d traveler!</item>
         <item quantity="other">You already accepted %d travelers!</item>
     </plurals>
+    <string name="request_accepted_title">Request accepted</string>
+    <string name="seats_finished_title">Seats finished</string>
+    <string name="trip_cancelled_title">Trip cancelled</string>
+    <string name="seats_finished_message">Seats are finished for the trip from %s to %s of %s</string>
+    <string name="request_accepted_message">Driver has accepted your request for the trip from %s to %s of %s</string>
+    <string name="trip_cancelled_message">Driver has cancelled the trip from %s to %s of %s</string>
 </resources>
