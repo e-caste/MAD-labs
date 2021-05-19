@@ -133,17 +133,51 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 updateFields(it)
             }
         }
+
+        val dropdownClickListener : (View, ImageView) -> Unit = {
+                view, button ->
+            if(view.visibility == View.VISIBLE){
+                view.visibility = View.GONE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
+            else{
+                view.visibility = View.VISIBLE
+                button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+            }
+        }
+
+        dropdownListButton.setOnClickListener{
+            dropdownClickListener(stopsRecyclerView,expandButton)
+            tripDetailsViewModel.stopsExpanded = stopsRecyclerView.visibility
+        }
+
+        interestedUsers.setOnClickListener{
+            dropdownClickListener(interestedUsersRecyclerView, interestedExpandButton)
+            tripDetailsViewModel.interestedExpanded = interestedUsersRecyclerView.visibility
+        }
+
+        acceptedUsers.setOnClickListener{
+            dropdownClickListener(acceptedUsersRecyclerView, acceptedExpandButton)
+            tripDetailsViewModel.acceptedExpanded = acceptedUsersRecyclerView.visibility
+        }
+
+        tripDetailsViewModel.interestedList.observe(viewLifecycleOwner){
+            interestedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
+        tripDetailsViewModel.acceptedList.observe(viewLifecycleOwner){
+            acceptedUsers.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
     }
 
     private fun checkAdvertised(): Boolean {
         tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
-//        Log.d(getLogTag(),"advertised: $tripIsAdvertised")
         return tripIsAdvertised
     }
 
     private fun checkPrivateMode(): Boolean {
         privateMode = tripDetailsViewModel.trip.value!!.ownerUid == FirebaseAuth.getInstance().currentUser!!.uid
-//        Log.d(getLogTag(),"privateMode: $privateMode")
         return privateMode
     }
 
@@ -210,8 +244,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
             expandButton.visibility = View.VISIBLE
-            setOnClickListenerDropdown(dropdownListButton, stopsRecyclerView, expandButton
-            ) { visibility -> tripDetailsViewModel.stopsExpanded = visibility }
         } else expandButton.visibility = View.INVISIBLE
 
         // Display additional info
@@ -234,7 +266,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             optionsView.visibility = View.GONE
         }
 
-        if(privateMode){
+        if(checkPrivateMode()){
             bookingFAB.visibility = View.GONE
             travellersDetails.visibility = View.VISIBLE
 
@@ -245,22 +277,20 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     interestedUsers.visibility = View.VISIBLE
                     interestedUsersRecyclerView.visibility = tripDetailsViewModel.interestedExpanded
                     interestedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                    interestedUsersRecyclerView.adapter =
-                        TripUserDetailsViewAdapter(tripDetailsViewModel.loadInterestedUsers(), requireContext())
-
-                    setOnClickListenerDropdown(interestedUsers, interestedUsersRecyclerView, interestedExpandButton
-                    ) { visibility -> tripDetailsViewModel.interestedExpanded = visibility }
+                    tripDetailsViewModel.loadInterestedUsers {
+                        interestedUsersRecyclerView.adapter =
+                            TripUserDetailsViewAdapter(tripDetailsViewModel.interestedList.value!!, requireContext())
+                    }
                 } else interestedUsers.visibility = View.GONE
 
                 if (trip.acceptedUsersUids.size > 0) {
                     acceptedUsers.visibility = View.VISIBLE
-                    acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
-                    acceptedUsersRecyclerView.adapter =
-                        TripUserDetailsViewAdapter(tripDetailsViewModel.loadAcceptedUsers(), requireContext())
-
                     acceptedUsersRecyclerView.visibility = tripDetailsViewModel.acceptedExpanded
-                    setOnClickListenerDropdown(acceptedUsers, acceptedUsersRecyclerView, acceptedExpandButton
-                    ) { visibility -> tripDetailsViewModel.acceptedExpanded = visibility }
+                    acceptedUsersRecyclerView.layoutManager = LinearLayoutManager(context)
+                    tripDetailsViewModel.loadAcceptedUsers {
+                        acceptedUsersRecyclerView.adapter =
+                            TripUserDetailsViewAdapter(tripDetailsViewModel.acceptedList.value!!, requireContext())
+                    }
                 } else acceptedUsers.visibility = View.GONE
 
             } else {
@@ -271,24 +301,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         } else {
             travellersDetails.visibility = View.GONE
             bookingFAB.visibility = View.VISIBLE
-        }
-    }
-
-    private fun setOnClickListenerDropdown(dropdownView : View, contentToHide: View, dropdownImage : ImageView, callback: (Int) -> Unit ) {
-        dropdownView.setOnClickListener {
-            contentToHide.visibility =
-                when (contentToHide.visibility) {
-                    View.GONE -> {
-                        callback(View.VISIBLE)
-                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                        View.VISIBLE
-                    }
-                    else -> {
-                        callback(View.GONE)
-                        dropdownImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                        View.GONE
-                    }
-                }
         }
     }
 
@@ -313,5 +325,3 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
 }
-
-//TODO: FAB only for other users

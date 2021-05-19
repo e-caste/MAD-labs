@@ -19,6 +19,8 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     private val db = FirebaseFirestore.getInstance()
     private val users = db.collection("users")
 
+    val interestedList: MutableLiveData<List<Profile>> = MutableLiveData(listOf())
+    val acceptedList: MutableLiveData<List<Profile>> = MutableLiveData(listOf())
     val trip: MutableLiveData<Trip> = MutableLiveData(null)
     var stopsExpanded: Int = View.GONE
     var interestedExpanded: Int = View.GONE
@@ -31,7 +33,6 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
             if (e != null) {
                 throw Exception("No trip found")
             } else {
-                Log.d(getLogTag(),"got here (SnapshotListener)")
                 trip.value = value!!.toObject(TripDB::class.java)!!.toTrip()
             }
         }
@@ -39,20 +40,22 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
         return trip.value ?: Trip()
     }
 
-    fun loadInterestedUsers() : List<Profile> {
-        var passengersList: MutableList<Profile> = mutableListOf()
+    fun loadInterestedUsers(callback: (MutableList<Profile>) -> Unit) {
+        val list: MutableList<Profile> = mutableListOf()
         users.whereIn("uid",trip.value!!.interestedUsersUids).get().addOnSuccessListener { value ->
-            passengersList.addAll(value.toObjects(Profile::class.java))
+            list.addAll(value.toObjects(Profile::class.java))
+            interestedList.value = list.toList()
+            callback(list)
         }
-        return passengersList
     }
 
-    fun loadAcceptedUsers() : List<Profile> {
-        var passengersList: MutableList<Profile> = mutableListOf()
+    fun loadAcceptedUsers(callback: (MutableList<Profile>) -> Unit) {
+        val list: MutableList<Profile> = mutableListOf()
         users.whereIn("uid",trip.value!!.acceptedUsersUids).get().addOnSuccessListener { value ->
-            passengersList.addAll(value.toObjects(Profile::class.java))
+            list.addAll(value.toObjects(Profile::class.java))
+            acceptedList.value = list.toList()
+            callback(list)
         }
-        return passengersList
     }
 
 
