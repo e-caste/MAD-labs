@@ -14,6 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.trip.Option
@@ -29,7 +30,9 @@ class OthersTripList(
     menu = menu,
 ) {
 
-    private val query = queryBase  // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
+    private val query = queryBase
+        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
+    // .whereNotEqualTo("ownerUid", currentUserUid)  // 2 inequalities on 2 fields in 1 query are invalid. wut.
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()

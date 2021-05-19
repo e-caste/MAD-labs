@@ -51,7 +51,6 @@ abstract class BaseTripList(
 
     protected val coll = FirebaseFirestore.getInstance().collection("trips")
     protected val queryBase = coll
-        .whereGreaterThanOrEqualTo("startDateTime", Timestamp.now())
         .orderBy("startDateTime", Query.Direction.ASCENDING)
     protected val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid ?: "UNAVAILABLE"
     protected open val options = FirestoreRecyclerOptions.Builder<TripDB>()
