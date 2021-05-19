@@ -140,6 +140,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private fun checkAdvertised(): Boolean {
         tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
         Log.d(getLogTag(),"advertised: $tripIsAdvertised")
+
         return tripIsAdvertised
     }
 
@@ -219,6 +220,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         // Display additional info
         if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
+            optionsView.visibility = View.VISIBLE
             luggageView.visibility =
                 if (trip.options.contains(Option.LUGGAGE)) View.VISIBLE else View.GONE
             animalsView.visibility =
