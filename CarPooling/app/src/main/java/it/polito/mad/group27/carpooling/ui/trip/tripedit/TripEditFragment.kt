@@ -301,21 +301,39 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val accepted_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
         val accepted_button = view.findViewById<ImageView>(R.id.expand_accepted_button)
+        val accepted_title = view.findViewById<TextView>(R.id.accepted_users)
         accepted_rv.layoutManager = MyLinearLayoutManager(this.requireContext(), scrollView)
         accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null, requireContext())
 
         val interested_rv = view.findViewById<RecyclerView>(R.id.interested_rv)
         val interested_button = view.findViewById<ImageView>(R.id.expand_interested_button)
+        val interested_title = view.findViewById<TextView>(R.id.interested_users)
         interested_rv.layoutManager = LinearLayoutManager(this.context)
         interested_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel,
             accepted_rv.adapter as PassengerRecyclerViewAdapter,
             requireContext()
         )
 
-        accepted_rv.visibility = View.VISIBLE
-        accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-        interested_rv.visibility = View.VISIBLE
-        interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+        accepted_rv.visibility = tripEditViewModel.accepted_visibility
+        if (accepted_rv.visibility == View.VISIBLE)
+            accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+        else
+            accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+
+        interested_rv.visibility = tripEditViewModel.interested_visibility
+        if (interested_rv.visibility == View.VISIBLE)
+            interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+        else
+            interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+
+        tripEditViewModel.accepted_expand_visibility.observe(viewLifecycleOwner){
+            accepted_button.visibility = it
+            accepted_title.visibility = it
+        }
+        tripEditViewModel.interested_expand_visibility.observe(viewLifecycleOwner){
+            interested_button.visibility = it
+            interested_title.visibility = it
+        }
 
         val expandButtonClickListener: (RecyclerView, ImageView) -> Unit = {
             view, button ->
@@ -333,9 +351,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
         accepted_button.setOnClickListener {
             expandButtonClickListener(accepted_rv, it as ImageView)
+            tripEditViewModel.accepted_visibility = accepted_rv.visibility
+
         }
         interested_button.setOnClickListener {
             expandButtonClickListener(interested_rv, it as ImageView)
+            tripEditViewModel.interested_visibility = interested_rv.visibility
         }
 
         val stopAdvertiseButton = view.findViewById<Button>(R.id.stop_advertising)

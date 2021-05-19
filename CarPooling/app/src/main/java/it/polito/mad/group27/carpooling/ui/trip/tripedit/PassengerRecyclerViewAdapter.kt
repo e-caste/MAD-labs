@@ -109,6 +109,13 @@ class PassengerRecyclerViewAdapter(
                 viewModel.getProfileByUid(it)
             } as MutableList<Profile> )
             this.notifyDataSetChanged()
+
+            if (acceptedAdapter == null){
+                viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            }
+            else{
+                viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            }
         }
     }
 
@@ -132,12 +139,26 @@ class PassengerRecyclerViewAdapter(
         passengers.add(passenger)
         this.notifyItemInserted(passengers.size - 1)
         viewModel.putToAccepted(passenger.uid!!)
+
+        if (acceptedAdapter == null){
+            viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+        }
+        else{
+            viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+        }
     }
 
     fun remove(position: Int) {
         passengers.removeAt(position)
         this.notifyItemRemoved(position)
         this.notifyItemRangeChanged(position, passengers.size - position)
+
+        if (acceptedAdapter == null){
+            viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+        }
+        else{
+            viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+        }
     }
 
 }
