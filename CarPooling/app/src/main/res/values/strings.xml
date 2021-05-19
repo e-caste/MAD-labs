@@ -111,6 +111,8 @@
     <string name="no_passengers_message">No passengers (for now)</string>
     <string name="upto">Up to</string>
     <string name="start_date_not_in_past">Can not be in the past</string>
+    <string name="triplist_title">My Trips</string>
+    <string name="otherstriplist_title">Available Trips</string>
     <plurals name="already_accepted_n_travelers">
         <item quantity="one">You already accepted %d traveler!</item>
         <item quantity="other">You already accepted %d travelers!</item>
