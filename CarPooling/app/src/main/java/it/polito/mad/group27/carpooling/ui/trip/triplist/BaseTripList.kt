@@ -116,6 +116,8 @@ abstract class BaseTripList(
         val showWarningMessage: () -> Unit,
     ) : FirestoreRecyclerAdapter<TripDB, TripViewHolder>(options) {
 
+        var recyclerView: RecyclerView? =null
+        var verticalScroll:Int = 0
         override fun onBindViewHolder(tripViewHolder: TripViewHolder, position: Int, tripDB: TripDB) {
             val trip = tripDB.toTrip()
 
@@ -145,7 +147,26 @@ abstract class BaseTripList(
         override fun onDataChanged() {
             super.onDataChanged()
             showWarningMessage()
+
+            //bringing back scrollview to correct position
+            val tmpScroll = verticalScroll
+            recyclerView!!.scrollBy(0,tmpScroll)
+            verticalScroll -= tmpScroll
+
         }
+
+        override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+            super.onAttachedToRecyclerView(recyclerView)
+            this.recyclerView = recyclerView
+           recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+               override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                   super.onScrolled(recyclerView, dx, dy)
+                   verticalScroll+=dy
+               }
+           })
+
+
+    }
 
         override fun getItemCount(): Int {
             return this.snapshots.size
