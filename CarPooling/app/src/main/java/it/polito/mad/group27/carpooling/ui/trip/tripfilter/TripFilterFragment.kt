@@ -1,7 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripfilter
 
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -28,7 +27,6 @@ import it.polito.mad.group27.carpooling.ui.trip.tripedit.getTimePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.updateTime
 import java.math.BigDecimal
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 class TripFilterFragment : BaseFragmentWithToolbar(

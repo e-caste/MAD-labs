@@ -2,24 +2,18 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
 import android.text.format.DateFormat.is24HourFormat
-import android.util.Log
 import android.widget.EditText
-import android.widget.TextView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import java.text.DateFormat
-import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 val df: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY)
 val YYYYMMDD: DateFormat = SimpleDateFormat("yyyyMMdd")

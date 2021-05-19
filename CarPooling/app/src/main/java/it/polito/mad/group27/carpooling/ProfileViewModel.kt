@@ -1,16 +1,11 @@
 package it.polito.mad.group27.carpooling
 
 import android.app.Application
-import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-
 
 class ProfileViewModel(application: Application) : ProfileBaseViewModel(application) {
 
@@ -28,7 +23,7 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
         var token:String? = null
     }
 
-    lateinit var profileDocument:DocumentReference
+    private lateinit var profileDocument:DocumentReference
     private val db = FirebaseFirestore.getInstance()
 
 

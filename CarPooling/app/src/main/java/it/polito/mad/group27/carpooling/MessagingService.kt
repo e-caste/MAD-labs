@@ -15,7 +15,7 @@ import java.net.URL
 
 class MessagingService : FirebaseMessagingService() {
 
-    companion object oauth {
+    companion object Oauth {
         lateinit var oauthToken: String
 
         fun sendNotification(userToken: String?, notification: AndroidNotification){
@@ -28,7 +28,7 @@ class MessagingService : FirebaseMessagingService() {
 
             Thread{
                 val url = URL("https://$host$path")
-                var client = url.openConnection() as HttpURLConnection
+                val client = url.openConnection() as HttpURLConnection
                 client.requestMethod = "POST"
                 client.setRequestProperty("Content-Type", "application/json")
                 client.setRequestProperty("Authorization", "Bearer $oauthToken")
@@ -48,7 +48,7 @@ class MessagingService : FirebaseMessagingService() {
                 outputPost.flush()
                 outputPost.close()
 
-                var line : String? = ""
+                var line : String?
                 val code = client.responseCode.toString()
                 Log.d("MAD-group27", code)
                 if(!code.startsWith("4") && !code.startsWith("5")) {

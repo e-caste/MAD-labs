@@ -6,7 +6,6 @@ import android.util.Log
 import android.util.Patterns
 import android.view.*
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.*
@@ -28,7 +27,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var profile = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value!!.copy()
+        val profile = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value!!.copy()
         profileViewModel = ViewModelProvider(this).get(EditProfileViewModel::class.java)
 
 

@@ -5,8 +5,8 @@ import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import com.google.firebase.Timestamp
-import it.polito.mad.group27.carpooling.CalendarToTimestamp
-import it.polito.mad.group27.carpooling.TimestampToCalendar
+import it.polito.mad.group27.carpooling.calendarToTimestamp
+import it.polito.mad.group27.carpooling.timestampToCalendar
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -110,8 +110,8 @@ data class Trip(
             carImageUri = carImageUri?.toString(),
             totalSeats = totalSeats!!,
             price = price!!.also { it.setScale(2) }.toString(),
-            startDateTime = CalendarToTimestamp(startDateTime),
-            endDateTime = CalendarToTimestamp(endDateTime),
+            startDateTime = calendarToTimestamp(startDateTime),
+            endDateTime = calendarToTimestamp(endDateTime),
             from = from,
             to = to,
             stops = stops.map { it.toStopDB() }.toMutableList(),
@@ -146,7 +146,7 @@ data class Stop(
     @Serializable(with = CalendarSerializer::class) var dateTime: Calendar
 ) : Parcelable {
     fun toStopDB():StopDB{
-        return StopDB(place, CalendarToTimestamp(dateTime))
+        return StopDB(place, calendarToTimestamp(dateTime))
     }
 }
 
@@ -183,8 +183,8 @@ data class TripDB(
             carImageUri = if (carImageUri == null) null else Uri.parse(carImageUri),
             totalSeats = totalSeats,
             price = BigDecimal(price).also{it.setScale(2)},
-            startDateTime = TimestampToCalendar(startDateTime),
-            endDateTime = TimestampToCalendar(endDateTime),
+            startDateTime = timestampToCalendar(startDateTime),
+            endDateTime = timestampToCalendar(endDateTime),
             from = from,
             to = to,
             stops = stops.map { it.toStop() }.toMutableList(),
@@ -199,7 +199,7 @@ data class TripDB(
 @Parcelize
 data class StopDB(var place: String="", var dateTime: Timestamp=Timestamp.now()) : Parcelable {
     fun toStop(): Stop {
-        return Stop(place, dateTime = TimestampToCalendar(dateTime))
+        return Stop(place, dateTime = timestampToCalendar(dateTime))
     }
 }
 

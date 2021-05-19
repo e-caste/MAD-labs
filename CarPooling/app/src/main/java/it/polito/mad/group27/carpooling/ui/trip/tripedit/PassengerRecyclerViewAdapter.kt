@@ -14,14 +14,12 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import it.polito.mad.group27.carpooling.AndroidNotification
-import it.polito.mad.group27.carpooling.MessagingService
 import it.polito.mad.group27.carpooling.Profile
 import it.polito.mad.group27.carpooling.R
 
 class PassengerRecyclerViewAdapter(
     private val viewModel: TripEditViewModel,
-    val acceptedAdapter: PassengerRecyclerViewAdapter?,
+    private val acceptedAdapter: PassengerRecyclerViewAdapter?,
     private val context: Context
 ) :
     RecyclerView.Adapter<PassengerRecyclerViewAdapter.ItemViewHolder>() {
@@ -65,7 +63,7 @@ class PassengerRecyclerViewAdapter(
                         )
                     }
 
-                    viewModel.totalSeats.observe(context as LifecycleOwner){
+                    viewModel.totalSeats.observe(context as LifecycleOwner){ it ->
                         if(viewModel.newTrip.acceptedUsersUids.size < it ?: 0) {
 
                             button.isEnabled = true
@@ -111,15 +109,15 @@ class PassengerRecyclerViewAdapter(
             this.notifyDataSetChanged()
 
             if (acceptedAdapter == null){
-                viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+                viewModel.acceptedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
             }
             else{
-                viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+                viewModel.interestedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
             }
         }
     }
 
-    val passengers: MutableList<Profile> = mutableListOf()
+  private val passengers: MutableList<Profile> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layout = LayoutInflater.from(parent.context)
@@ -141,10 +139,10 @@ class PassengerRecyclerViewAdapter(
         viewModel.putToAccepted(passenger.uid!!)
 
         if (acceptedAdapter == null){
-            viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            viewModel.acceptedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
         }
         else{
-            viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            viewModel.interestedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
         }
     }
 
@@ -154,10 +152,10 @@ class PassengerRecyclerViewAdapter(
         this.notifyItemRangeChanged(position, passengers.size - position)
 
         if (acceptedAdapter == null){
-            viewModel.accepted_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            viewModel.acceptedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
         }
         else{
-            viewModel.interested_expand_visibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
+            viewModel.interestedExpandVisibility.value = if (passengers.size == 0) View.GONE else View.VISIBLE
         }
     }
 

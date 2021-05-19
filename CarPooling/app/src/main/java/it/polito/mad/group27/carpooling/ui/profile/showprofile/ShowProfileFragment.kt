@@ -5,13 +5,10 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -27,7 +24,6 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
-import it.polito.mad.group27.carpooling.ui.trip.triplist.BaseTripList
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -60,8 +56,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if(!privateMode){
-            val inflater: MenuInflater = inflater
-            inflater.inflate(optionsMenuId, menu)
+            val myInflater: MenuInflater = inflater
+            myInflater.inflate(optionsMenuId, menu)
         }
     }
 

@@ -27,7 +27,7 @@ class TripStopsViewAdapter(
         val date = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ITALY).format(item.dateTime.timeInMillis).toString()
         val time = Hour(item.dateTime[Calendar.HOUR_OF_DAY], item.dateTime[Calendar.MINUTE]).toString()
 
-        holder.stopDateTime.text = "$date, $time"
+        "$date, $time".also { holder.stopDateTime.text = it }
         holder.stopName.text = item.place
     }
 

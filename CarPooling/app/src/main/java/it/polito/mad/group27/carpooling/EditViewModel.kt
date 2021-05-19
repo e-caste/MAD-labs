@@ -36,8 +36,8 @@ class EditViewModel(application: Application): AndroidViewModel(application) {
  * Convert bitmap to byte array using ByteBuffer.
  */
 fun Bitmap.convertToByteArray(): ByteArray {
-    val baos = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-    return baos.toByteArray()
+    val outputStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+    return outputStream.toByteArray()
 
 }

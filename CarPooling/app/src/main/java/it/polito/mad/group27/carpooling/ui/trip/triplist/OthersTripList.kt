@@ -92,7 +92,8 @@ class OthersTripList(
                                                 trip.carImageUri.toString()
                                             )
                                         )
-                                        Log.d(getLogTag(), "reservation notification: sent " +
+                                        Log.d(
+                                            getLogTag(), "reservation notification: sent " +
                                                 "from ${me.fullName} (${me.uid}) " +
                                                 "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
                                 }

@@ -173,7 +173,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 .set(tripDetailsViewModel.trip.value!!.toTripDB())
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
-                    var tripOwner: Profile? = null
+                    var tripOwner: Profile?
                     FirebaseFirestore.getInstance().collection("users")
                         .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
                         .addOnSuccessListener {
@@ -196,7 +196,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                             tripDetailsViewModel.trip.value!!.carImageUri.toString()
                                         )
                                     )
-                                    Log.d(getLogTag(), "reservation notification: sent " +
+                                    Log.d(
+                                        getLogTag(), "reservation notification: sent " +
                                             "from ${me.fullName} (${me.uid}) " +
                                             "to ${tripOwner!!.fullName} (${tripOwner!!.uid})!")
                                     tripDetailsViewModel.userIsBooked.value = true

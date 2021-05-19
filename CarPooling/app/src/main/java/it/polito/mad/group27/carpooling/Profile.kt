@@ -3,9 +3,6 @@ package it.polito.mad.group27.carpooling
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
-
 
 @Parcelize
 data class Profile(

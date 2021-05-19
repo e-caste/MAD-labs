@@ -2,12 +2,10 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.widget.NestedScrollView
@@ -15,8 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,11 +28,6 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.triplist.TripList
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.File
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -314,23 +305,23 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             requireContext()
         )
 
-        accepted_rv.visibility = tripEditViewModel.accepted_visibility
+        accepted_rv.visibility = tripEditViewModel.acceptedVisibility
         if (accepted_rv.visibility == View.VISIBLE)
             accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
         else
             accepted_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
 
-        interested_rv.visibility = tripEditViewModel.interested_visibility
+        interested_rv.visibility = tripEditViewModel.interestedVisibility
         if (interested_rv.visibility == View.VISIBLE)
             interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
         else
             interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
 
-        tripEditViewModel.accepted_expand_visibility.observe(viewLifecycleOwner){
+        tripEditViewModel.acceptedExpandVisibility.observe(viewLifecycleOwner){
             accepted_button.visibility = it
             accepted_title.visibility = it
         }
-        tripEditViewModel.interested_expand_visibility.observe(viewLifecycleOwner){
+        tripEditViewModel.interestedExpandVisibility.observe(viewLifecycleOwner){
             interested_button.visibility = it
             interested_title.visibility = it
         }
@@ -351,12 +342,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
         accepted_button.setOnClickListener {
             expandButtonClickListener(accepted_rv, it as ImageView)
-            tripEditViewModel.accepted_visibility = accepted_rv.visibility
+            tripEditViewModel.acceptedVisibility = accepted_rv.visibility
 
         }
         interested_button.setOnClickListener {
             expandButtonClickListener(interested_rv, it as ImageView)
-            tripEditViewModel.interested_visibility = interested_rv.visibility
+            tripEditViewModel.interestedVisibility = interested_rv.visibility
         }
 
         val stopAdvertiseButton = view.findViewById<Button>(R.id.stop_advertising)

@@ -1,7 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
         private val placeView = v.findViewById<TextInputLayout>(R.id.stop_place)
         private val hourView = v.findViewById<TextInputLayout>(R.id.stop_hour)
         private val dateView  = v.findViewById<TextInputLayout>(R.id.stop_date)
-        private val remove_button = v.findViewById<ImageView>(R.id.remove_stop_button)
+        private val removeButton = v.findViewById<ImageView>(R.id.remove_stop_button)
         private var timePicker: MaterialTimePicker ? = null
         private lateinit var datePicker: MaterialDatePicker<Long>
 
@@ -32,7 +31,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
 
         fun bind(stop: Stop, position: Int) {
             datePicker = getDatePicker(stop.dateTime, dateView)
-            remove_button.visibility = View.VISIBLE
+            removeButton.visibility = View.VISIBLE
             if (dateTimeWatcher!=null){
                 dateView.editText!!.removeTextChangedListener(dateTimeWatcher)
                 hourView.editText!!.removeTextChangedListener(dateTimeWatcher)
@@ -51,7 +50,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
                 { val (validStopDate, validStopTime) = trip.checkDateTimeStop(position)
                     !validStopDate || !validStopTime},
                 {
-                    val (validStopDate, validStopTime) = trip.checkDateTimeStop(position)
+                    val (validStopDate, _) = trip.checkDateTimeStop(position)
                     if(!validStopDate){
                         dateView.error = context.getString(R.string.date_error)
                         hourView.error = null
@@ -79,7 +78,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
             placeView.hint = context.getString(R.string.stop) + " ${position+1}"
             placeView?.editText?.addTextChangedListener(placeViewWatcher)
 
-            remove_button.setOnClickListener {
+            removeButton.setOnClickListener {
                 parent.remove(position)
             }
 
@@ -94,7 +93,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
                         stop.dateTime.updateTime(it)
                     }
                     timePicker!!.show(
-                        (context as AppCompatActivity).getSupportFragmentManager(),
+                        (context as AppCompatActivity).supportFragmentManager,
                         "timePickerTag"
                     )
                 }
@@ -104,7 +103,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
             dateView.editText?.setText(df.format(stop.dateTime.time))
             dateView.editText?.setOnClickListener {
                 if(!datePicker.isVisible)
-                    datePicker.show((context as AppCompatActivity).getSupportFragmentManager(), "datePickerTag")
+                    datePicker.show((context as AppCompatActivity).supportFragmentManager, "datePickerTag")
             }
             dateView.editText?.addTextChangedListener(dateTimeWatcher)
         }

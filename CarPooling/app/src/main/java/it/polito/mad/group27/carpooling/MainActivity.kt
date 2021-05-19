@@ -1,6 +1,5 @@
 package it.polito.mad.group27.carpooling
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -23,23 +21,19 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
 
     lateinit var appBarConfiguration: AppBarConfiguration
-    lateinit var navView: NavigationView
-    lateinit var drawerLayout: DrawerLayout
-    @Deprecated("Will be deleted")
-    lateinit var profile: Profile
-    @Deprecated("Will be deleted")
-    var profileImage: Bitmap?= null
-    lateinit var navHeader: View
-    lateinit var profileImageView: ImageView
-    lateinit var profileNameTextView: TextView
-    lateinit var profileEmailTextView: TextView
+    private lateinit var navView: NavigationView
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navHeader: View
+    private lateinit var profileImageView: ImageView
+    private lateinit var profileNameTextView: TextView
+    private lateinit var profileEmailTextView: TextView
 
-    lateinit var profileViewModel : ProfileViewModel
+    private lateinit var profileViewModel : ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        profileViewModel.profile.observe(this, Observer { loadProfile(it) })
+        profileViewModel.profile.observe(this, { loadProfile(it) })
 
         setContentView(R.layout.activity_main)
 

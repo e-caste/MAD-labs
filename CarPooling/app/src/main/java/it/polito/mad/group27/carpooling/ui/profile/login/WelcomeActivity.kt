@@ -2,7 +2,6 @@ package it.polito.mad.group27.carpooling.ui.profile.login
 
 import android.accounts.AccountManager
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
