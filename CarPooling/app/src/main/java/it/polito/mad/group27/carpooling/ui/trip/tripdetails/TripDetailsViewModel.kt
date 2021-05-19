@@ -33,7 +33,9 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
             if (e != null) {
                 throw Exception("No trip found")
             } else {
-                trip.value = value!!.toObject(TripDB::class.java)!!.toTrip()
+                if(value!=null){
+                    trip.value = value.toObject(TripDB::class.java)!!.toTrip()
+                }
             }
         }
 
