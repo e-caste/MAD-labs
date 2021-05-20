@@ -5,9 +5,12 @@ import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 import it.polito.mad.group27.carpooling.calendarToTimestamp
 import it.polito.mad.group27.carpooling.timestampToCalendar
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
@@ -16,6 +19,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import org.osmdroid.views.MapView
 import java.io.File
 import java.math.BigDecimal
 import java.text.DateFormat
@@ -95,7 +99,11 @@ data class Trip(
     var endDateTime: Calendar = (Calendar.getInstance()
         .clone() as Calendar).also { it.add(Calendar.HOUR, +2) },
     var from: String = "",
+    @Contextual // TODO write serializer
+    var fromGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
     var to: String = "",
+    @Contextual // TODO write serializer
+    var toGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
     var otherInformation: String? = null,
@@ -143,7 +151,9 @@ data class Hour(var hour: Int, var minute: Int) : Parcelable {
 @Parcelize
 data class Stop(
     var place: String,
-    @Serializable(with = CalendarSerializer::class) var dateTime: Calendar
+    @Serializable(with = CalendarSerializer::class) var dateTime: Calendar,
+    @Contextual // TODO serializer
+    var geoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0)
 ) : Parcelable {
     fun toStopDB():StopDB{
         return StopDB(place, calendarToTimestamp(dateTime))
@@ -157,7 +167,6 @@ enum class Option {
 }
 
 
-@Parcelize
 data class TripDB(
     // primary keys
     var id: String?=null,
@@ -168,14 +177,16 @@ data class TripDB(
     var startDateTime: Timestamp=Timestamp.now(),
     var endDateTime: Timestamp=Timestamp.now(),
     var from: String="",
+    var fromGeoPoint: GeoPoint = GeoPoint(0.0, 0.0),
     var to: String="",
+    var toGeoPoint: GeoPoint = GeoPoint(0.0, 0.0),
     val stops: MutableList<StopDB> = mutableListOf(),
     val options: MutableList<Long> = mutableListOf(),
     var otherInformation: String?=null,
     val acceptedUsersUids: MutableList<String> = mutableListOf(),
     val interestedUsersUids: MutableList<String> = mutableListOf(),
     var advertised: Boolean = true
-) : Parcelable {
+) {
 
     fun toTrip() = Trip(
             id = id,
@@ -196,12 +207,15 @@ data class TripDB(
         )
 }
 
-@Parcelize
-data class StopDB(var place: String="", var dateTime: Timestamp=Timestamp.now()) : Parcelable {
+data class StopDB(var place: String="",
+                  var dateTime: Timestamp=Timestamp.now(),
+                  var geoPoint: GeoPoint = GeoPoint(0.0, 0.0)){
     fun toStop(): Stop {
         return Stop(place, dateTime = timestampToCalendar(dateTime))
     }
 }
+
+// TODO implement converters with new geopoints fields
 
 
 

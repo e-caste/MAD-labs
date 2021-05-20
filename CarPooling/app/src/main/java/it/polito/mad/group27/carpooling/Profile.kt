@@ -1,4 +1,4 @@
-package it.polito.mad.group27.carpooling
+package it.polito.mad.group27.carpooling.entities
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp

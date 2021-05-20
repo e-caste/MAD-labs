@@ -1,4 +1,4 @@
-package it.polito.mad.group27.carpooling
+package it.polito.mad.group27.carpooling.entities
 
 import android.os.Parcelable
 import it.polito.mad.group27.carpooling.ui.trip.BigDecimalSerializer

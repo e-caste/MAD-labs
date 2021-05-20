@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import it.polito.mad.group27.carpooling.entities.Profile
 
 class ProfileViewModel(application: Application) : ProfileBaseViewModel(application) {
 

@@ -14,7 +14,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import it.polito.mad.group27.carpooling.Profile
+import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.R
 
 class PassengerRecyclerViewAdapter(

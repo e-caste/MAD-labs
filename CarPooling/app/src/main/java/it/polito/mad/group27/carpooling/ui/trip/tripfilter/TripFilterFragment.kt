@@ -15,7 +15,7 @@ import com.google.android.material.slider.RangeSlider
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.TripFilter
+import it.polito.mad.group27.carpooling.entities.TripFilter
 import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar

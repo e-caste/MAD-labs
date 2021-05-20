@@ -19,6 +19,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
+import it.polito.mad.group27.carpooling.entities.Profile
+import it.polito.mad.group27.carpooling.entities.TripFilter
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
