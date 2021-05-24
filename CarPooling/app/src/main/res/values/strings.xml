@@ -6,7 +6,6 @@
     <string name="default_nickname">MadJohn</string>
     <string name="default_fullname">John Smith</string>
     <string name="default_rating" translatable="false">4.5</string>
-    <string name="reputation">Reputation</string>
     <string name="since">Since</string>
     <string name="default_registration_date" translatable="false">25/03/2021</string>
     <string name="edit">Edit</string>
@@ -125,4 +124,6 @@
     <string name="trip_cancelled_message">Driver has cancelled the trip from %s to %s of %s</string>
     <string name="error_equal_destination_departure">Cannot be equal to departure location</string>
     <string name="this_trip_is_unadvertised">This trip is unadvertised</string>
+    <string name="passenger_reputation">Passenger rating</string>
+    <string name="driver_reputation">Driver rating</string>
 </resources>

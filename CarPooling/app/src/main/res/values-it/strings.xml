@@ -4,7 +4,6 @@
     <string name="default_email">giovanni.smitti@polito.it</string>
     <string name="default_nickname">Giò</string>
     <string name="default_fullname">Giovanni Smitti</string>
-    <string name="reputation">Reputazione</string>
     <string name="since">Dal</string>
     <string name="edit">Modifica</string>
     <string name="hint_fullname">Nome e cognome</string>
@@ -110,4 +109,6 @@
     <string name="trip_cancelled_message">L\'autista ha annullato il viaggio da %s a %s del %s</string>
     <string name="error_equal_destination_departure">Non può essere uguale alla partenza</string>
     <string name="this_trip_is_unadvertised">Questo viaggio non è disponibile</string>
+    <string name="passenger_reputation">Valutazione passeggero</string>
+    <string name="driver_reputation">Valutazione autista</string>
 </resources>
