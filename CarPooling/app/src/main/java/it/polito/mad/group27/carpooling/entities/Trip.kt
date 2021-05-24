@@ -143,7 +143,9 @@ data class Trip(
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation,
-            advertised = advertised
+            advertised = advertised,
+            fromGeoPoint = GeoPoint(fromGeoPoint.latitude, fromGeoPoint.longitude),
+            toGeoPoint = GeoPoint(toGeoPoint.latitude, toGeoPoint.longitude)
         )
 }
 
@@ -172,7 +174,10 @@ data class Stop(
     var geoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0)
 ) : Parcelable {
     fun toStopDB():StopDB{
-        return StopDB(place, calendarToTimestamp(dateTime))
+        return StopDB(
+            place,
+            calendarToTimestamp(dateTime),
+            GeoPoint(geoPoint.latitude, geoPoint.longitude))
     }
 }
 
@@ -219,7 +224,9 @@ data class TripDB(
             acceptedUsersUids = acceptedUsersUids,
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation,
-            advertised = advertised
+            advertised = advertised,
+            fromGeoPoint = org.osmdroid.util.GeoPoint(fromGeoPoint.latitude, fromGeoPoint.longitude),
+            toGeoPoint = org.osmdroid.util.GeoPoint(toGeoPoint.latitude, toGeoPoint.longitude)
         )
 }
 
@@ -227,11 +234,12 @@ data class StopDB(var place: String="",
                   var dateTime: Timestamp=Timestamp.now(),
                   var geoPoint: GeoPoint = GeoPoint(0.0, 0.0)){
     fun toStop(): Stop {
-        return Stop(place, dateTime = timestampToCalendar(dateTime))
+        return Stop(
+            place,
+            dateTime = timestampToCalendar(dateTime),
+            org.osmdroid.util.GeoPoint(geoPoint.latitude, geoPoint.longitude))
     }
 }
-
-// TODO implement converters with new geopoints fields
 
 
 
