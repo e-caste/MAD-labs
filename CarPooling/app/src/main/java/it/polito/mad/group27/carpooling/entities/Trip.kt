@@ -75,7 +75,23 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 }
 
-// TODO: do we need the Trip/TripDB id? YES, in OthersTripList
+@Serializer(forClass = org.osmdroid.util.GeoPoint::class)
+object OsmdroidGeoPointSerializer : KSerializer<org.osmdroid.util.GeoPoint> {
+
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("osmdroidGeoPoint", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): org.osmdroid.util.GeoPoint {
+        val decoded = decoder.decodeString().split(" ")
+        return org.osmdroid.util.GeoPoint(decoded[0].toDoubleOrNull() ?: 0.0, decoded[1].toDoubleOrNull() ?: 0.0)
+    }
+
+    override fun serialize(encoder: Encoder, value: org.osmdroid.util.GeoPoint) {
+        encoder.encodeString("${value.latitude} ${value.longitude}")
+    }
+}
+
+// do we need the Trip/TripDB id? YES, in OthersTripList
 // we should use the document id. How to get it automatically? DONE in saveTrip method of tripEditFragment
 
 @Serializable
@@ -99,10 +115,10 @@ data class Trip(
     var endDateTime: Calendar = (Calendar.getInstance()
         .clone() as Calendar).also { it.add(Calendar.HOUR, +2) },
     var from: String = "",
-    @Contextual // TODO write serializer
+    @Serializable(with = OsmdroidGeoPointSerializer::class)
     var fromGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
     var to: String = "",
-    @Contextual // TODO write serializer
+    @Serializable(with = OsmdroidGeoPointSerializer::class)
     var toGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
@@ -152,7 +168,7 @@ data class Hour(var hour: Int, var minute: Int) : Parcelable {
 data class Stop(
     var place: String,
     @Serializable(with = CalendarSerializer::class) var dateTime: Calendar,
-    @Contextual // TODO serializer
+    @Serializable(with = OsmdroidGeoPointSerializer::class)
     var geoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0)
 ) : Parcelable {
     fun toStopDB():StopDB{
