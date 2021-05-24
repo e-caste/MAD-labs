@@ -42,7 +42,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     private lateinit var emailView: TextView
     private lateinit var locationView: TextView
     private lateinit var registrationDateView: TextView
-    private lateinit var reputationBar: RatingBar
+    private lateinit var reputationBarPassenger: RatingBar
+    private lateinit var reputationBarDriver: RatingBar
     private var fullNameView : TextView? = null
     private var privateMode = false
 
@@ -75,7 +76,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         emailView = view.findViewById(R.id.emailView)
         locationView = view.findViewById(R.id.locationView)
         registrationDateView = view.findViewById(R.id.registrationDateView)
-        reputationBar = view.findViewById(R.id.ratingBar)
+        reputationBarPassenger = view.findViewById(R.id.ratingBarPassenger)
+        reputationBarDriver = view.findViewById(R.id.ratingBarDriver)
         fullNameView = view.findViewById(R.id.nameView)
 
         if(profile!=null){
@@ -145,7 +147,27 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 locationView.text = profile.location
             }
             registrationDateView.text = dateFormatter.format(profile.registrationDate.toDate()) // TODO fix format
-            reputationBar.rating = profile.rating
+            if (profile.countRatingsDriver == 0L){
+                reputationBarDriver.visibility = View.GONE
+                requireView().findViewById<TextView>(R.id.driverRating).visibility = View.GONE
+
+            }else {
+                reputationBarDriver.visibility = View.VISIBLE
+                requireView().findViewById<TextView>(R.id.driverRating).visibility = View.VISIBLE
+
+                reputationBarDriver.rating = profile.sumRatingsDriver.toFloat()/ profile.countRatingsDriver
+            }
+
+
+            if (profile.countRatingsPassenger == 0L){
+                reputationBarPassenger.visibility = View.GONE
+                requireView().findViewById<TextView>(R.id.passengerRating).visibility = View.GONE
+
+            }else {
+                reputationBarPassenger.visibility = View.VISIBLE
+                requireView().findViewById<TextView>(R.id.passengerRating).visibility = View.VISIBLE
+                reputationBarPassenger.rating = profile.sumRatingsPassenger.toFloat()/ profile.countRatingsPassenger
+            }
         }
     }
 
