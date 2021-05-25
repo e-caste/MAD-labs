@@ -138,6 +138,13 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val from = view.findViewById<LinearLayout>(R.id.editFrom)
         from_place = from.findViewById<TextInputLayout>(R.id.stop_place)
+        from_place.editText!!.isFocusable = false
+        from_place.editText!!.isFocusableInTouchMode = false
+        from_place.editText!!.isClickable = true
+        from_place.editText!!.setOnClickListener {
+            Log.d(getLogTag(), "from_place on click listener")
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+        }
         from_date = from.findViewById<TextInputLayout>(R.id.stop_date)
         from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
         from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))

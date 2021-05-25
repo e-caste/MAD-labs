@@ -34,7 +34,9 @@
         tools:layout="@layout/edit_profile_fragment" >
         <action
             android:id="@+id/action_editProfileFragment_to_showProfileFragment"
-            app:destination="@id/nav_profile" />
+            app:destination="@id/nav_profile"
+            app:popUpTo="@id/nav_profile"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
@@ -64,7 +66,11 @@
         <action
             android:id="@+id/action_tripEditFragment_to_nav_profile"
             app:destination="@id/nav_profile" />
-    </fragment>
+        <action
+            android:id="@+id/action_tripEditFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"/>
+           </fragment>
     <fragment
         android:id="@+id/othersTripList"
         android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.OthersTripList"
@@ -88,5 +94,16 @@
             app:destination="@id/othersTripList"
             app:popUpTo="@id/othersTripList"
             app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.tripedit.SearchLocationFragment"
+        android:label="search_location_fragment"
+        tools:layout="@layout/search_location_fragment" >
+        <action
+            android:id="@+id/action_searchLocationFragment_to_tripEditFragment"
+            app:destination="@id/tripEditFragment"
+            app:popUpTo="@id/tripEditFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
