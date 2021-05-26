@@ -106,4 +106,20 @@
             app:popUpTo="@id/tripEditFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/boughtTripList"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.BoughtTripList"
+        android:label="BoughtTripList" >
+        <action
+            android:id="@+id/action_boughtTripList_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripsOfInterestList"
+        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.TripsOfInterestList"
+        android:label="TripsOfInterestList" >
+        <action
+            android:id="@+id/action_tripsOfInterestList_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
+    </fragment>
 </navigation>
