@@ -111,4 +111,6 @@
     <string name="this_trip_is_unadvertised">Questo viaggio non è disponibile</string>
     <string name="passenger_reputation">Valutazione passeggero</string>
     <string name="driver_reputation">Valutazione autista</string>
+    <string name="boughttriplist_title">Viaggi Acquistati</string>
+    <string name="tripsofinterestlist_title">Viaggi Di Interesse</string>
 </resources>
