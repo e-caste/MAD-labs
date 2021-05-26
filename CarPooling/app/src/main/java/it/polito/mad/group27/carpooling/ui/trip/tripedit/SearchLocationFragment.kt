@@ -13,8 +13,8 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
     private lateinit var viewModel: SearchLocationViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SearchLocationViewModel::class.java)
         // TODO: Use the ViewModel
     }
