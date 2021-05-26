@@ -126,4 +126,6 @@
     <string name="this_trip_is_unadvertised">This trip is unadvertised</string>
     <string name="passenger_reputation">Passenger rating</string>
     <string name="driver_reputation">Driver rating</string>
+    <string name="boughttriplist_title">My Bought Trips</string>
+    <string name="tripsofinterestlist_title">Trips Of Interest</string>
 </resources>
