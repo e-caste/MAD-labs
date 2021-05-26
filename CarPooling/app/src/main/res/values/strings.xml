@@ -96,7 +96,7 @@
     <string name="date_and_time_both_present">You should select also the date if you select the hour</string>
     <string name="date_not_in_past">Date cannot be in the past</string>
     <string name="welcome">Welcome!</string>
-    <string name="warning_message_notrips">There are no trips yet…<br />Or have you applied too many filters? 🤔</string>
+    <string name="warning_message_notrips_otherstriplist">There are no trips yet…<br />Or have you applied too many filters? 🤔</string>
     <string name="warning_message_alreadybooked">You have already booked this trip!</string>
     <string name="success_message_booked">You have successfully booked this trip!</string>
     <string name="warning_message_failedbooking">There was an error booking this trip…<br/>Please try again.</string>
@@ -127,4 +127,7 @@
     <string name="this_trip_is_unadvertised">This trip is unadvertised</string>
     <string name="boughttriplist_title">My Bought Trips</string>
     <string name="tripsofinterestlist_title">Trips Of Interest</string>
+    <string name="warning_message_notrips_tripsofinterestlist">You haven\'t booked any trip yet.<br/>Try booking a new trip!<br/>Remember to check your bought trips.</string>
+    <string name="warning_message_notrips_boughttriplist">You haven\'t booked any trip yet, or you haven\'t been accepted by the driver yet.<br/>Try checking your booked trips!</string>
+    <string name="warning_message_notrips_triplist">You haven\'t offered any trip yet.<br/>Use the + button to add one!</string>
 </resources>
