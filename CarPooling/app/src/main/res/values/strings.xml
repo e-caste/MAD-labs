@@ -125,4 +125,6 @@
     <string name="trip_cancelled_message">Driver has cancelled the trip from %s to %s of %s</string>
     <string name="error_equal_destination_departure">Cannot be equal to departure location</string>
     <string name="this_trip_is_unadvertised">This trip is unadvertised</string>
+    <string name="boughttriplist_title">My Bought Trips</string>
+    <string name="tripsofinterestlist_title">Trips Of Interest</string>
 </resources>
