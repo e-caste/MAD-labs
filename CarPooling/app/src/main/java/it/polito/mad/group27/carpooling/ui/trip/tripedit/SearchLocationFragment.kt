@@ -117,6 +117,14 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
             view.findViewById<TextView>(R.id.content).text = suggestions[position].first
             view.setOnClickListener {
+
+                if(act.currentFocus!=null) {
+                    val imm: InputMethodManager =
+                        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+
+                    act.currentFocus?.clearFocus()
+                }
                 viewModel.geoPoint.value = suggestions[position].second
                 viewModel.locationString.value = suggestions[position].first
             }
