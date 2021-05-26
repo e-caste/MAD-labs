@@ -50,6 +50,8 @@ abstract class BaseTripList(
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
+    private lateinit var warningMessageView: View
+    protected open val warningMessageLayout: Int = R.id.warning_message_notrips
 
 
     inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -194,7 +196,7 @@ abstract class BaseTripList(
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        val warningMessageView = view.findViewById<LinearLayout>(R.id.warning_message_notrips)
+        warningMessageView = view.findViewById(warningMessageLayout)
 
         adapter = TripFirestoreRecyclerAdapter(options) {
             // all trips are hidden -> show warning message
