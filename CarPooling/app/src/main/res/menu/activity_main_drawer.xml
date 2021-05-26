@@ -9,6 +9,14 @@
             android:icon="@drawable/ic_baseline_directions_car_24"
             android:title="@string/nav_trips" />
         <item
+            android:id="@+id/tripsOfInterestList"
+            android:icon="@drawable/ic_baseline_electric_car_24"
+            android:title="@string/tripsofinterestlist_title" />
+        <item
+            android:id="@+id/boughtTripList"
+            android:icon="@drawable/ic_baseline_attach_money_24"
+            android:title="@string/boughttriplist_title" />
+        <item
             android:id="@+id/nav_trips"
             android:icon="@drawable/ic_baseline_car_rental_24"
             android:title="@string/nav_my_trips" />
