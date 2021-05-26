@@ -17,6 +17,28 @@ class SearchLocationViewModel : ViewModel() {
     val geoPoint: MutableLiveData<GeoPoint?> = MutableLiveData(null)
     val locationString: MutableLiveData<String?> = MutableLiveData(null)
     val searchSuggestions: MutableLiveData<List<Pair<String, GeoPoint>>?> = MutableLiveData(null)
+
+    private var activeJob : Job? = null
+
+    private val retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://nominatim.openstreetmap.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SearchAPI::class.java)
+
+    }
+
+    fun loadSuggestions(search:String){
+        if(activeJob!= null && activeJob!!.isActive){
+            activeJob!!.cancel()
+        }
+        activeJob = MainScope().launch {
+            //TODO manage errors
+            val results = retrofit.getSuggestions(search)
+            searchSuggestions.value = results.map{ Pair(it.toString(), it.geopoint)}
+        }
+    }
 }
 
 interface SearchAPI{
@@ -25,6 +47,7 @@ interface SearchAPI{
                        @Query("limit") limit:Int =10,
                        @Query("format") format:String = "json"): List<Suggestion>
 }
+
 data class Suggestion (
     val lat:String,
     val lon:String,
@@ -48,5 +71,7 @@ data class Address (
     val country:String,
     val country_code: String
         )
+
+
 
 
