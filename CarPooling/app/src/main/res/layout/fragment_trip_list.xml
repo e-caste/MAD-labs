@@ -57,7 +57,20 @@
             tools:listitem="@layout/fragment_trip" />
 
         <include
-            layout="@layout/warning_message_notrips"
+            android:id="@+id/warning_message_notrips_otherstriplist"
+            layout="@layout/warning_message_notrips_otherstriplist"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/warning_message_notrips_triplist"
+            layout="@layout/warning_message_notrips_triplist"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/warning_message_notrips_tripsofinterestlist"
+            layout="@layout/warning_message_notrips_tripsofinterestlist"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/warning_message_notrips_boughttriplist"
+            layout="@layout/warning_message_notrips_boughttriplist"
             android:visibility="gone" />
     </LinearLayout>
 
