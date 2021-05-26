@@ -23,6 +23,7 @@ class TripList(
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
+    override val warningMessageLayoutId: Int = R.id.warning_message_notrips_triplist
 
     override fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
