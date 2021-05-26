@@ -9,7 +9,7 @@ data class Profile(
     val uid: String?=null,
     var profileImageUri: String? = null,
     var fullName: String = "John Smith",
-    var nickName: String = "MadJohn",
+    var nickName: String? = null,
     var email: String = "john.smith@polito.it",
     var location: String = "Turin, Italy",
     var registrationDate: Timestamp = Timestamp.now(),
