@@ -1,26 +1,23 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
-import androidx.lifecycle.ViewModelProvider
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.doOnTextChanged
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.compass.CompassOverlay
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 
@@ -78,16 +75,19 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         }
 
         viewModel.locationString.observe(viewLifecycleOwner){
-            if(it!=null){
-                autoCompleteTextView.setText(it)
-            }
+            autoCompleteTextView.setText(it)
         }
-        //TODO add clear button
+
+        searchPlace.setEndIconOnClickListener {
+            viewModel.locationString.value = null
+            viewModel.geoPoint.value = null
+
+        }
         //TODO add loading field
 
         autoCompleteTextView.doOnTextChanged { text, _, _, _ ->
             adapter.clear()
-            if(viewModel.locationString.value != text.toString()){
+            if(text !=null && viewModel.locationString.value != text.toString()){
                 //it is a text input and not a selection
                 Log.d(getLogTag(), "changed to $text")
 
