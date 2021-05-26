@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.entities.Profile
+import org.osmdroid.config.Configuration
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         profileImageView = navHeader.findViewById(R.id.drawer_profile_image_view)
         profileNameTextView = navHeader.findViewById(R.id.drawer_profile_name_text_view)
         profileEmailTextView = navHeader.findViewById(R.id.drawer_profile_email_text_view)
+
+        Configuration.getInstance().userAgentValue = this.packageName
 
     }
 
