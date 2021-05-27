@@ -491,6 +491,9 @@
             android:textColor="#636363"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:visibility="gone"/>
+
+        <include layout="@layout/trip_reviews" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
