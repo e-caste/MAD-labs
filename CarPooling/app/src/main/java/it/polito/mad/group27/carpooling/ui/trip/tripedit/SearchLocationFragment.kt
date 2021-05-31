@@ -84,6 +84,10 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
         }
         //TODO add loading field
+        viewModel.loading.observe(viewLifecycleOwner){
+            adapter.loading = it
+            adapter.notifyDataSetChanged()
+        }
 
         autoCompleteTextView.doOnTextChanged { text, _, _, _ ->
             adapter.clear()
@@ -103,31 +107,45 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     }
 
 
-    inner class AutoCompleteTextViewAdapter(private val c: Context, private val layoutResource: Int, private val suggestions: List<Pair<String, GeoPoint>>) :
+    inner class AutoCompleteTextViewAdapter(private val c: Context, private val layoutResource: Int,
+                                            private val suggestions: List<Pair<String, GeoPoint>>) :
         ArrayAdapter<Pair<String, GeoPoint>>(c, layoutResource, suggestions) {
 
+        var loading = true
 
 
-        override fun getCount(): Int = suggestions.size
+        override fun getCount(): Int = if (loading) 1 else  suggestions.size
 
-        override fun getItem(position: Int): Pair<String, GeoPoint> = suggestions[position]
+        override fun getItem(position: Int): Pair<String, GeoPoint>? = if(loading) null else suggestions[position]
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(c).inflate(layoutResource, parent, false)
 
-            view.findViewById<TextView>(R.id.content).text = suggestions[position].first
-            view.setOnClickListener {
+            var view = convertView ?: LayoutInflater.from(c).inflate(layoutResource, parent, false)
+            val textView = view.findViewById<TextView>(R.id.content)
+            if(loading){
+                textView.text = null
+                textView.visibility = View.GONE
+                view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+                view.setOnClickListener {}
 
-                if(act.currentFocus!=null) {
-                    val imm: InputMethodManager =
-                        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+            }else{
+                textView.visibility = View.VISIBLE
+                textView.text = suggestions[position].first
+                view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
+                view.setOnClickListener {
 
-                    act.currentFocus?.clearFocus()
+                    if(act.currentFocus!=null) {
+                        val imm: InputMethodManager =
+                            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+
+                        act.currentFocus?.clearFocus()
+                    }
+                    viewModel.geoPoint.value = suggestions[position].second
+                    viewModel.locationString.value = suggestions[position].first
                 }
-                viewModel.geoPoint.value = suggestions[position].second
-                viewModel.locationString.value = suggestions[position].first
             }
+
 
             return view
         }
