@@ -1,6 +1,5 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
-import androidx.lifecycle.ViewModelProvider
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
