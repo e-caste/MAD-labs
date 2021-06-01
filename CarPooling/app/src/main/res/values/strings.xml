@@ -6,7 +6,7 @@
     <string name="default_nickname">MadJohn</string>
     <string name="default_fullname">John Smith</string>
     <string name="default_rating" translatable="false">4.5</string>
-    <string name="since">Since</string>
+    <string name="since">Registered since</string>
     <string name="default_registration_date" translatable="false">25/03/2021</string>
     <string name="edit">Edit</string>
     <string name="hint_fullname">Your full name</string>
@@ -124,12 +124,14 @@
     <string name="trip_cancelled_message">Driver has cancelled the trip from %s to %s of %s</string>
     <string name="error_equal_destination_departure">Cannot be equal to departure location</string>
     <string name="this_trip_is_unadvertised">This trip is unadvertised</string>
-    <string name="passenger_reputation">Passenger rating</string>
-    <string name="driver_reputation">Driver rating</string>
+    <string name="passenger_reputation">Passenger</string>
+    <string name="driver_reputation">Driver</string>
     <string name="boughttriplist_title">My Bought Trips</string>
     <string name="tripsofinterestlist_title">Trips Of Interest</string>
     <string name="warning_message_notrips_tripsofinterestlist">You haven\'t booked any trip yet.<br/>Try booking a new trip!<br/>Remember to check your bought trips.</string>
     <string name="warning_message_notrips_boughttriplist">You haven\'t booked any trip yet, or you haven\'t been accepted by the driver yet.<br/>Try checking your booked trips!</string>
     <string name="warning_message_notrips_triplist">You haven\'t offered any trip yet.<br/>Use the + button to add one!</string>
     <string name="i_travelled_with">Was my driver in:</string>
+    <string name="save_profile_error">Error in profile saving. Please, try again later</string>
+    <string name="rating">Ratings</string>
 </resources>
