@@ -4,13 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.fragment.app.Fragment
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Filter
+import android.widget.TextView
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
@@ -18,6 +25,8 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 
@@ -27,6 +36,14 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     private lateinit var map: MapView
 
     private lateinit var searchPlace: TextInputLayout
+
+    private var baseOverlays: Int = 0
+
+    companion object {
+        val REQUEST_KEY = "place"
+        val location = "location"
+        val geopoint = "geopoint"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +75,54 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
 
-        // observe string to show in text input
+        baseOverlays = map.overlays.size +1
+
         // observe geopoint to put pinpoint
+        viewModel.geoPoint.observe(viewLifecycleOwner){
+            if (it != null)
+            {
+                val marker = Marker(map)
+                marker.position = it
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                if (map.overlays.size > baseOverlays) {
+                    map.overlays.removeAt(map.overlays.size - 1)
+                }
+                map.overlays.add(map.overlays.size, marker)
+                map.controller.animateTo(it)
+            }
+            else{
+                if (map.overlays.size > baseOverlays) {
+                    map.overlays.removeAt(map.overlays.size - 1)
+                    map.controller.zoomTo(5.5)
+                }
+            }
+        }
+
+        // get tap on map
+        map.overlays.add(object: Overlay() {
+            override fun onSingleTapConfirmed(e: MotionEvent,
+                                              mapView: MapView): Boolean {
+                val projection = mapView.projection
+                val geoPoint = projection.fromPixels(e.x.toInt(),
+                    e.y.toInt())
+                Log.d(
+                    getLogTag(), "${geoPoint.latitude} , ${geoPoint.longitude}")
+
+                viewModel.loadPlaceFromGeopoint(geoPoint as GeoPoint)
+
+                return true
+            }
+        })
+
+
+        // observe unavailablePlace to show Snackbar
+        viewModel.unavailablePlace.observe(viewLifecycleOwner){
+            if (it == true){
+                Snackbar.make(view, "Selected location does not exist", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        }
+
         searchPlace = view.findViewById(R.id.search_place)
         val adapter = AutoCompleteTextViewAdapter(requireContext(), R.layout.search_suggestion,
             mutableListOf())
@@ -101,9 +164,21 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
             }
         }
+    }
 
-
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_menu_button->{
+                setFragmentResult(REQUEST_KEY, bundleOf(
+                    location to (viewModel.locationString.value ?: ""),
+                    geopoint to viewModel.geoPoint.value
+                    )
+                )
+                findNavController().navigateUp()
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 

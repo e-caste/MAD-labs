@@ -117,6 +117,7 @@
     <string name="warning_message_notrips_boughttriplist">Non hai ancora prenotato nessun viaggio, o non sei ancora stato accettato dal driver.<br />Prova a controllare i tuoi viaggi prenotati!</string>
     <string name="warning_message_notrips_triplist">Non hai ancora offerto nessun viaggio.<br />Usa il tasto + per aggiungerne uno!</string>
     <string name="i_travelled_with">Ha guidato per me:</string>
+    <string name="select_location">"Seleziona il luogo "</string>
     <string name="save_profile_error">Errore nel salvataggio del profilo, riprova più tardi</string>
     <string name="rating">Valutazioni</string>
 </resources>

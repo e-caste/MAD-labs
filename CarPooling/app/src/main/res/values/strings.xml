@@ -132,6 +132,7 @@
     <string name="warning_message_notrips_boughttriplist">You haven\'t booked any trip yet, or you haven\'t been accepted by the driver yet.<br/>Try checking your booked trips!</string>
     <string name="warning_message_notrips_triplist">You haven\'t offered any trip yet.<br/>Use the + button to add one!</string>
     <string name="i_travelled_with">Was my driver in:</string>
+    <string name="select_location">Select location</string>
     <string name="save_profile_error">Error in profile saving. Please, try again later</string>
     <string name="rating">Ratings</string>
 </resources>

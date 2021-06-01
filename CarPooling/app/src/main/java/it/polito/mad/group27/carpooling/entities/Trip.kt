@@ -116,10 +116,10 @@ data class Trip(
         .clone() as Calendar).also { it.add(Calendar.HOUR, +2) },
     var from: String = "",
     @Serializable(with = OsmdroidGeoPointSerializer::class)
-    var fromGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
+    var fromGeoPoint: org.osmdroid.util.GeoPoint? = null,
     var to: String = "",
     @Serializable(with = OsmdroidGeoPointSerializer::class)
-    var toGeoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0),
+    var toGeoPoint: org.osmdroid.util.GeoPoint? = null,
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
     var otherInformation: String? = null,
@@ -144,8 +144,8 @@ data class Trip(
             interestedUsersUids = interestedUsersUids,
             otherInformation = otherInformation,
             advertised = advertised,
-            fromGeoPoint = GeoPoint(fromGeoPoint.latitude, fromGeoPoint.longitude),
-            toGeoPoint = GeoPoint(toGeoPoint.latitude, toGeoPoint.longitude)
+            fromGeoPoint = GeoPoint(fromGeoPoint!!.latitude, fromGeoPoint!!.longitude),
+            toGeoPoint = GeoPoint(toGeoPoint!!.latitude, toGeoPoint!!.longitude)
         )
 }
 
@@ -171,13 +171,13 @@ data class Stop(
     var place: String,
     @Serializable(with = CalendarSerializer::class) var dateTime: Calendar,
     @Serializable(with = OsmdroidGeoPointSerializer::class)
-    var geoPoint: org.osmdroid.util.GeoPoint = org.osmdroid.util.GeoPoint(0.0, 0.0)
+    var geoPoint: org.osmdroid.util.GeoPoint? = null
 ) : Parcelable {
     fun toStopDB():StopDB{
         return StopDB(
             place,
             calendarToTimestamp(dateTime),
-            GeoPoint(geoPoint.latitude, geoPoint.longitude))
+            GeoPoint(geoPoint!!.latitude, geoPoint!!.longitude))
     }
 }
 
