@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
@@ -86,7 +87,10 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context, priv
                         stop.geoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
                     }
                 Log.d(getLogTag(), "from stop to search location")
-                navController.navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+                navController.navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
+                    bundleOf(SearchLocationFragment.location to stop.place,
+                        SearchLocationFragment.geopoint to stop.geoPoint)
+                )
             }
 
             placeViewWatcher = Watcher(
