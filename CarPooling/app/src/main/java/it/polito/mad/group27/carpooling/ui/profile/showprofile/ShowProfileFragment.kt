@@ -191,6 +191,14 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 requireView().findViewById<TextView>(R.id.passengerRating).visibility = View.VISIBLE
                 reputationBarPassenger.rating = profile.sumRatingsPassenger.toFloat()/ profile.countRatingsPassenger
             }
+
+            if(profile.countRatingsPassenger == 0L && profile.countRatingsDriver ==0L){
+                requireView().findViewById<TextView>(R.id.rating_label).visibility = View.GONE
+                requireView().findViewById<View>(R.id.rating_bar).visibility = View.GONE
+            }else{
+                requireView().findViewById<TextView>(R.id.rating_label).visibility = View.VISIBLE
+                requireView().findViewById<View>(R.id.rating_bar).visibility = View.VISIBLE
+            }
         }
     }
 
