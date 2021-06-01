@@ -83,6 +83,22 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                 }
             }
         }
+
+        // get tap on map
+        map.overlays.add(object: Overlay() {
+            override fun onSingleTapConfirmed(e: MotionEvent,
+                                              mapView: MapView): Boolean {
+                val projection = mapView.projection
+                val geoPoint = projection.fromPixels(e.x.toInt(),
+                    e.y.toInt())
+                Log.d(
+                    getLogTag(), "${geoPoint.latitude} , ${geoPoint.longitude}")
+
+                viewModel.loadPlaceFromGeopoint(geoPoint as GeoPoint)
+
+                return true
+            }
+        })
         searchPlace = view.findViewById(R.id.search_place)
         val adapter = AutoCompleteTextViewAdapter(requireContext(), R.layout.search_suggestion,
             mutableListOf())
