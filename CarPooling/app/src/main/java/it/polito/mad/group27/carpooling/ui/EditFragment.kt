@@ -31,7 +31,7 @@ open class EditFragment(layoutId: Int,
 
     protected lateinit var imageView: ImageView
 
-    private lateinit var editViewModel: EditViewModel
+    protected lateinit var editViewModel: EditViewModel
 
 
     private enum class RequestCodes {
@@ -266,6 +266,11 @@ open class EditFragment(layoutId: Int,
         editViewModel.imagePresent = imgURI != null
         if(!firstTime)
             editViewModel.imageChanged = true
+    }
+
+    protected fun reloadImage(){
+        if(editViewModel.image!= null)
+            imageView.setImageBitmap(editViewModel.image)
     }
 
 }

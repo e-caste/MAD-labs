@@ -62,6 +62,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(getLogTag(), "On create trip edit")
         tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
     }
 
@@ -99,7 +100,10 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         // set image if present in trip object
         imageView= view.findViewById(R.id.car_image)
-        setImage(tripEditViewModel.newTrip.carImageUri?.toString(), true)
+        if(editViewModel.image == null && !editViewModel.imageChanged) {
+            //first render (and no update)
+            setImage(tripEditViewModel.newTrip.carImageUri?.toString(), true)
+        }else reloadImage()
 
 
         // from and to datetime check
@@ -170,9 +174,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 from_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
                 tripEditViewModel.newTrip.fromGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
             }
-            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
-            bundleOf(SearchLocationFragment.location to tripEditViewModel.newTrip.from,
-            SearchLocationFragment.geopoint to tripEditViewModel.newTrip.fromGeoPoint))
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
         }
         from_place.editText?.addTextChangedListener(Watcher(
             { from_place.editText?.text?.isEmpty() ?: true },
@@ -207,9 +209,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 to_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
                 tripEditViewModel.newTrip.toGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
             }
-            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
-                bundleOf(SearchLocationFragment.location to tripEditViewModel.newTrip.to,
-                    SearchLocationFragment.geopoint to tripEditViewModel.newTrip.toGeoPoint))
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
         }
         to_place.editText?.addTextChangedListener(Watcher(
             { to_place.editText?.text?.isEmpty() ?: true || to_place.editText?.text == from_place.editText?.text},

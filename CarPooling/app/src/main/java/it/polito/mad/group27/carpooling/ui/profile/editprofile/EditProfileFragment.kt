@@ -62,10 +62,11 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         locationEdit = view.findViewById(R.id.locationEdit)
 
 
-
-        if(profileViewModel.profile.profileImageUri!=null) {
-            setImage(profileViewModel.profile.profileImageUri, true)
-        }
+        if(editViewModel.image == null && !editViewModel.imageChanged) {
+            if (profileViewModel.profile.profileImageUri != null) {
+                setImage(profileViewModel.profile.profileImageUri, true)
+            }
+        }else reloadImage()
         fullNameEdit.editText!!.setText(profileViewModel.profile.fullName)
         nickNameEdit.editText!!.setText(profileViewModel.profile.nickName)
         emailEdit.editText!!.setText(profileViewModel.profile.email)
