@@ -18,6 +18,8 @@ class SearchLocationViewModel : ViewModel() {
     val locationString: MutableLiveData<String?> = MutableLiveData(null)
     val searchSuggestions: MutableLiveData<List<Pair<String, GeoPoint>>?> = MutableLiveData(null)
 
+    val unavailablePlace: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private var activeJob : Job? = null
 
     private val retrofit by lazy {
@@ -39,6 +41,25 @@ class SearchLocationViewModel : ViewModel() {
             searchSuggestions.value = results.map{ Pair(it.toString(), it.geopoint)}
         }
     }
+
+    fun loadPlaceFromGeopoint(point: GeoPoint){
+        if(activeJob!= null && activeJob!!.isActive){
+            activeJob!!.cancel()
+        }
+        activeJob = MainScope().launch {
+                val result = retrofit.getPlaceFromGeoPoint(point.latitude, point.longitude)
+                if(result?.display_name != null) {
+                    locationString.value = result.toString()
+                    geoPoint.value = point
+                    Log.d(getLogTag(), "got $result")
+                }
+                else{
+                    unavailablePlace.value = false
+                    unavailablePlace.value = true
+                    Log.d(getLogTag(), "got $result")
+                }
+        }
+    }
 }
 
 interface SearchAPI{
@@ -46,6 +67,12 @@ interface SearchAPI{
     suspend fun getSuggestions(@Query("q") search:String,
                        @Query("limit") limit:Int =10,
                        @Query("format") format:String = "json"): List<Suggestion>
+
+    @GET("/reverse")
+    suspend fun getPlaceFromGeoPoint(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("format") format:String = "json"): Suggestion?
 }
 
 data class Suggestion (
