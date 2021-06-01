@@ -50,7 +50,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
 
 
 
-    private var adapter: TripsRecyclerAdapter? = null
+    private var adapterTravelledWithMe: TripsRecyclerAdapter? = null
+    private var adapterITravelledWith: TripsRecyclerAdapter? = null
 
     private val dateFormatter = SimpleDateFormat.getDateInstance()
 
@@ -68,7 +69,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
 
         val profile = arguments?.getParcelable<Profile>("profile")
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        val recyclerViewTravelledWithMe = view.findViewById<RecyclerView>(R.id.listTravelledWithMe)
+        val recyclerViewITravelledWith = view.findViewById<RecyclerView>(R.id.listITravelledWith)
 
 
         profileImageView = view.findViewById(R.id.imageProfileView)
@@ -94,28 +96,49 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
         if(privateMode){
 
             val coll = FirebaseFirestore.getInstance().collection("trips")
-            val queryBase = coll
+            val queryBaseTravelledWithMe = coll
                 .whereEqualTo("ownerUid", FirebaseAuth.getInstance().currentUser.uid)
                 .whereLessThan("startDateTime", Timestamp.now())
                 .whereArrayContains("acceptedUsersUids", profileViewModel.profile.value!!.uid!!)
                 .orderBy("startDateTime", Query.Direction.ASCENDING)
 
-            val options = FirestoreRecyclerOptions.Builder<TripDB>()
-                .setQuery(queryBase, TripDB::class.java)
+            val optionsTravelledWithMe = FirestoreRecyclerOptions.Builder<TripDB>()
+                .setQuery(queryBaseTravelledWithMe, TripDB::class.java)
                 .build()
 
-            adapter = TripsRecyclerAdapter(options){
-                if(adapter!!.itemCount == 0)
-                    view.findViewById<ViewGroup>(R.id.travelled_with).visibility=View.GONE
+            adapterTravelledWithMe = TripsRecyclerAdapter(optionsTravelledWithMe){
+                if(adapterTravelledWithMe!!.itemCount == 0)
+                    view.findViewById<ViewGroup>(R.id.travelled_with_me).visibility=View.GONE
                 else
-                    view.findViewById<ViewGroup>(R.id.travelled_with).visibility=View.VISIBLE
+                    view.findViewById<ViewGroup>(R.id.travelled_with_me).visibility=View.VISIBLE
             }
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerViewTravelledWithMe.adapter = adapterTravelledWithMe
+            recyclerViewTravelledWithMe.layoutManager = LinearLayoutManager(context)
+
+            val queryBaseITravelledWith = coll
+                .whereEqualTo("ownerUid", profileViewModel.profile.value!!.uid!!)
+                .whereLessThan("startDateTime", Timestamp.now())
+                .whereArrayContains("acceptedUsersUids",FirebaseAuth.getInstance().currentUser.uid )
+                .orderBy("startDateTime", Query.Direction.ASCENDING)
+
+
+            val optionsITravelledWith = FirestoreRecyclerOptions.Builder<TripDB>()
+                .setQuery(queryBaseITravelledWith, TripDB::class.java)
+                .build()
+
+            adapterITravelledWith = TripsRecyclerAdapter(optionsITravelledWith){
+                if(adapterITravelledWith!!.itemCount == 0)
+                    view.findViewById<ViewGroup>(R.id.i_travelled_with).visibility=View.GONE
+                else
+                    view.findViewById<ViewGroup>(R.id.i_travelled_with).visibility=View.VISIBLE
+            }
+            recyclerViewITravelledWith.adapter = adapterITravelledWith
+            recyclerViewITravelledWith.layoutManager = LinearLayoutManager(context)
 
             view.findViewById<ViewGroup>(R.id.sensible_information).visibility=View.GONE
         }else{
-            view.findViewById<ViewGroup>(R.id.travelled_with).visibility=View.GONE
+            view.findViewById<ViewGroup>(R.id.travelled_with_me).visibility=View.GONE
+            view.findViewById<ViewGroup>(R.id.i_travelled_with).visibility=View.GONE
         }
 
     }
@@ -265,12 +288,14 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
 
     override fun onStart() {
         super.onStart()
-        adapter?.startListening()
+        adapterITravelledWith?.startListening()
+        adapterTravelledWithMe?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        adapter?.stopListening()
+        adapterITravelledWith?.stopListening()
+        adapterTravelledWithMe?.stopListening()
     }
 }
 
