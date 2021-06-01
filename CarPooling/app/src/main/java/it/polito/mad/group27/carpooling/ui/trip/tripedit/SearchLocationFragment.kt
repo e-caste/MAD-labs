@@ -61,8 +61,28 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
 
-        // observe string to show in text input
+        baseOverlays = map.overlays.size +1
+
         // observe geopoint to put pinpoint
+        viewModel.geoPoint.observe(viewLifecycleOwner){
+            if (it != null)
+            {
+                val marker = Marker(map)
+                marker.position = it
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                if (map.overlays.size > baseOverlays) {
+                    map.overlays.removeAt(map.overlays.size - 1)
+                }
+                map.overlays.add(map.overlays.size, marker)
+                map.controller.animateTo(it)
+            }
+            else{
+                if (map.overlays.size > baseOverlays) {
+                    map.overlays.removeAt(map.overlays.size - 1)
+                    map.controller.zoomOut()
+                }
+            }
+        }
         searchPlace = view.findViewById(R.id.search_place)
         val adapter = AutoCompleteTextViewAdapter(requireContext(), R.layout.search_suggestion,
             mutableListOf())
