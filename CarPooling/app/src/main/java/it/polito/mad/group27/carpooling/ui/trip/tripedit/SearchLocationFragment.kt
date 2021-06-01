@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Filter
-import android.widget.TextView
 import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +52,11 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(arguments?.getString(location) != "" && arguments?.getParcelable<GeoPoint>(geopoint) != null){
+            viewModel.locationString.value = arguments?.getString(location)
+            viewModel.geoPoint.value = arguments?.getParcelable<GeoPoint>(geopoint)
+        }
+
         map = view.findViewById(R.id.edit_trip_mapview)
 
         // set map style
@@ -65,7 +67,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         map.setScrollableAreaLimitLatitude(MapView.getTileSystem().maxLatitude, MapView.getTileSystem().minLatitude+5.0, 10)
 
         // set position on map opening
-        map.controller.setCenter(GeoPoint(49.8, 6.12))
+        map.controller.setCenter(viewModel.geoPoint.value ?: GeoPoint(49.8, 6.12))
         map.minZoomLevel = 3.3
         map.controller.setZoom(5.5)
 
