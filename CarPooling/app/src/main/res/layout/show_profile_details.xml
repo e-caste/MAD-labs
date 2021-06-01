@@ -208,7 +208,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/travelled_with"
+            android:id="@+id/travelled_with_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -229,7 +229,35 @@
                 android:background="@android:color/darker_gray" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
+                android:id="@+id/listTravelledWithMe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/fragment_trip" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/i_travelled_with"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/i_travelled_with"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listITravelledWith"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="LinearLayoutManager"
