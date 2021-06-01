@@ -1,27 +1,33 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
-import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Filter
+import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.compass.CompassOverlay
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
+import org.osmdroid.api.IGeoPoint
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
+import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
+import java.util.*
 
 
 class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_fragment, R.menu.edit_menu, null) {
@@ -99,6 +105,16 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                 return true
             }
         })
+
+
+        // observe unavailablePlace to show Snackbar
+        viewModel.unavailablePlace.observe(viewLifecycleOwner){
+            if (it == true){
+                Snackbar.make(view, "Selected point does not exist", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        }
+
         searchPlace = view.findViewById(R.id.search_place)
         val adapter = AutoCompleteTextViewAdapter(requireContext(), R.layout.search_suggestion,
             mutableListOf())
@@ -133,6 +149,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
             }
         }
+    }
 
 
 
