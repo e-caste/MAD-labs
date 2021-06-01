@@ -14,6 +14,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 class SearchLocationViewModel : ViewModel() {
+    val loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val geoPoint: MutableLiveData<GeoPoint?> = MutableLiveData(null)
     val locationString: MutableLiveData<String?> = MutableLiveData(null)
     val searchSuggestions: MutableLiveData<List<Pair<String, GeoPoint>>?> = MutableLiveData(null)
@@ -37,8 +38,10 @@ class SearchLocationViewModel : ViewModel() {
         }
         activeJob = MainScope().launch {
             //TODO manage errors
+            loading.value = true
             val results = retrofit.getSuggestions(search)
             searchSuggestions.value = results.map{ Pair(it.toString(), it.geopoint)}
+            loading.value = false
         }
     }
 

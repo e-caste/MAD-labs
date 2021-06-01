@@ -2,11 +2,21 @@ package it.polito.mad.group27.carpooling
 
 import android.os.Parcelable
 import android.util.Log
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.gson.Gson
+import it.polito.mad.group27.carpooling.ui.trip.tripedit.SearchAPI
+import it.polito.mad.group27.carpooling.ui.trip.tripedit.Suggestion
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.*
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,59 +28,50 @@ class MessagingService : FirebaseMessagingService() {
     companion object Oauth {
         lateinit var oauthToken: String
 
+        const val projectId = 378735075553
+        const val host = "fcm.googleapis.com"
+        const val path = "/v1/projects/$projectId/messages:send"
+
+
+        private val retrofit by lazy {
+            Retrofit.Builder()
+                .baseUrl("https://$host/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(NotificationAPI::class.java)
+
+        }
+
+
         fun sendNotification(userToken: String?, notification: AndroidNotification){
-            val projectId = 378735075553
-            val host = "fcm.googleapis.com"
-            val path = "/v1/projects/$projectId/messages:send"
 
-            if(userToken == null)
+            if(userToken == null) {
+                //TODO notify no auth token
                 return
+            }
 
-            Thread{
-                val url = URL("https://$host$path")
-                val client = url.openConnection() as HttpURLConnection
-                client.requestMethod = "POST"
-                client.setRequestProperty("Content-Type", "application/json")
-                client.setRequestProperty("Authorization", "Bearer $oauthToken")
-                client.setRequestProperty("Host", host)
-                client.setRequestProperty("Connection", "keep-alive")
+            MainScope().launch{
+
+                val headers = HashMap<String, String>()
+                headers.put("Authorization", "Bearer $oauthToken")
+                headers.put("Host", host)
+
                 val notificationObject = NotificationObject(userToken, notification)
-                val message = Json.encodeToString(Message(notificationObject, false)).toByteArray()
-                client.setRequestProperty("Content-Length", message.size.toString())
-                client.doOutput = true
-                Log.d("MAD-group27", Json.encodeToString(Message(notificationObject, false)))
+                val body = Message(notificationObject, false)
 
-                // connect
-                val outputPost = BufferedOutputStream(client.outputStream)
+                val response = retrofit.sendNotification(headers, body)
+                lateinit var snackText :String
+                if(response.isSuccessful){
+                    snackText = "Notification sent correclty"
+                }else if(response.code() == 401){
+                    snackText = "Your token has expired, please reopen the app"
+                }else
+                    snackText = "Generic error: ${response.body()}"
 
-
-                outputPost.write(message)
-                outputPost.flush()
-                outputPost.close()
-
-                var line : String?
-                val code = client.responseCode.toString()
-                Log.d("MAD-group27", code)
-                if(!code.startsWith("4") && !code.startsWith("5")) {
-                    val isr = InputStreamReader(client.inputStream)
-                    val reader = BufferedReader(isr)
-                    val sb = StringBuilder()
-                    while (reader.readLine().also { line = it } != null) {
-                        sb.append(line.toString() + "\n")
-                    }
-
-                    Log.d("MAD-group27", code + " " + client.responseMessage)
-                }else{
-                    val isr = InputStreamReader(client.errorStream)
-                    val reader = BufferedReader(isr)
-                    val sb = StringBuilder()
-                    while (reader.readLine().also { line = it } != null) {
-                        sb.append(line.toString() + "\n")
-                    }
-                }
-
-                client.disconnect()
-            }.start()
+                //TODO make snackbar properly and format response body
+                response.body()?.let { Log.d(getLogTag(), it.toString()) }
+                Log.d(getLogTag(), snackText)
+            }
 
         }
     }
@@ -83,12 +84,18 @@ class MessagingService : FirebaseMessagingService() {
 
 }
 
+interface NotificationAPI{
+    @POST(MessagingService.path)
+    suspend fun sendNotification(@HeaderMap headers:Map<String, String>,
+                                 @Body notification: Message): Response<Gson>
+}
+
 @Parcelize
 @Serializable
 data class AndroidNotification(
     val title: String,
     val body: String,
-    private var image: String?
+    var image: String?
 ) : Parcelable {
     init {
         if (image == null){
@@ -99,8 +106,8 @@ data class AndroidNotification(
 
 @Parcelize
 @Serializable
-private data class NotificationObject(val token:String, val notification: AndroidNotification): Parcelable
+data class NotificationObject(val token:String, val notification: AndroidNotification): Parcelable
 
 @Parcelize
 @Serializable
-private data class Message(val message: NotificationObject, val validate_only: Boolean): Parcelable
+data class Message(val message: NotificationObject, val validate_only: Boolean): Parcelable

@@ -1,15 +1,20 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
+import androidx.lifecycle.ViewModelProvider
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Filter
 import android.widget.TextView
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -134,16 +139,23 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         }
 
         viewModel.locationString.observe(viewLifecycleOwner){
-            if(it!=null){
-                autoCompleteTextView.setText(it)
-            }
+            autoCompleteTextView.setText(it)
         }
-        //TODO add clear button
+
+        searchPlace.setEndIconOnClickListener {
+            viewModel.locationString.value = null
+            viewModel.geoPoint.value = null
+
+        }
         //TODO add loading field
+        viewModel.loading.observe(viewLifecycleOwner){
+            adapter.loading = it
+            adapter.notifyDataSetChanged()
+        }
 
         autoCompleteTextView.doOnTextChanged { text, _, _, _ ->
             adapter.clear()
-            if(viewModel.locationString.value != text.toString()){
+            if(text !=null && viewModel.locationString.value != text.toString()){
                 //it is a text input and not a selection
                 Log.d(getLogTag(), "changed to $text")
 
@@ -171,23 +183,45 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     }
 
 
-    inner class AutoCompleteTextViewAdapter(private val c: Context, private val layoutResource: Int, private val suggestions: List<Pair<String, GeoPoint>>) :
+    inner class AutoCompleteTextViewAdapter(private val c: Context, private val layoutResource: Int,
+                                            private val suggestions: List<Pair<String, GeoPoint>>) :
         ArrayAdapter<Pair<String, GeoPoint>>(c, layoutResource, suggestions) {
 
+        var loading = true
 
 
-        override fun getCount(): Int = suggestions.size
+        override fun getCount(): Int = if (loading) 1 else  suggestions.size
 
-        override fun getItem(position: Int): Pair<String, GeoPoint> = suggestions[position]
+        override fun getItem(position: Int): Pair<String, GeoPoint>? = if(loading) null else suggestions[position]
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(c).inflate(layoutResource, parent, false)
 
-            view.findViewById<TextView>(R.id.content).text = suggestions[position].first
-            view.setOnClickListener {
-                viewModel.geoPoint.value = suggestions[position].second
-                viewModel.locationString.value = suggestions[position].first
+            var view = convertView ?: LayoutInflater.from(c).inflate(layoutResource, parent, false)
+            val textView = view.findViewById<TextView>(R.id.content)
+            if(loading){
+                textView.text = null
+                textView.visibility = View.GONE
+                view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+                view.setOnClickListener {}
+
+            }else{
+                textView.visibility = View.VISIBLE
+                textView.text = suggestions[position].first
+                view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
+                view.setOnClickListener {
+
+                    if(act.currentFocus!=null) {
+                        val imm: InputMethodManager =
+                            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+
+                        act.currentFocus?.clearFocus()
+                    }
+                    viewModel.geoPoint.value = suggestions[position].second
+                    viewModel.locationString.value = suggestions[position].first
+                }
             }
+
 
             return view
         }
