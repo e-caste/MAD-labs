@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Filter
-import android.widget.TextView
 import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
