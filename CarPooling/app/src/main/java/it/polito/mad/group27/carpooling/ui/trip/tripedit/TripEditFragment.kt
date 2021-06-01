@@ -9,6 +9,7 @@ import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -71,7 +72,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        Log.d(getLogTag(), "TripEditFragment onViewCreated")
         // get trip from bundle
         if(arguments?.getParcelable<Trip>("trip")==null && !tripEditViewModel.isNewtripInitialized()) {
             tripEditViewModel.newTrip =  Trip()
@@ -137,10 +138,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_place.editText!!.isFocusable = false
         from_place.editText!!.isFocusableInTouchMode = false
         from_place.editText!!.isClickable = true
-        from_place.editText!!.setOnClickListener {
-            Log.d(getLogTag(), "from_place on click listener")
-            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
-        }
         from_date = from.findViewById<TextInputLayout>(R.id.stop_date)
         from_hour = from.findViewById<TextInputLayout>(R.id.stop_hour)
         from_date.editText?.setText(df.format(tripEditViewModel.newTrip.startDateTime.time))
@@ -153,6 +150,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val to = view.findViewById<LinearLayout>(R.id.editTo)
         to_place = to.findViewById<TextInputLayout>(R.id.stop_place)
+        to_place.editText!!.isFocusable = false
+        to_place.editText!!.isFocusableInTouchMode = false
+        to_place.editText!!.isClickable = true
         to_hour = to.findViewById<TextInputLayout>(R.id.stop_hour)
         to_date = to.findViewById<TextInputLayout>(R.id.stop_date)
 
@@ -162,8 +162,16 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 datePickerTo.show(requireActivity().supportFragmentManager, "datePickerTag")
         }
 
-        from_place.hint = getString(R.string.from)
+        from_place.placeholderText = getString(R.string.select_location)
         from_place.editText?.setText(tripEditViewModel.newTrip.from)
+        from_place.editText!!.setOnClickListener {
+            setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
+                // read from the bundle
+                from_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
+                tripEditViewModel.newTrip.fromGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
+            }
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+        }
         from_place.editText?.addTextChangedListener(Watcher(
             { from_place.editText?.text?.isEmpty() ?: true },
             { from_place.error = getString(R.string.edit_from_error)
@@ -189,8 +197,16 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
 
-        to_place.hint = getString(R.string.to)
+        to_place.placeholderText = getString(R.string.select_location)
         to_place.editText?.setText(tripEditViewModel.newTrip.to)
+        to_place.editText!!.setOnClickListener {
+            setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
+                // read from the bundle
+                to_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
+                tripEditViewModel.newTrip.toGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
+            }
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+        }
         to_place.editText?.addTextChangedListener(Watcher(
             { to_place.editText?.text?.isEmpty() ?: true || to_place.editText?.text == from_place.editText?.text},
             { to_place.error = getString(R.string.edit_to_error)
@@ -261,7 +277,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
         val stops_rv = view.findViewById<RecyclerView>(R.id.stop_list_rv)
         stops_rv.layoutManager = LinearLayoutManager(this.context)
-        stops_rv.adapter = StopRecyclerViewAdapter(tripEditViewModel.newTrip, this.requireContext())
+        stops_rv.adapter = StopRecyclerViewAdapter(tripEditViewModel.newTrip, this.requireContext(), findNavController())
 
 
         val add_button = view.findViewById<Button>(R.id.add_button)
