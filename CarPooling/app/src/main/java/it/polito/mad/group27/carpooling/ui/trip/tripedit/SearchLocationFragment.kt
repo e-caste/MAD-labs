@@ -10,6 +10,7 @@ import android.widget.Filter
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -17,17 +18,12 @@ import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import org.osmdroid.api.IGeoPoint
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
-import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
-import java.util.*
 
 
 class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_fragment, R.menu.edit_menu, null) {
@@ -36,6 +32,14 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     private lateinit var map: MapView
 
     private lateinit var searchPlace: TextInputLayout
+
+    private var baseOverlays: Int = 0
+
+    companion object {
+        val REQUEST_KEY = "place"
+        val location = "location"
+        val geopoint = "geopoint"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +89,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             else{
                 if (map.overlays.size > baseOverlays) {
                     map.overlays.removeAt(map.overlays.size - 1)
-                    map.controller.zoomOut()
+                    map.controller.zoomTo(5.5)
                 }
             }
         }
@@ -110,7 +114,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         // observe unavailablePlace to show Snackbar
         viewModel.unavailablePlace.observe(viewLifecycleOwner){
             if (it == true){
-                Snackbar.make(view, "Selected point does not exist", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Selected location does not exist", Snackbar.LENGTH_LONG)
                     .show()
             }
         }
@@ -151,8 +155,19 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         }
     }
 
-
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_menu_button->{
+                setFragmentResult(REQUEST_KEY, bundleOf(
+                    location to (viewModel.locationString.value ?: ""),
+                    geopoint to viewModel.geoPoint.value
+                    )
+                )
+                findNavController().navigateUp()
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 
