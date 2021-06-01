@@ -31,13 +31,7 @@
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment"
-        tools:layout="@layout/edit_profile_fragment" >
-        <action
-            android:id="@+id/action_editProfileFragment_to_showProfileFragment"
-            app:destination="@id/nav_profile"
-            app:popUpTo="@id/nav_profile"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/edit_profile_fragment" />
     <fragment
         android:id="@+id/tripDetailsFragment"
         android:name="it.polito.mad.group27.carpooling.ui.trip.tripdetails.TripDetailsFragment"

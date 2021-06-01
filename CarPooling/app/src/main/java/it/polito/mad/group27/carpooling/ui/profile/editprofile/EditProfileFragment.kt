@@ -38,7 +38,7 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         when(item.itemId){
             R.id.save_menu_button ->{
                 saveProfile()
-                findNavController().navigate(R.id.action_editProfileFragment_to_showProfileFragment)
+                findNavController().navigateUp()
             }
             else ->
                 return super.onOptionsItemSelected(item)
