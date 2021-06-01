@@ -73,16 +73,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
 
         // get trip from bundle
-        if(arguments?.getParcelable<Trip>("trip")==null) {
+        if(arguments?.getParcelable<Trip>("trip")==null && !tripEditViewModel.isNewtripInitialized()) {
             tripEditViewModel.newTrip =  Trip()
-        }else {
-            try{
-                tripEditViewModel.newTrip = arguments?.getParcelable("trip") ?: Trip()
-
-            }catch (e:Throwable){
-                tripEditViewModel.newTrip = Trip()
-            }
+        }else if(arguments?.getParcelable<Trip>("trip")!=null) {
+            tripEditViewModel.newTrip = arguments?.getParcelable("trip") ?: Trip()
         }
+
         if(tripEditViewModel.newTrip.id==null)
             updateTitle(getString(R.string.add_trip))
 
