@@ -2,15 +2,17 @@ package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
-import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -19,8 +21,6 @@ import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -120,7 +120,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                     getLogTag(), "${geoPoint.latitude} , ${geoPoint.longitude}")
 
                 viewModel.loadPlaceFromGeopoint(geoPoint as GeoPoint)
-
+                act.currentFocus?.clearFocus()
                 return true
             }
         })
@@ -158,9 +158,24 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
         }
         //TODO add loading field
-        viewModel.loading.observe(viewLifecycleOwner){
+        viewModel.loadingSuggestions.observe(viewLifecycleOwner){
             adapter.loading = it
             adapter.notifyDataSetChanged()
+        }
+
+
+
+        viewModel.loadingGeopoint.observe(viewLifecycleOwner){
+            if(it){
+
+                searchPlace.endIconMode = TextInputLayout.END_ICON_CUSTOM
+                val progress = requireContext().getProgressBarDrawable()
+                searchPlace.endIconDrawable =progress
+                (progress as? Animatable)?.start()
+
+            }else{
+                searchPlace.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
+            }
         }
 
         autoCompleteTextView.doOnTextChanged { text, _, _, _ ->
@@ -250,6 +265,17 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             }
         }
     }
+}
+
+fun Context.getProgressBarDrawable(): Drawable {
+    val value = TypedValue()
+    theme.resolveAttribute(android.R.attr.progressBarStyleSmallTitle, value, false)
+    val progressBarStyle = value.data
+    val attributes = intArrayOf(android.R.attr.indeterminateDrawable)
+    val array = obtainStyledAttributes(progressBarStyle, attributes)
+    val drawable = array.getDrawableOrThrow(0)
+    array.recycle()
+    return drawable
 }
 
 
