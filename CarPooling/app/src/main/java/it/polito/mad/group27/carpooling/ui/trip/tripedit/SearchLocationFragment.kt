@@ -104,6 +104,8 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             else{
                 if (map.overlays.size > baseOverlays) {
                     map.overlays.removeAt(map.overlays.size - 1)
+                    //double to zoom to trigger repaint
+                    map.controller.zoomTo(5.49)
                     map.controller.zoomTo(5.5)
                 }
             }
@@ -215,9 +217,9 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         var loading = true
 
 
-        override fun getCount(): Int = if (loading) 1 else  suggestions.size
+        override fun getCount(): Int = if (loading) 1 else if(suggestions.isEmpty()) 1 else suggestions.size
 
-        override fun getItem(position: Int): Pair<String, GeoPoint>? = if(loading) null else suggestions[position]
+        override fun getItem(position: Int): Pair<String, GeoPoint>? = if(loading || suggestions.isEmpty()) null else suggestions[position]
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
@@ -231,19 +233,25 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
             }else{
                 textView.visibility = View.VISIBLE
-                textView.text = suggestions[position].first
                 view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
-                view.setOnClickListener {
+                if(suggestions.isEmpty()){
+                    textView.text = "No results for current search"
+                }else {
 
-                    if(act.currentFocus!=null) {
-                        val imm: InputMethodManager =
-                            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+                    textView.text = suggestions[position].first
 
-                        act.currentFocus?.clearFocus()
+                    view.setOnClickListener {
+
+                        if (act.currentFocus != null) {
+                            val imm: InputMethodManager =
+                                context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+
+                            act.currentFocus?.clearFocus()
+                        }
+                        viewModel.geoPoint.value = suggestions[position].second
+                        viewModel.locationString.value = suggestions[position].first
                     }
-                    viewModel.geoPoint.value = suggestions[position].second
-                    viewModel.locationString.value = suggestions[position].first
                 }
             }
 
