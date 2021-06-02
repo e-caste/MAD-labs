@@ -49,7 +49,8 @@ class OthersTripList(
     private lateinit var chipGroup: ChipGroup
     private val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
     private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
-    override val warningMessageLayoutId: Int = R.id.warning_message_notrips_otherstriplist
+    override val warningMessageStringId: Int = R.string.warning_message_notrips_otherstriplist
+    override val warningMessagePictureDrawableId: Int = R.drawable.woman_pushing_car
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
