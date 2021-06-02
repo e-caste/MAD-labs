@@ -1,22 +1,29 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripedit
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
+import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.Watcher
+import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 
-class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
+class StopRecyclerViewAdapter(val trip: Trip, private val context: Context, private val navController: NavController) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {
     class ItemViewHolder(v: View, val context: Context, val trip: Trip, val parent: StopRecyclerViewAdapter) : RecyclerView.ViewHolder(v) {
         private val placeView = v.findViewById<TextInputLayout>(R.id.stop_place)
@@ -29,7 +36,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
         private var dateTimeWatcher: Watcher?= null
         private var placeViewWatcher: Watcher?= null
 
-        fun bind(stop: Stop, position: Int) {
+        fun bind(stop: Stop, position: Int, navController: NavController) {
             datePicker = getDatePicker(stop.dateTime, dateView)
             removeButton.visibility = View.VISIBLE
             if (dateTimeWatcher!=null){
@@ -65,6 +72,27 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
                     hourView.error = null
                 }
             )
+
+            placeView.editText!!.isFocusable = false
+            placeView.editText!!.isFocusableInTouchMode = false
+            placeView.editText!!.isClickable = true
+
+            placeView.editText!!.setOnClickListener {
+
+                (context as AppCompatActivity).supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment)
+                    ?.childFragmentManager?.fragments?.get(0)
+                    ?.setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
+                        placeView.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
+                        stop.geoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
+                    }
+                Log.d(getLogTag(), "from stop to search location")
+                navController.navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
+                    bundleOf(SearchLocationFragment.location to stop.place,
+                        SearchLocationFragment.geopoint to stop.geoPoint)
+                )
+            }
+
             placeViewWatcher = Watcher(
                 { placeView.editText?.text?.isEmpty() ?: true },
                 { placeView.error = context.getString(R.string.stop_place_error)
@@ -75,7 +103,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
                     (context as AppCompatActivity).invalidateOptionsMenu() }
             )
             placeView.editText?.setText(stop.place)
-            placeView.hint = context.getString(R.string.stop) + " ${position+1}"
+            placeView.hint = context.getString(R.string.select_location)
             placeView?.editText?.addTextChangedListener(placeViewWatcher)
 
             removeButton.setOnClickListener {
@@ -121,7 +149,7 @@ class StopRecyclerViewAdapter(val trip: Trip, private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(trip.stops[position], position)
+        holder.bind(trip.stops[position], position, navController)
     }
 
     fun add(stop: Stop) {

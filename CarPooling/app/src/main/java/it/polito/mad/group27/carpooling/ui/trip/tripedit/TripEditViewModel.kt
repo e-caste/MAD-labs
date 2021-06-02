@@ -71,4 +71,8 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun isNewtripInitialized(): Boolean{
+        return this::newTrip.isInitialized
+    }
+
 }

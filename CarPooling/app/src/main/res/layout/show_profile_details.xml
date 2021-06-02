@@ -12,64 +12,10 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/paddingFullBottom">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/passengerRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingRight="8sp"
-                    android:text="@string/passenger_reputation"
-                    android:textAlignment="textEnd"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                <TextView
-                    android:id="@+id/driverRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingRight="8sp"
-                    android:text="@string/driver_reputation"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-
-                <RatingBar
-                    android:id="@+id/ratingBarPassenger"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:numStars="5"
-                    android:rating="@string/default_rating" />
-
-                <RatingBar
-                    android:id="@+id/ratingBarDriver"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:numStars="5"
-                    android:rating="@string/default_rating" />
-            </LinearLayout>
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/textView6"
@@ -86,6 +32,89 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_registration_date" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/rating_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/rating"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <View
+            android:id="@+id/rating_bar"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/paddingFullBottom">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/driverRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|end"
+                    android:paddingRight="8sp"
+                    android:text="@string/driver_reputation"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                <TextView
+                    android:id="@+id/passengerRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|end"
+                    android:paddingRight="8sp"
+                    android:text="@string/passenger_reputation"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <RatingBar
+                    android:id="@+id/ratingBarDriver"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:indeterminate="false"
+                    android:numStars="5"
+                    android:rating="@string/default_rating" />
+
+                <RatingBar
+                    android:id="@+id/ratingBarPassenger"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:indeterminate="false"
+                    android:numStars="5"
+                    android:rating="@string/default_rating" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView
@@ -110,7 +139,7 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_baseline_tag_faces_24" />
 
@@ -154,7 +183,7 @@
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_baseline_email_24" />
 
@@ -191,7 +220,7 @@
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_baseline_place_24" />
 
@@ -208,7 +237,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/travelled_with"
+            android:id="@+id/travelled_with_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -229,7 +258,36 @@
                 android:background="@android:color/darker_gray" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
+                android:id="@+id/listTravelledWithMe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/fragment_trip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/i_travelled_with"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/i_travelled_with"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listITravelledWith"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="LinearLayoutManager"

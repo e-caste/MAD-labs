@@ -33,10 +33,8 @@
         android:name="it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment"
         tools:layout="@layout/edit_profile_fragment" >
         <action
-            android:id="@+id/action_editProfileFragment_to_showProfileFragment"
-            app:destination="@id/nav_profile"
-            app:popUpTo="@id/nav_profile"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_editProfileFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
@@ -99,13 +97,7 @@
         android:id="@+id/searchLocationFragment"
         android:name="it.polito.mad.group27.carpooling.ui.trip.tripedit.SearchLocationFragment"
         android:label="search_location_fragment"
-        tools:layout="@layout/search_location_fragment" >
-        <action
-            android:id="@+id/action_searchLocationFragment_to_tripEditFragment"
-            app:destination="@id/tripEditFragment"
-            app:popUpTo="@id/tripEditFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/search_location_fragment" />
     <fragment
         android:id="@+id/boughtTripList"
         android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.BoughtTripList"

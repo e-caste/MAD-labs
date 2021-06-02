@@ -4,7 +4,7 @@
     <string name="default_email">giovanni.smitti@polito.it</string>
     <string name="default_nickname">Giò</string>
     <string name="default_fullname">Giovanni Smitti</string>
-    <string name="since">Dal</string>
+    <string name="since">Registrato dal</string>
     <string name="edit">Modifica</string>
     <string name="hint_fullname">Nome e cognome</string>
     <string name="hint_nickname">Il tuo soprannome</string>
@@ -109,12 +109,16 @@
     <string name="trip_cancelled_message">L\'autista ha annullato il viaggio da %s a %s del %s</string>
     <string name="error_equal_destination_departure">Non può essere uguale alla partenza</string>
     <string name="this_trip_is_unadvertised">Questo viaggio non è disponibile</string>
-    <string name="passenger_reputation">Valutazione passeggero</string>
-    <string name="driver_reputation">Valutazione autista</string>
+    <string name="passenger_reputation">Passeggero</string>
+    <string name="driver_reputation">Guidatore</string>
     <string name="boughttriplist_title">Viaggi Acquistati</string>
     <string name="tripsofinterestlist_title">Viaggi Prenotati</string>
     <string name="warning_message_notrips_tripsofinterestlist">Non hai ancora prenotato nessun viaggio.<br />Prova a prenotarne uno!<br />Ricordati di controllare i tuoi viaggi acquistati.</string>
     <string name="warning_message_notrips_boughttriplist">Non hai ancora prenotato nessun viaggio, o non sei ancora stato accettato dal driver.<br />Prova a controllare i tuoi viaggi prenotati!</string>
     <string name="warning_message_notrips_triplist">Non hai ancora offerto nessun viaggio.<br />Usa il tasto + per aggiungerne uno!</string>
     <string name="driver_information">Informazioni sul guidatore</string>
+    <string name="i_travelled_with">Ha guidato per me:</string>
+    <string name="select_location">"Seleziona il luogo "</string>
+    <string name="save_profile_error">Errore nel salvataggio del profilo, riprova più tardi</string>
+    <string name="rating">Valutazioni</string>
 </resources>

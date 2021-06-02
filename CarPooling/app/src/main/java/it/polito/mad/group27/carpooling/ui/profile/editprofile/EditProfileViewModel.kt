@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.entities.Profile
 
 class EditProfileViewModel(application: Application): AndroidViewModel(application) {
@@ -19,7 +20,7 @@ class EditProfileViewModel(application: Application): AndroidViewModel(applicati
         db.collection("users").document(auth.currentUser!!.uid).set(profile).addOnFailureListener{
             Toast.makeText(
                 getApplication<Application>().applicationContext,
-                "Error in saving profile", //TODO TRANSLATE
+                getApplication<Application>().applicationContext.getString(R.string.save_profile_error),
                 Toast.LENGTH_SHORT
             ).show()
         }
