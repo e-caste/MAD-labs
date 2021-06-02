@@ -464,12 +464,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
             Log.d(getLogTag(), "adding review to list: $review")
-            // bind reviewViewHolder to review
+            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid.id == currentUserUid)
+            reviewViewHolder.bind(review, reviewIsMine)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-            // TODO: use either trip_review_mine or trip_review_theirs layout
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_review_mine, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_review, parent, false)
             return ReviewViewHolder(view)
         }
 
@@ -485,6 +485,26 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private inner class ReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val mineLayout = view.findViewById<LinearLayout>(R.id.trip_review_mine)
+        private val theirsLayout = view.findViewById<LinearLayout>(R.id.trip_review_theirs)
+
+        private fun bindMine(review: Review) {
+            mineLayout.visibility = View.VISIBLE
+            theirsLayout.visibility = View.GONE
+        }
+
+        private fun bindTheirs(review: Review) {
+            mineLayout.visibility = View.GONE
+            theirsLayout.visibility = View.VISIBLE
+        }
+
+        fun bind(review: Review, reviewIsMine: Boolean) {
+            if (reviewIsMine) {
+                bindMine(review)
+            } else {
+                bindTheirs(review)
+            }
+        }
     }
 
     override fun onStart() {
