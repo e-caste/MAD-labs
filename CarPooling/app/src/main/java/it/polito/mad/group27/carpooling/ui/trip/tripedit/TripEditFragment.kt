@@ -174,7 +174,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 from_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
                 tripEditViewModel.newTrip.fromGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
             }
-            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
+            bundleOf(SearchLocationFragment.location to tripEditViewModel.newTrip.from,
+            SearchLocationFragment.geopoint to tripEditViewModel.newTrip.fromGeoPoint))
         }
         from_place.editText?.addTextChangedListener(Watcher(
             { from_place.editText?.text?.isEmpty() ?: true },
@@ -209,7 +211,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 to_place.editText!!.setText(bundle.getString(SearchLocationFragment.location) ?: "")
                 tripEditViewModel.newTrip.toGeoPoint = bundle.getParcelable(SearchLocationFragment.geopoint)
             }
-            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment)
+            findNavController().navigate(R.id.action_tripEditFragment_to_searchLocationFragment,
+                bundleOf(SearchLocationFragment.location to tripEditViewModel.newTrip.to,
+                    SearchLocationFragment.geopoint to tripEditViewModel.newTrip.toGeoPoint))
         }
         to_place.editText?.addTextChangedListener(Watcher(
             { to_place.editText?.text?.isEmpty() ?: true || to_place.editText?.text == from_place.editText?.text},
