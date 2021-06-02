@@ -33,9 +33,7 @@ class SearchLocationViewModel : ViewModel() {
     }
 
     fun loadSuggestions(search:String){
-        if(activeJob!= null && activeJob!!.isActive){
-            activeJob!!.cancel()
-        }
+        clearPreviousJobs()
         activeJob = MainScope().launch {
             //TODO manage errors
             loading.value = true
@@ -46,9 +44,7 @@ class SearchLocationViewModel : ViewModel() {
     }
 
     fun loadPlaceFromGeopoint(point: GeoPoint){
-        if(activeJob!= null && activeJob!!.isActive){
-            activeJob!!.cancel()
-        }
+        clearPreviousJobs()
         activeJob = MainScope().launch {
                 val result = retrofit.getPlaceFromGeoPoint(point.latitude, point.longitude)
                 if(result?.display_name != null) {
@@ -61,6 +57,20 @@ class SearchLocationViewModel : ViewModel() {
                     unavailablePlace.value = true
                     Log.d(getLogTag(), "got $result")
                 }
+        }
+    }
+
+    private fun clearPreviousJobs() {
+        if (activeJob != null && activeJob!!.isActive) {
+            activeJob!!.cancel()
+        }
+    }
+
+    fun loadGeopointFromText(location:String){
+        clearPreviousJobs()
+        activeJob = MainScope().launch {
+            val result = retrofit.getSuggestions(location)[0]
+            geoPoint.value = result.geopoint
         }
     }
 }
@@ -76,6 +86,7 @@ interface SearchAPI{
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("format") format:String = "json"): Suggestion?
+
 }
 
 data class Suggestion (
