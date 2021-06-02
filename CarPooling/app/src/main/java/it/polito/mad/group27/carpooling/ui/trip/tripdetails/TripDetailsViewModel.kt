@@ -19,6 +19,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     val interestedList: MutableLiveData<List<Profile>> = MutableLiveData(listOf())
     val acceptedList: MutableLiveData<List<Profile>> = MutableLiveData(listOf())
     val trip: MutableLiveData<Trip> = MutableLiveData(null)
+    val driverProfile : MutableLiveData<Profile> = MutableLiveData(null)
     var stopsExpanded: Int = View.GONE
     var interestedExpanded: Int = View.GONE
     var acceptedExpanded: Int = View.GONE
@@ -33,11 +34,24 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
             } else {
                 if(value!=null){
                     trip.value = value.toObject(TripDB::class.java)!!.toTrip()
+                    loadDriverProfile()
                 }
             }
         }
 
         return trip.value ?: Trip()
+    }
+
+    private fun loadDriverProfile() {
+        users.document(trip.value!!.ownerUid).addSnapshotListener { value, e ->
+            if(e != null) {
+                throw Exception("No driver found")
+            } else {
+                if(value!=null) {
+                    driverProfile.value = value.toObject(Profile::class.java)
+                }
+            }
+        }
     }
 
     fun loadInterestedUsers(callback: (MutableList<Profile>) -> Unit) {
