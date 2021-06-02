@@ -24,7 +24,7 @@ class TripsOfInterestList(
 
     override fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
-            findNavController().navigate(R.id.action_boughtTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+            findNavController().navigate(R.id.action_tripsOfInterestList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
         }
         tripViewHolder.topRightButtonShadow.visibility = View.GONE
         tripViewHolder.topRightButton.visibility = View.GONE
