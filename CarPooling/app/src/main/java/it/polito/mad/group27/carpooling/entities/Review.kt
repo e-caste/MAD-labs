@@ -7,4 +7,5 @@ data class Review(
     val passengerUid: DocumentReference,
     val rating: Long,
     val comment: String,
+    val isForDriver: Boolean,
 )
