@@ -6,20 +6,23 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
+import it.polito.mad.group27.carpooling.entities.Review
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
@@ -66,6 +69,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var noTravellerInfoMessage: TextView
     private lateinit var unadvertisedTripMessage: TextView
     private lateinit var bookingFAB: FloatingActionButton
+    private lateinit var reviewsRecyclerView: RecyclerView
+    private lateinit var warningMessageNoReviews: TextView
+    private lateinit var reviewForm: LinearLayout
+    private lateinit var reviewFormTitle: TextView
+    private lateinit var reviewFormDropdown: AutoCompleteTextView
+    private lateinit var reviewFormRating: RatingBar
+    private lateinit var reviewFormTextfieldLayout: TextInputLayout
+    private lateinit var reviewFormTextfield: TextInputEditText
+    private lateinit var reviewFormSendButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +137,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         noTravellerInfoMessage = view.findViewById(R.id.no_traveller_info_message)
         unadvertisedTripMessage = view.findViewById(R.id.unadvertised_trip_message)
         bookingFAB = view.findViewById(R.id.sign_as_interested_fab)
+
+        reviewsRecyclerView = view.findViewById(R.id.trip_reviews_list)
+        warningMessageNoReviews = view.findViewById(R.id.warning_message_noreviews)
+        reviewForm = view.findViewById(R.id.review_form)
+        reviewFormTitle = view.findViewById(R.id.review_form_title)
+        reviewFormDropdown = view.findViewById(R.id.review_form_dropdown)
+        reviewFormRating = view.findViewById(R.id.review_form_rating)
+        reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
+        reviewFormTextfield = view.findViewById(R.id.review_form_textfield)
+        reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
 
         checkPrivateMode()
         checkAdvertised()
@@ -407,4 +429,44 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         return "$date, $time"
     }
 
+
+    // TRIP REVIEWS MANAGEMENT SECTION
+
+    private inner class ReviewFirestoreRecyclerAdapter(
+        options: FirestoreRecyclerOptions<Review>,
+        val updateCallback: ()->Unit,
+    ) : FirestoreRecyclerAdapter<Review, ReviewViewHolder>(options) {
+
+        override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
+            Log.d(getLogTag(), "adding review to list: $review")
+            // bind reviewViewHolder to review
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
+            // TODO: use either trip_review_mine or trip_review_theirs layout
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_review_mine, parent, false)
+            return ReviewViewHolder(view)
+        }
+
+        override fun onDataChanged() {
+            super.onDataChanged()
+            updateCallback()
+        }
+
+        override fun getItemCount(): Int {
+            return this.snapshots.size
+        }
+    }
+
+    private inner class ReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
 }
