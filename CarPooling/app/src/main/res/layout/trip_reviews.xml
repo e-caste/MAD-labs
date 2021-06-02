@@ -28,6 +28,15 @@
         android:paddingBottom="8dp" />
     <!-- tools:listitem="@layout/trip_review_theirs" -->
 
+    <TextView
+        android:id="@+id/warning_message_noreviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="There are no reviews yet.<br />Use the form below to add one!"
+        android:textSize="18sp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center_horizontal" />
+
     <LinearLayout
         android:id="@+id/review_tosend_mine"
         android:layout_width="match_parent"
