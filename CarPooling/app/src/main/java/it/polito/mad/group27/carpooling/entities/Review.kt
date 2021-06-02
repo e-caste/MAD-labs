@@ -1,5 +1,6 @@
 package it.polito.mad.group27.carpooling.entities
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 
 data class Review(
@@ -8,4 +9,5 @@ data class Review(
     val rating: Long,
     val comment: String,
     val isForDriver: Boolean,
+    val timestamp: Timestamp,
 )
