@@ -32,7 +32,7 @@
         android:id="@+id/warning_message_noreviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="There are no reviews yet.<br />Use the form below to add one!"
+        android:text="There are no reviews yet. Use the form below to add one!"
         android:textSize="18sp"
         android:textColor="@color/colorAccent"
         android:gravity="center_horizontal" />
