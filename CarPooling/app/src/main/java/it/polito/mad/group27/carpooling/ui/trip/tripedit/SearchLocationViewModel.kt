@@ -14,7 +14,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 class SearchLocationViewModel : ViewModel() {
-    val loading: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val loadingSuggestions: MutableLiveData<Boolean> = MutableLiveData(false)
+    val loadingGeopoint: MutableLiveData<Boolean> = MutableLiveData(false)
     val geoPoint: MutableLiveData<GeoPoint?> = MutableLiveData(null)
     val locationString: MutableLiveData<String?> = MutableLiveData(null)
     val searchSuggestions: MutableLiveData<List<Pair<String, GeoPoint>>?> = MutableLiveData(null)
@@ -36,16 +38,17 @@ class SearchLocationViewModel : ViewModel() {
         clearPreviousJobs()
         activeJob = MainScope().launch {
             //TODO manage errors
-            loading.value = true
+            loadingSuggestions.value = true
             val results = retrofit.getSuggestions(search)
             searchSuggestions.value = results.map{ Pair(it.toString(), it.geopoint)}
-            loading.value = false
+            loadingSuggestions.value = false
         }
     }
 
     fun loadPlaceFromGeopoint(point: GeoPoint){
         clearPreviousJobs()
         activeJob = MainScope().launch {
+                loadingGeopoint.value  = true
                 val result = retrofit.getPlaceFromGeoPoint(point.latitude, point.longitude)
                 if(result?.display_name != null) {
                     locationString.value = result.toString()
@@ -57,20 +60,25 @@ class SearchLocationViewModel : ViewModel() {
                     unavailablePlace.value = true
                     Log.d(getLogTag(), "got $result")
                 }
+                loadingGeopoint.value  = false
         }
     }
 
     private fun clearPreviousJobs() {
         if (activeJob != null && activeJob!!.isActive) {
             activeJob!!.cancel()
+            loadingSuggestions.value = false
+            loadingGeopoint.value  = false
         }
     }
 
     fun loadGeopointFromText(location:String){
         clearPreviousJobs()
         activeJob = MainScope().launch {
+            loadingGeopoint.value  = true
             val result = retrofit.getSuggestions(location)[0]
             geoPoint.value = result.geopoint
+            loadingGeopoint.value  = false
         }
     }
 }
