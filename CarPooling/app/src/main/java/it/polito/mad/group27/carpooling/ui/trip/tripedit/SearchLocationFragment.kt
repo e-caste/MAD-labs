@@ -19,6 +19,8 @@ import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -52,9 +54,16 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(arguments?.getString(location) != "" && arguments?.getParcelable<GeoPoint>(geopoint) != null){
+        if(arguments?.getString(location) != "" ){
             viewModel.locationString.value = arguments?.getString(location)
+
+        }
+        if(arguments?.getParcelable<GeoPoint>(geopoint) != null){
             viewModel.geoPoint.value = arguments?.getParcelable<GeoPoint>(geopoint)
+        }
+
+        if(viewModel.locationString.value != null && viewModel.geoPoint.value == null){
+            viewModel.loadGeopointFromText(viewModel.locationString.value!!)
         }
 
         map = view.findViewById(R.id.edit_trip_mapview)
