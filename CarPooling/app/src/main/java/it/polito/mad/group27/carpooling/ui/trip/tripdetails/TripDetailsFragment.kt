@@ -22,6 +22,7 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import org.osmdroid.views.MapView
 import org.w3c.dom.Text
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -70,6 +71,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var noTravellerInfoMessage: TextView
     private lateinit var unadvertisedTripMessage: TextView
     private lateinit var bookingFAB: FloatingActionButton
+    private lateinit var map: MapView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,6 +136,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         driverImage = view.findViewById(R.id.driver_image_trip_details)
         driverNickname = view.findViewById(R.id.driver_nickname_trip_details)
         driverRating = view.findViewById(R.id.driver_rating_trip_details)
+        map = view.findViewById(R.id.map_trip_details)
 
         checkPrivateMode()
         checkAdvertised()
