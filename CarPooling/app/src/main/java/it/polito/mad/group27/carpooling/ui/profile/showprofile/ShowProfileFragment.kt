@@ -95,6 +95,9 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
 
         if(privateMode){
 
+            act.supportActionBar?.setHomeAsUpIndicator(null)
+            act.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
             val coll = FirebaseFirestore.getInstance().collection("trips")
             val queryBaseTravelledWithMe = coll
                 .whereEqualTo("ownerUid", FirebaseAuth.getInstance().currentUser.uid)
@@ -207,7 +210,11 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
             R.id.edit_menu_button ->
                 findNavController().navigate(R.id.action_showProfileFragment_to_editProfileFragment)
             else -> {
-               return super.onOptionsItemSelected(item)
+                //Menu button
+                Log.d(getLogTag(), "Home pressed")
+                if(privateMode)
+                    findNavController().navigateUp()
+                else return super.onOptionsItemSelected(item)
             }
 
         }

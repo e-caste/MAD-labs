@@ -38,8 +38,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Display1"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/Theme.CarPooling.PopupOverlay"
-                app:title="PIPPO" />
+                app:popupTheme="@style/Theme.CarPooling.PopupOverlay" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
     <include layout="@layout/show_profile_details" />
