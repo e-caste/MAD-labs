@@ -116,4 +116,5 @@
     <string name="warning_message_notrips_tripsofinterestlist">Non hai ancora prenotato nessun viaggio.<br />Prova a prenotarne uno!<br />Ricordati di controllare i tuoi viaggi acquistati.</string>
     <string name="warning_message_notrips_boughttriplist">Non hai ancora prenotato nessun viaggio, o non sei ancora stato accettato dal driver.<br />Prova a controllare i tuoi viaggi prenotati!</string>
     <string name="warning_message_notrips_triplist">Non hai ancora offerto nessun viaggio.<br />Usa il tasto + per aggiungerne uno!</string>
+    <string name="driver_information">Informazioni sul guidatore</string>
 </resources>
