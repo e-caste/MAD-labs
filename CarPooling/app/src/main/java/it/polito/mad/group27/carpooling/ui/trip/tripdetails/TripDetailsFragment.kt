@@ -6,11 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +22,7 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
+import org.w3c.dom.Text
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,6 +41,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var interestedExpandButton: ImageView
     private lateinit var acceptedExpandButton: ImageView
 
+    private lateinit var driverInfo: LinearLayout
+    private lateinit var driverLink: LinearLayout
+    private lateinit var driverImage: ImageView
+    private lateinit var driverNickname: TextView
+    private lateinit var driverRating: RatingBar
     private lateinit var seatsView: TextView
     private lateinit var dateView: TextView
     private lateinit var estimatedTimeView: TextView
@@ -125,6 +129,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         noTravellerInfoMessage = view.findViewById(R.id.no_traveller_info_message)
         unadvertisedTripMessage = view.findViewById(R.id.unadvertised_trip_message)
         bookingFAB = view.findViewById(R.id.sign_as_interested_fab)
+        driverInfo = view.findViewById(R.id.view_driver_profile_trip_details)
+        driverLink = view.findViewById(R.id.view_driver_profile_link)
+        driverImage = view.findViewById(R.id.driver_image_trip_details)
+        driverNickname = view.findViewById(R.id.driver_nickname_trip_details)
+        driverRating = view.findViewById(R.id.driver_rating_trip_details)
 
         checkPrivateMode()
         checkAdvertised()
@@ -248,6 +257,25 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             )
         }
 
+        tripDetailsViewModel.driverProfile.observe(viewLifecycleOwner){
+            if(it != null){
+                Glide.with(requireContext()).load(it.profileImageUri).circleCrop().into(driverImage)
+                driverNickname.text = it.nickName
+                if(it.countRatingsDriver > 0) {
+                    driverRating.numStars = (it.sumRatingsDriver / it.countRatingsDriver).toInt()
+                } else {
+                    driverRating.visibility = View.GONE
+                }
+                driverLink.isClickable = true
+                driverLink.setOnClickListener { profile ->
+                    profile.findNavController().navigate(
+                        R.id.action_tripDetailsFragment_to_nav_profile,
+                        bundleOf("profile" to it)
+                    )
+                }
+            }
+        }
+
         if(!checkPrivateMode()) {
             tripDetailsViewModel.checkBookedUser(currentUserUid)
         }
@@ -349,6 +377,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         if(checkPrivateMode()){
+            driverInfo.visibility = View.GONE
             bookingFAB.visibility = View.GONE
             travellersDetails.visibility = View.VISIBLE
 
@@ -381,6 +410,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 noTravellerInfoMessage.visibility = View.VISIBLE
             }
         } else {
+            driverInfo.visibility = View.VISIBLE
             travellersDetails.visibility = View.GONE
             bookingFAB.visibility = View.VISIBLE
             tripDetailsViewModel.checkBookedUser(currentUserUid)
