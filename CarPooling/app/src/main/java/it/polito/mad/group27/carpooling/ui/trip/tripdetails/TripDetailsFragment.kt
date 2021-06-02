@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.entities.Review
@@ -37,6 +38,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private var privateMode = false
     private var tripIsAdvertised = true
     private val currentUserUid = FirebaseAuth.getInstance().currentUser.uid
+    private val db = FirebaseFirestore.getInstance()
+    private var reviewAdapter: ReviewFirestoreRecyclerAdapter? = null
 
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
@@ -69,6 +72,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var noTravellerInfoMessage: TextView
     private lateinit var unadvertisedTripMessage: TextView
     private lateinit var bookingFAB: FloatingActionButton
+
     private lateinit var reviewsRecyclerView: RecyclerView
     private lateinit var warningMessageNoReviews: TextView
     private lateinit var reviewForm: LinearLayout
@@ -273,6 +277,27 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         if(!checkPrivateMode()) {
             tripDetailsViewModel.checkBookedUser(currentUserUid)
         }
+
+        val tripDocRef = db
+            .collection("trips")
+            .document(tripId)
+        val query = db
+            .collection("reviews")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .whereEqualTo("tripId", tripDocRef)
+        val options = FirestoreRecyclerOptions.Builder<Review>()
+            .setQuery(query, Review::class.java)
+            .build()
+        reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
+            if (reviewAdapter!!.itemCount == 0) {
+                reviewsRecyclerView.visibility = View.GONE
+                warningMessageNoReviews.visibility = View.VISIBLE
+            } else {
+                reviewsRecyclerView.visibility = View.VISIBLE
+                warningMessageNoReviews.visibility = View.GONE
+                reviewsRecyclerView.adapter = reviewAdapter
+            }
+        }
     }
 
     private fun checkAdvertised(): Boolean {
@@ -434,7 +459,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private inner class ReviewFirestoreRecyclerAdapter(
         options: FirestoreRecyclerOptions<Review>,
-        val updateCallback: ()->Unit,
+        val updateCallback: () -> Unit,
     ) : FirestoreRecyclerAdapter<Review, ReviewViewHolder>(options) {
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
@@ -464,9 +489,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     override fun onStart() {
         super.onStart()
+        reviewAdapter!!.startListening()
     }
 
     override fun onStop() {
         super.onStop()
+        reviewAdapter!!.stopListening()
     }
 }
