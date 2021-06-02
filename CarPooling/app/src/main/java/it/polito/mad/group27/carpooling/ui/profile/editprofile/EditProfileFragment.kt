@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.*
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.EditFragment
+import it.polito.mad.group27.carpooling.ui.trip.tripedit.SearchLocationFragment
 
 class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.edit_menu,
     R.string.profile_edit_title) {
@@ -119,6 +122,17 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
                 activity?.invalidateOptionsMenu()
             }
         ))
+
+        locationEdit.editText!!.setOnClickListener {
+            setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
+                // read from the bundle
+
+                locationEdit.editText!!.setText(bundle.getString(SearchLocationFragment.location) )
+            }
+            findNavController().navigate(R.id.action_editProfileFragment_to_searchLocationFragment,
+                bundleOf(SearchLocationFragment.location to locationEdit.editText!!.text.toString())
+            )
+        }
     }
 
     private fun validateFields() : Boolean {
