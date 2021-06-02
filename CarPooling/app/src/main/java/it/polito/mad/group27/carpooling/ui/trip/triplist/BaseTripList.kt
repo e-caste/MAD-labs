@@ -2,6 +2,7 @@ package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -50,7 +51,8 @@ abstract class BaseTripList(
         .setQuery(queryBase, TripDB::class.java)
         .build()
     protected var adapter: TripFirestoreRecyclerAdapter? = null
-    abstract val warningMessageLayoutId: Int
+    abstract val warningMessageStringId: Int
+    abstract val warningMessagePictureDrawableId: Int
 
 
     inner class TripViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -195,7 +197,11 @@ abstract class BaseTripList(
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        val warningMessageView = view.findViewById<LinearLayout>(warningMessageLayoutId)
+        val warningMessageView = view.findViewById<LinearLayout>(R.id.warning_message_notrips)
+        val warningMessageTextView = warningMessageView.findViewById<TextView>(R.id.warning_message_notrips_textview)
+        val warningMessageImageView = warningMessageView.findViewById<ImageView>(R.id.warning_message_notrips_imageview)
+        warningMessageTextView.text = getString(warningMessageStringId)
+        warningMessageImageView.setImageResource(warningMessagePictureDrawableId)
 
         adapter = TripFirestoreRecyclerAdapter(options) {
             // all trips are hidden -> show warning message

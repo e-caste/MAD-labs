@@ -1,6 +1,7 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,8 @@ class TripList(
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
-    override val warningMessageLayoutId: Int = R.id.warning_message_notrips_triplist
+    override val warningMessageStringId: Int = R.string.warning_message_notrips_triplist
+    override val warningMessagePictureDrawableId: Int = R.drawable.man_entering_car
 
     override fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
