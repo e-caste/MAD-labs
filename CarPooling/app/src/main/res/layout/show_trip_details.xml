@@ -85,12 +85,13 @@
                     <RatingBar
                         android:id="@+id/driver_rating_trip_details"
                         style="@style/Widget.AppCompat.RatingBar.Small"
-                        android:layout_width="0dp"
+                        android:isIndicator="true"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_gravity="center_vertical"
                         android:indeterminate="false"
                         android:numStars="5"
+                        android:stepSize="0.5"
                         android:rating="@string/default_rating" />
 
 

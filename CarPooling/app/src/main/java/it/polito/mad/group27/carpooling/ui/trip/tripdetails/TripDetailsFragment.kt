@@ -285,7 +285,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                     tripDetailsViewModel.userIsBooked.value = true
                                 }
                             }
-                            bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
+                            bookingFAB.visibility = View.GONE
                         }
                 }
                 .addOnFailureListener {
@@ -322,8 +322,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         tripDetailsViewModel.userIsBooked.observe(viewLifecycleOwner){
-            bookingFAB.setImageResource(
-                if(it) R.drawable.ic_baseline_done_24 else R.drawable.ic_baseline_add_24)
+            if(it) bookingFAB.visibility = View.GONE
+            else {
+                bookingFAB.visibility = View.VISIBLE
+                bookingFAB.setImageResource(R.drawable.ic_baseline_add_24)
+            }
+
             bookingFAB.setOnClickListener(
                 if(it) bookingFABListenerBooked else bookingFABListenerNotBooked
             )
