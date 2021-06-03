@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -362,6 +363,28 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                         Log.d(getLogTag(), "driver query failed")
                                     }
                                 }
+                            reviewFormSendButton.setOnClickListener {
+                                if (reviewFormRating.rating == 0F) {
+                                    Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
+                                } else {
+                                    db.collection("reviews").add(
+                                        Review(
+                                            tripId = tripDocRef,
+                                            passengerUid = db.collection("users").document(currentUserUid),
+                                            rating = reviewFormRating.rating.toLong(),
+                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                            isForDriver = true,
+                                            timestamp = Timestamp.now(),
+                                        )
+                                    ).addOnSuccessListener {
+                                        showReviewForm = false
+                                        reviewForm.visibility = View.GONE
+                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
                         }
                     }
                     reviewForm.visibility = if (showReviewForm) View.VISIBLE else View.GONE
