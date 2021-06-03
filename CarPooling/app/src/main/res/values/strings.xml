@@ -136,4 +136,6 @@
     <string name="select_location">Select location</string>
     <string name="save_profile_error">Error in profile saving. Please, try again later</string>
     <string name="rating">Ratings</string>
+    <string name="location_not_exist">Selected location does not exist!</string>
+    <string name="long_press">Long press to drag pinpoint</string>
 </resources>

@@ -121,4 +121,6 @@
     <string name="select_location">"Seleziona il luogo "</string>
     <string name="save_profile_error">Errore nel salvataggio del profilo, riprova più tardi</string>
     <string name="rating">Valutazioni</string>
+    <string name="location_not_exist">Il luogo selezionato non esiste!</string>
+    <string name="long_press">"Tieni premuto per trascinare "</string>
 </resources>
