@@ -54,6 +54,8 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // remove keyboard at start if present from previous fragment
+        act.currentFocus?.clearFocus()
         if(arguments?.getString(location) != "" ){
             viewModel.locationString.value = arguments?.getString(location)
 
