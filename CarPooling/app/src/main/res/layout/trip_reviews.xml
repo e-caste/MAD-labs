@@ -73,7 +73,10 @@
         <RatingBar
             android:id="@+id/review_form_rating"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/review_form_textfield_layout"
