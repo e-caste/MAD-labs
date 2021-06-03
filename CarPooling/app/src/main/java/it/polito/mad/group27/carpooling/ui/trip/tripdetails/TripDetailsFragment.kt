@@ -81,6 +81,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var warningMessageNoReviews: TextView
     private lateinit var reviewForm: LinearLayout
     private lateinit var reviewFormTitle: TextView
+    private lateinit var reviewFormDropdownEnclosure: TextInputLayout
     private lateinit var reviewFormDropdown: AutoCompleteTextView
     private lateinit var reviewFormRating: RatingBar
     private lateinit var reviewFormTextfieldLayout: TextInputLayout
@@ -150,6 +151,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         warningMessageNoReviews = view.findViewById(R.id.warning_message_noreviews)
         reviewForm = view.findViewById(R.id.review_form)
         reviewFormTitle = view.findViewById(R.id.review_form_title)
+        reviewFormDropdownEnclosure = view.findViewById(R.id.review_form_dropdown_enclosure)
         reviewFormDropdown = view.findViewById(R.id.review_form_dropdown)
         reviewFormRating = view.findViewById(R.id.review_form_rating)
         reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
@@ -344,7 +346,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                     } else {  // passenger
                         showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver }
-                        reviewFormDropdown.visibility = View.GONE
+                        reviewFormDropdownEnclosure.visibility = View.GONE
                         db.collection("users")
                             .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
                             .get()
