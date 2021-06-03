@@ -144,4 +144,7 @@
     <string name="review_form_textfield">Leave a review for your %1$s</string>
     <string name="passenger">passenger</string>
     <string name="driver">driver</string>
+    <string name="warning_message_mustrate">You must give a rating to submit a review.</string>
+    <string name="success_ratingsubmitted">Your review has been submitted!</string>
+    <string name="warning_message_failedrating">There was a problem submitting your review. Please retry.</string>
 </resources>
