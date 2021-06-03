@@ -537,6 +537,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         fun bind(review: Review, reviewIsMine: Boolean) {
+            // don't show reviews that only contain a rating
+            if (review.comment == null || review.comment.isBlank()) {
+                mineLayout.visibility = View.GONE
+                theirsLayout.visibility = View.GONE
+                return
+            }
             // give it up for callback hell! - could be implemented by awaiting coroutines
             review.tripId?.get()
                 ?.addOnCompleteListener { task ->
