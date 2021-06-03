@@ -104,6 +104,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var bookingFAB: FloatingActionButton
     private lateinit var map: MyMapView
 
+
     private lateinit var reviewsRecyclerView: RecyclerView
     private lateinit var warningMessageNoReviews: TextView
     private lateinit var reviewForm: LinearLayout
@@ -367,7 +368,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 }
                 map.controller.animateTo(it.first().geoPoint)
 
-                MainScope().launch {
+                if(tripDetailsViewModel.activeRoadSearchJob!= null && tripDetailsViewModel.activeRoadSearchJob!!.isActive){
+                    tripDetailsViewModel.activeRoadSearchJob!!.cancel()
+                }
+                tripDetailsViewModel.activeRoadSearchJob = MainScope().launch {
                     withContext(Dispatchers.IO) {
                         val roadManager: RoadManager = OSRMRoadManager(context, "")
                         val road: Road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint>)
