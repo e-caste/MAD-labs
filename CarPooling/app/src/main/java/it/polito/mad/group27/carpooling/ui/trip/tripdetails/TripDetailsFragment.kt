@@ -406,7 +406,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                         Log.d(getLogTag(), "accepted uids: ${tripDetailsViewModel.trip.value!!.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids")
                         // is there any passenger the driver has not reviewed yet?
-                        showReviewForm = dropdownPassengerUids.size > 0
+                        showReviewForm = dropdownPassengerUids.size > 0 &&
+                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime
                         if (showReviewForm) {
                             db.collection("users")
                                 .whereIn("uid", dropdownPassengerUids)
@@ -434,27 +435,53 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 if (reviewFormRating.rating == 0F) {
                                     Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
                                 } else {
-                                    db.collection("reviews").add(
-                                        Review(
-                                            tripId = tripDocRef,
-                                            passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
-                                            rating = reviewFormRating.rating.toLong(),
-                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
-                                            isForDriver = false,
-                                            timestamp = Timestamp.now(),
-                                        )
+                                    db.collection("reviews")
+                                        .add(
+                                            Review(
+                                                tripId = tripDocRef,
+                                                passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
+                                                rating = reviewFormRating.rating.toLong(),
+                                                comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                                isForDriver = false,
+                                                timestamp = Timestamp.now(),
+                                            )
                                     ).addOnSuccessListener {
-                                        dropdownPassengers.remove(selectedDropdownPassenger)
-                                        if (dropdownPassengers.size == 0) {
-                                            showReviewForm = false
-                                            reviewForm.visibility = View.GONE
-                                        } else {
-                                            reviewFormDropdown.setText(dropdownPassengers[0].fullName)
-                                            reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
-                                            reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
-                                            selectedDropdownPassenger = dropdownPassengers[0]
+                                        selectedDropdownPassenger.uid?.let { uid ->
+                                            db.collection("users")
+                                                .document(uid)
+                                                .set(
+                                                    Profile(
+                                                        uid = uid,
+                                                        profileImageUri = selectedDropdownPassenger.profileImageUri,
+                                                        fullName = selectedDropdownPassenger.fullName,
+                                                        nickName = selectedDropdownPassenger.nickName,
+                                                        email = selectedDropdownPassenger.email,
+                                                        location = selectedDropdownPassenger.location,
+                                                        registrationDate = selectedDropdownPassenger.registrationDate,
+                                                        notificationToken = selectedDropdownPassenger.notificationToken,
+                                                        sumRatingsPassenger = selectedDropdownPassenger.sumRatingsPassenger + reviewFormRating.rating.toLong(),
+                                                        countRatingsPassenger = selectedDropdownPassenger.countRatingsPassenger + 1,
+                                                        sumRatingsDriver = selectedDropdownPassenger.sumRatingsDriver,
+                                                        countRatingsDriver = selectedDropdownPassenger.countRatingsDriver,
+                                                    )
+                                                )
+                                                .addOnSuccessListener {
+                                                    dropdownPassengers.remove(selectedDropdownPassenger)
+                                                    if (dropdownPassengers.size == 0) {
+                                                        showReviewForm = false
+                                                        reviewForm.visibility = View.GONE
+                                                    } else {
+                                                        reviewFormDropdown.setText(dropdownPassengers[0].fullName)
+                                                        reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
+                                                        reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
+                                                        selectedDropdownPassenger = dropdownPassengers[0]
+                                                    }
+                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                }
                                         }
-                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
                                     }.addOnFailureListener {
                                         Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
                                     }
@@ -462,7 +489,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                             }
                         }
                     } else {  // passenger
-                        showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver }
+                        showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver } &&
+                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime &&
+                                tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(currentUserUid)
                         reviewFormDropdownEnclosure.visibility = View.GONE
                         if (showReviewForm) {
                             reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
@@ -492,9 +521,34 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                             timestamp = Timestamp.now(),
                                         )
                                     ).addOnSuccessListener {
-                                        showReviewForm = false
-                                        reviewForm.visibility = View.GONE
-                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                        driver.uid?.let { uid ->
+                                            db.collection("users")
+                                                .document(uid)
+                                                .set(
+                                                    Profile(
+                                                        uid = uid,
+                                                        profileImageUri = driver.profileImageUri,
+                                                        fullName = driver.fullName,
+                                                        nickName = driver.nickName,
+                                                        email = driver.email,
+                                                        location = driver.location,
+                                                        registrationDate = driver.registrationDate,
+                                                        notificationToken = driver.notificationToken,
+                                                        sumRatingsPassenger = driver.sumRatingsPassenger,
+                                                        countRatingsPassenger = driver.countRatingsPassenger,
+                                                        sumRatingsDriver = driver.sumRatingsDriver + reviewFormRating.rating.toLong(),
+                                                        countRatingsDriver = driver.countRatingsDriver + 1,
+                                                    )
+                                                )
+                                                .addOnSuccessListener {
+                                                    showReviewForm = false
+                                                    reviewForm.visibility = View.GONE
+                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                }
+                                        }
                                     }.addOnFailureListener {
                                         Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
                                     }
