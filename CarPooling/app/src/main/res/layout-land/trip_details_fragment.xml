@@ -53,7 +53,6 @@
         </FrameLayout>
 
         <include layout="@layout/show_trip_details"
-            android:id="@+id/content"
             android:layout_weight="2"
             android:layout_height="match_parent"
             android:layout_width="0dp"
