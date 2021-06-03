@@ -20,5 +20,4 @@ data class Profile(
     var countRatingsPassenger: Long = 0,
     var sumRatingsDriver: Long = 0,
     var countRatingsDriver: Long = 0
-    // TODO implement rating logic
 ):Parcelable
