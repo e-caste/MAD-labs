@@ -308,6 +308,9 @@
                     android:paddingEnd="0sp"
                     android:paddingLeft="8sp"
                     android:paddingRight="0sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:singleLine="false"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:text="Torino Porta Nuova stazione ferroviaria" />
 
