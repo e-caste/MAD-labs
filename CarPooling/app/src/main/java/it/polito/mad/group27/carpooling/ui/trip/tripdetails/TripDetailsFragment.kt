@@ -513,14 +513,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             theirsLayout.visibility = View.GONE
             val title = view.findViewById<TextView>(R.id.review_title_mine)
             val body = view.findViewById<TextView>(R.id.review_body_mine)
-            if (privateMode) {
-                arg1 = passenger?.fullName
-                arg2 = driver?.fullName
-            } else {
-                arg1 = driver?.fullName
-                arg2 = passenger?.fullName
-            }
-            title.text = getString(R.string.review_title_mine, arg1, arg2)
+            val reviewOf = if (privateMode) passenger?.fullName else driver?.fullName
+            title.text = getString(R.string.review_title_mine, reviewOf)
             setComment(review.comment, body)
         }
 
