@@ -30,6 +30,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import org.w3c.dom.Text
+import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -497,12 +498,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
             Log.d(getLogTag(), "adding review to list: $review")
-            // bind reviewViewHolder to review
+            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid.id == currentUserUid)
+            reviewViewHolder.bind(review, reviewIsMine)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-            // TODO: use either trip_review_mine or trip_review_theirs layout
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_review_mine, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.trip_review, parent, false)
             return ReviewViewHolder(view)
         }
 
@@ -518,6 +519,74 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
     private inner class ReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val mineLayout = view.findViewById<LinearLayout>(R.id.trip_review_mine)
+        private val theirsLayout = view.findViewById<LinearLayout>(R.id.trip_review_theirs)
+        private var driver: Profile? = null
+        private var passenger: Profile? = null
+
+        private fun setComment(comment: String?, body: TextView) {
+            body.text = comment
+        }
+
+        private fun bindMine(review: Review) {
+            mineLayout.visibility = View.VISIBLE
+            theirsLayout.visibility = View.GONE
+            val title = view.findViewById<TextView>(R.id.review_title_mine)
+            val body = view.findViewById<TextView>(R.id.review_body_mine)
+            title.text = "Review of " + if (privateMode) passenger?.fullName else driver?.fullName
+            setComment(review.comment, body)
+        }
+
+        private fun bindTheirs(review: Review) {
+            mineLayout.visibility = View.GONE
+            theirsLayout.visibility = View.VISIBLE
+            val avatar = view.findViewById<ImageView>(R.id.review_avatar_theirs)
+            val name = view.findViewById<TextView>(R.id.name)
+            val body = view.findViewById<TextView>(R.id.review_body_theirs)
+            if (privateMode) {  // driver
+                if (driver?.profileImageUri != null) {
+                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
+                }
+                name.text = driver?.fullName
+            } else {  // passenger
+                if (passenger?.profileImageUri != null) {
+                    Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
+                }
+                name.text = passenger?.fullName
+            }
+            setComment(review.comment, body)
+        }
+
+        fun bind(review: Review, reviewIsMine: Boolean) {
+            review.tripId.get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val tripDB = task.result?.toObject(TripDB::class.java)!!
+                        Log.d(getLogTag(), "tripDB is $tripDB")
+                        db.collection("users")
+                            .whereEqualTo("uid", tripDB.ownerUid)
+                            .get()
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    driver = it.result?.toObjects(Profile::class.java)!![0]
+                                    Log.d(getLogTag(), "driver is $driver")
+                                }
+                            }
+                    }
+                }
+            review.passengerUid.get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        passenger = it.result?.toObject(Profile::class.java)!!
+                        Log.d(getLogTag(), "passenger is $passenger")
+                    }
+                }
+            if (reviewIsMine) {
+                bindMine(review)
+            } else {
+                bindTheirs(review)
+            }
+        }
     }
 
     override fun onStart() {
