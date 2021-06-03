@@ -156,4 +156,5 @@
     <string name="apply_filter">Apply the filter</string>
     <string name="start_date">Start date</string>
     <string name="hour">Hour</string>
+    <string name="other_options">Other options</string>
 </resources>
