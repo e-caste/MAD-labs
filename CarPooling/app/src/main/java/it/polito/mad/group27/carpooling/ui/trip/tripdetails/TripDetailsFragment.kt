@@ -365,7 +365,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     }
                     map.overlays.add(map.overlays.size, marker)
                 }
-                //double to zoom to trigger repaint
                 map.controller.animateTo(it.first().geoPoint)
 
                 MainScope().launch {
