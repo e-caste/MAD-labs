@@ -262,7 +262,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.driverProfile.observe(viewLifecycleOwner){
             if(it != null){
-                Glide.with(requireContext()).load(it.profileImageUri).circleCrop().into(driverImage)
+                if(it.profileImageUri != null) {
+                    Glide.with(requireContext()).load(it.profileImageUri).circleCrop()
+                        .into(driverImage)
+                } else {
+                    driverImage.setImageResource(R.drawable.ic_baseline_person_24)
+                }
                 driverNickname.text = it.nickName
                 if(it.countRatingsDriver > 0) {
                     driverRating.numStars = (it.sumRatingsDriver / it.countRatingsDriver).toInt()
