@@ -475,8 +475,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     ) : FirestoreRecyclerAdapter<Review, ReviewViewHolder>(options) {
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
-            Log.d(getLogTag(), "adding review to list: $review")
             val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid?.id == currentUserUid)
+            Log.d(getLogTag(), "adding review (is mine: $reviewIsMine) to list: $review")
             reviewViewHolder.bind(review, reviewIsMine)
         }
 
@@ -531,15 +531,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             val name = view.findViewById<TextView>(R.id.name)
             val body = view.findViewById<TextView>(R.id.review_body_theirs)
             if (privateMode) {  // driver
-                if (driver?.profileImageUri != null) {
-                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
-                }
-                name.text = driver?.fullName
-            } else {  // passenger
                 if (passenger?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
                 }
                 name.text = passenger?.fullName
+            } else {  // passenger
+                if (driver?.profileImageUri != null) {
+                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
+                }
+                name.text = driver?.fullName
             }
             setComment(review.comment, body)
         }
