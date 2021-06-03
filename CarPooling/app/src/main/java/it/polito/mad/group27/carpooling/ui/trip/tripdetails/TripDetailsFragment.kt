@@ -34,14 +34,23 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
@@ -344,7 +353,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.stopList.observe(viewLifecycleOwner){
             if(it != null && it.size > 1) {
-                while (map.overlays.size > 1 )
+                while (map.overlays.size > 1)
                     map.overlays.removeLast()
                 for (stop in it) {
                     val marker = Marker(map)
@@ -358,6 +367,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 }
                 //double to zoom to trigger repaint
                 map.controller.animateTo(it.first().geoPoint)
+
+                MainScope().launch {
+                    withContext(Dispatchers.IO) {
+                        val roadManager: RoadManager = OSRMRoadManager(context, "")
+                        val road: Road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint>)
+                        val roadOverlay: Polyline = RoadManager.buildRoadOverlay(road, Color.BLUE, 10.0f)
+                        map.overlays.add(roadOverlay)
+                        map.invalidate()
+                    }
+                }
             }
         }
 
