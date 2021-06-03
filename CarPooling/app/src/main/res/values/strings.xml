@@ -136,4 +136,5 @@
     <string name="save_profile_error">Error in profile saving. Please, try again later</string>
     <string name="rating">Ratings</string>
     <string name="review_title_mine">Review of %1$s by %2$s</string>
+    <string name="reviews">Reviews</string>
 </resources>
