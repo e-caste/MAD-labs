@@ -60,13 +60,15 @@ class MessagingService : FirebaseMessagingService() {
                 val body = Message(notificationObject, false)
 
                 val response = retrofit.sendNotification(headers, body)
-                lateinit var snackText :String
-                if(response.isSuccessful){
-                    snackText = "Notification sent correclty"
-                }else if(response.code() == 401){
-                    snackText = "Your token has expired, please reopen the app"
-                }else
-                    snackText = "Generic error: ${response.body()}"
+                var snackText :String = when {
+                    response.isSuccessful -> {
+                        "Notification sent correctly"
+                    }
+                    response.code() == 401 -> {
+                        "Your token has expired, please reopen the app"
+                    }
+                    else -> "Generic error: ${response.body()}"
+                }
 
                 //TODO make snackbar properly and format response body
                 response.body()?.let { Log.d(getLogTag(), it.toString()) }

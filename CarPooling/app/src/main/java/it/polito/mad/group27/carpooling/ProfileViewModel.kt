@@ -44,7 +44,7 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
                 ).addOnFailureListener {
                     Toast.makeText(
                         getApplication<Application>().applicationContext,
-                        "Error in saving profile",
+                        getApplication<Application>().applicationContext.getString(R.string.error_profile_saving),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -54,14 +54,18 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
         }.addOnFailureListener {
             Toast.makeText(
                 getApplication<Application>().applicationContext,
-                "Error in loading profile",
+                getApplication<Application>().applicationContext.getString(R.string.error_profile_loading),
                 Toast.LENGTH_SHORT
             ).show()
         }
 
         profileDocument.addSnapshotListener{ value, e ->
             if(e!=null){
-                //TODO manage errors
+                Toast.makeText(
+                    getApplication<Application>().applicationContext,
+                    getApplication<Application>().applicationContext.getString(R.string.error_profile_loading),
+                    Toast.LENGTH_SHORT
+                ).show()
             }else {
                 profile.value = value!!.toObject(Profile::class.java)
             }

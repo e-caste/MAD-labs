@@ -3,6 +3,7 @@ package it.polito.mad.group27.carpooling.ui.profile.showprofile
 import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -29,6 +30,7 @@ import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.time.format.FormatStyle
 import java.util.*
 
 
@@ -53,7 +55,8 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
     private var adapterTravelledWithMe: TripsRecyclerAdapter? = null
     private var adapterITravelledWith: TripsRecyclerAdapter? = null
 
-    private val dateFormatter = SimpleDateFormat.getDateInstance()
+    private val dateFormatter = if(Build.VERSION.SDK_INT >= 26) SimpleDateFormat.getDateInstance(FormatStyle.LONG.ordinal)
+                else SimpleDateFormat.getDateInstance()
 
     private lateinit var profileViewModel: ProfileBaseViewModel
 
@@ -172,7 +175,7 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 emailView.text = profile.email
                 locationView.text = profile.location
             }
-            registrationDateView.text = dateFormatter.format(profile.registrationDate.toDate()) // TODO fix format
+            registrationDateView.text = dateFormatter.format(profile.registrationDate.toDate())
             if (profile.countRatingsDriver == 0L){
                 reputationBarDriver.visibility = View.GONE
                 requireView().findViewById<TextView>(R.id.driverRating).visibility = View.GONE

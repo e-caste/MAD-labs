@@ -17,7 +17,6 @@ class EditViewModel(application: Application): AndroidViewModel(application) {
 
 
     fun uploadBitmap(bitmap: Bitmap, filename:String, baseDir: String ="." , callback: (String?, Boolean)->Unit) {
-        //TODO add listeners for errors
         val storage = FirebaseStorage.getInstance()
         val reference = storage.reference.child(baseDir).child(filename)
         reference.putBytes(bitmap.convertToByteArray()).addOnSuccessListener {
