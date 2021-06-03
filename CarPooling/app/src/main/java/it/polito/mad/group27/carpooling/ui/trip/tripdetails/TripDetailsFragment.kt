@@ -656,13 +656,17 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         // Additional stops visualization
         if (trip.stops.size > 0) {
+            dropdownListButton.isClickable = true
             stopsRecyclerView.visibility = tripDetailsViewModel.stopsExpanded
             stopsRecyclerView.layoutManager = LinearLayoutManager(context)
             stopsRecyclerView.adapter =
                 TripStopsViewAdapter(tripDetailsViewModel.trip.value!!.stops)
 
             expandButton.visibility = View.VISIBLE
-        } else expandButton.visibility = View.INVISIBLE
+        } else {
+            dropdownListButton.isClickable = false
+            expandButton.visibility = View.INVISIBLE
+        }
 
         // Display additional info
         if (trip.options.size > 0 || (trip.otherInformation != null && trip.otherInformation!!.trim() != "")) {
