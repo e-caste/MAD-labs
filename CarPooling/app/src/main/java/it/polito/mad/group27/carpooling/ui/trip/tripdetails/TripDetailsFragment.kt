@@ -31,6 +31,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import org.w3c.dom.Text
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import kotlinx.coroutines.awaitAll
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -317,6 +318,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .collection("reviews")
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .whereEqualTo("tripId", tripDocRef)
+        query.get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val revs = it.result?.toObjects(Review::class.java)!!
+                    Log.d(getLogTag(), "reviews are $revs")
+                } else {
+                    Log.d(getLogTag(), "reviews query failed")
+                }
+            }
         val options = FirestoreRecyclerOptions.Builder<Review>()
             .setQuery(query, Review::class.java)
             .build()
@@ -327,9 +337,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             } else {
                 reviewsRecyclerView.visibility = View.VISIBLE
                 warningMessageNoReviews.visibility = View.GONE
-                reviewsRecyclerView.adapter = reviewAdapter
             }
         }
+        reviewsRecyclerView.adapter = reviewAdapter
+        reviewsRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     private fun checkAdvertised(): Boolean {
@@ -497,8 +508,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     ) : FirestoreRecyclerAdapter<Review, ReviewViewHolder>(options) {
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
-            Log.d(getLogTag(), "adding review to list: $review")
-            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid.id == currentUserUid)
+            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid?.id == currentUserUid)
+            Log.d(getLogTag(), "adding review (is mine: $reviewIsMine) to list: $review")
             reviewViewHolder.bind(review, reviewIsMine)
         }
 
@@ -533,7 +544,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             theirsLayout.visibility = View.GONE
             val title = view.findViewById<TextView>(R.id.review_title_mine)
             val body = view.findViewById<TextView>(R.id.review_body_mine)
-            title.text = "Review of " + if (privateMode) passenger?.fullName else driver?.fullName
+            val reviewOf = if (privateMode) passenger?.fullName else driver?.fullName
+            title.text = getString(R.string.review_title_mine, reviewOf)
             setComment(review.comment, body)
         }
 
@@ -544,48 +556,49 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             val name = view.findViewById<TextView>(R.id.name)
             val body = view.findViewById<TextView>(R.id.review_body_theirs)
             if (privateMode) {  // driver
-                if (driver?.profileImageUri != null) {
-                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
-                }
-                name.text = driver?.fullName
-            } else {  // passenger
                 if (passenger?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
                 }
                 name.text = passenger?.fullName
+            } else {  // passenger
+                if (driver?.profileImageUri != null) {
+                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
+                }
+                name.text = getString(R.string.review_title_theirs_driver, driver?.fullName, passenger?.fullName)
             }
             setComment(review.comment, body)
         }
 
         fun bind(review: Review, reviewIsMine: Boolean) {
-            review.tripId.get()
-                .addOnCompleteListener { task ->
+            // give it up for callback hell! - could be implemented by awaiting coroutines
+            review.tripId?.get()
+                ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val tripDB = task.result?.toObject(TripDB::class.java)!!
                         Log.d(getLogTag(), "tripDB is $tripDB")
                         db.collection("users")
                             .whereEqualTo("uid", tripDB.ownerUid)
                             .get()
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    driver = it.result?.toObjects(Profile::class.java)!![0]
+                            .addOnCompleteListener { task1 ->
+                                if (task1.isSuccessful) {
+                                    driver = task1.result?.toObjects(Profile::class.java)!![0]
                                     Log.d(getLogTag(), "driver is $driver")
+                                    review.passengerUid?.get()
+                                        ?.addOnCompleteListener { task2 ->
+                                            if (task2.isSuccessful) {
+                                                passenger = task2.result?.toObject(Profile::class.java)!!
+                                                Log.d(getLogTag(), "passenger is $passenger")
+                                                if (reviewIsMine) {
+                                                    bindMine(review)
+                                                } else {
+                                                    bindTheirs(review)
+                                                }
+                                            }
+                                        }
                                 }
                             }
                     }
                 }
-            review.passengerUid.get()
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        passenger = it.result?.toObject(Profile::class.java)!!
-                        Log.d(getLogTag(), "passenger is $passenger")
-                    }
-                }
-            if (reviewIsMine) {
-                bindMine(review)
-            } else {
-                bindTheirs(review)
-            }
         }
     }
 

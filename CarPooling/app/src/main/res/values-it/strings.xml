@@ -123,4 +123,7 @@
     <string name="rating">Valutazioni</string>
     <string name="error_profile_loading">Errore nel carimento del profilo dal server</string>
     <string name="error_profile_saving">Errore nel salvataggio del profilo sul server</string>
+    <string name="review_title_mine">Recensione di %1$s</string>
+    <string name="reviews">Recensioni</string>
+    <string name="review_title_theirs_driver">%1$s a %2$s</string>
 </resources>
