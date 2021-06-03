@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,8 +31,10 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import org.osmdroid.views.MapView
-import org.w3c.dom.Text
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -167,6 +170,18 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
         reviewFormTextfield = view.findViewById(R.id.review_form_textfield)
         reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
+
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.isVerticalMapRepetitionEnabled = false
+        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().maxLatitude, MapView.getTileSystem().minLatitude+5.0, 10)
+        map.controller.setCenter(GeoPoint(49.8, 6.12))
+        map.minZoomLevel = 3.3
+        map.controller.setZoom(5.5)
+
+        val rotationGestureOverlay = RotationGestureOverlay(map)
+        rotationGestureOverlay.isEnabled = true
+        map.setMultiTouchControls(true)
+        map.overlays.add(rotationGestureOverlay)
 
         checkPrivateMode()
         checkAdvertised()
@@ -495,7 +510,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val time = Hour(item[Calendar.HOUR_OF_DAY], item[Calendar.MINUTE]).toString()
         return "$date, $time"
     }
-
 
     // TRIP REVIEWS MANAGEMENT SECTION
 
