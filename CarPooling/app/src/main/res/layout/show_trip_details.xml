@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/show_trip_details"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity">
 
@@ -28,6 +29,75 @@
             android:textColor="#FF0000"
             android:text="@string/this_trip_is_unadvertised"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/view_driver_profile_trip_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:paddingStart="8sp"
+                android:paddingEnd="4sp"
+                android:paddingRight="4sp"
+                android:paddingLeft="8sp"
+                android:text="@string/driver_information" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+                <LinearLayout
+                    android:id="@+id/view_driver_profile_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="8dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:clickable="true"
+                    android:linksClickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/driver_image_trip_details"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:srcCompat="@drawable/ic_baseline_person_24"
+                        android:scaleType="centerCrop"
+                        android:layout_marginRight="8dp"/>
+
+                    <TextView
+                        android:id="@+id/driver_nickname_trip_details"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="3"
+                        android:text="madjohn"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        />
+
+                    <RatingBar
+                        android:id="@+id/driver_rating_trip_details"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:indeterminate="false"
+                        android:numStars="5"
+                        android:rating="@string/default_rating" />
+
+
+                </LinearLayout>
+        </LinearLayout>
+
+
 
         <TextView
             android:layout_width="match_parent"
