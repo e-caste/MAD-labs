@@ -44,8 +44,7 @@
         android:paddingEnd="8dp"
         android:text="@string/warning_message_notripreviews"
         android:textSize="18sp"
-        android:textColor="@color/colorAccent"
-        android:gravity="center_horizontal"/>
+        android:textColor="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/review_form"
