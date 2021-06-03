@@ -11,12 +11,18 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This trip's reviews"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
         android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:paddingEnd="8dp"
         android:paddingRight="8dp"
-        android:paddingEnd="8dp" />
+        android:text="@string/reviews"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
     <!-- we do not limit the height of the rv here because we will reasonably get ~5/6 reviews at max -->
     <!-- this rv should contain both my and their reviews -->
@@ -32,10 +38,14 @@
         android:id="@+id/warning_message_noreviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="There are no reviews yet. Use the form below to add one!"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/warning_message_notripreviews"
         android:textSize="18sp"
         android:textColor="@color/colorAccent"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"/>
 
     <LinearLayout
         android:id="@+id/review_form"
@@ -53,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="How was your trip with $USER?"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:layout_marginBottom="8dp" />
 
         <!-- only show this to the driver, since there may have been >1 passengers -->
@@ -73,7 +83,10 @@
         <RatingBar
             android:id="@+id/review_form_rating"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/review_form_textfield_layout"
@@ -95,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
-            android:text="send"
+            android:text="@string/send"
             app:icon="@drawable/ic_baseline_send_24"
             app:iconGravity="end"/>
     </LinearLayout>

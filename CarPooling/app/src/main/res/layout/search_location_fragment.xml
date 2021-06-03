@@ -62,7 +62,7 @@
             android:singleLine="true"
             android:lines="1"
             android:maxLines="1"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:paddingTop="32dp"
             />
     </com.google.android.material.textfield.TextInputLayout>

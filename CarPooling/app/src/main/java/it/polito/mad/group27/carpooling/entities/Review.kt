@@ -4,10 +4,12 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 
 data class Review(
-    val tripId: DocumentReference,  // implicitly contains driverUid
-    val passengerUid: DocumentReference,
-    val rating: Long,
-    val comment: String,
-    val isForDriver: Boolean,
-    val timestamp: Timestamp,
+    // implicitly contains driverUid
+    val tripId: DocumentReference? = null,
+    val passengerUid: DocumentReference? = null,
+    val rating: Long = 0L,
+    val comment: String? = null,
+    @field:JvmField
+    val isForDriver: Boolean = false,
+    val timestamp: Timestamp = Timestamp.now(),
 )
