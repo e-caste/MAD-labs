@@ -328,7 +328,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                         Log.d(getLogTag(), "accepted uids: ${tripDetailsViewModel.trip.value!!.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids")
                         // is there any passenger the driver has not reviewed yet?
-                        showReviewForm = dropdownPassengerUids.size > 0
+                        showReviewForm = dropdownPassengerUids.size > 0 &&
+                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime
                         if (showReviewForm) {
                             db.collection("users")
                                 .whereIn("uid", dropdownPassengerUids)
@@ -410,7 +411,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                             }
                         }
                     } else {  // passenger
-                        showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver }
+                        showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver } &&
+                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime &&
+                                tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(currentUserUid)
                         reviewFormDropdownEnclosure.visibility = View.GONE
                         if (showReviewForm) {
                             reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
