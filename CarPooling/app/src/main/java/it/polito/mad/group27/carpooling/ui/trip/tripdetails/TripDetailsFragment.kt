@@ -286,6 +286,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .collection("reviews")
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .whereEqualTo("tripId", tripDocRef)
+        query.get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val revs = it.result?.toObjects(Review::class.java)!!
+                    Log.d(getLogTag(), "reviews are $revs")
+                } else {
+                    Log.d(getLogTag(), "reviews query failed")
+                }
+            }
         val options = FirestoreRecyclerOptions.Builder<Review>()
             .setQuery(query, Review::class.java)
             .build()
@@ -296,9 +305,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             } else {
                 reviewsRecyclerView.visibility = View.VISIBLE
                 warningMessageNoReviews.visibility = View.GONE
-                reviewsRecyclerView.adapter = reviewAdapter
             }
         }
+        reviewsRecyclerView.adapter = reviewAdapter
     }
 
     private fun checkAdvertised(): Boolean {
@@ -465,7 +474,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         override fun onBindViewHolder(reviewViewHolder: ReviewViewHolder, position: Int, review: Review) {
             Log.d(getLogTag(), "adding review to list: $review")
-            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid.id == currentUserUid)
+            val reviewIsMine = (privateMode && !review.isForDriver) || (!privateMode && review.isForDriver && review.passengerUid?.id == currentUserUid)
             reviewViewHolder.bind(review, reviewIsMine)
         }
 
@@ -525,8 +534,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         fun bind(review: Review, reviewIsMine: Boolean) {
-            review.tripId.get()
-                .addOnCompleteListener { task ->
+            review.tripId?.get()
+                ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val tripDB = task.result?.toObject(TripDB::class.java)!!
                         Log.d(getLogTag(), "tripDB is $tripDB")
@@ -541,8 +550,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                             }
                     }
                 }
-            review.passengerUid.get()
-                .addOnCompleteListener {
+            review.passengerUid?.get()
+                ?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         passenger = it.result?.toObject(Profile::class.java)!!
                         Log.d(getLogTag(), "passenger is $passenger")
