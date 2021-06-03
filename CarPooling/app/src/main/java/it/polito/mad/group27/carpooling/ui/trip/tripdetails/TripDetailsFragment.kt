@@ -285,7 +285,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .document(tripId)
         val query = db
             .collection("reviews")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .orderBy("timestamp", Query.Direction.ASCENDING)
             .whereEqualTo("tripId", tripDocRef)
         query.get()
             .addOnCompleteListener {
@@ -501,8 +501,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         private val theirsLayout = view.findViewById<LinearLayout>(R.id.trip_review_theirs)
         private var driver: Profile? = null
         private var passenger: Profile? = null
-        private var arg1: String? = ""
-        private var arg2: String? = ""
 
         private fun setComment(comment: String?, body: TextView) {
             body.text = comment
@@ -533,7 +531,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 if (driver?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
                 }
-                name.text = driver?.fullName
+                name.text = getString(R.string.review_title_theirs_driver, driver?.fullName, passenger?.fullName)
             }
             setComment(review.comment, body)
         }
