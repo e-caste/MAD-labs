@@ -122,8 +122,8 @@
     <string name="save_profile_error">Errore nel salvataggio del profilo, riprova più tardi</string>
     <string name="rating">Valutazioni</string>
     <string name="location_not_exist">Il luogo selezionato non esiste!</string>
-    <string name="review_title_mine">Recensione a %1$s</string>
-    <string name="long_press">"Tieni premuto per trascinare "</string>
+    <string name="review_title_mine">Tieni premuto per trascinare o seleziona un altro luogo</string>
+    <string name="long_press">Tieni premuto per trascinare o seleziona un altro luogo</string>
     <string name="error_profile_loading">Errore nel carimento del profilo dal server</string>
     <string name="error_profile_saving">Errore nel salvataggio del profilo sul server</string>
     <string name="reviews">Recensioni</string>

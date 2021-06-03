@@ -137,7 +137,7 @@
     <string name="save_profile_error">Error in profile saving. Please, try again later</string>
     <string name="rating">Ratings</string>
     <string name="location_not_exist">Selected location does not exist!</string>
-    <string name="long_press">Long press to drag pinpoint</string>
+    <string name="long_press">Long press to drag pinpoint or select another location</string>
     <string name="error_profile_loading">Error in loading profile from the server</string>
     <string name="error_profile_saving">Error in saving your profile into the server</string>
     <string name="review_title_mine">Review of %1$s</string>
