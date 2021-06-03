@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:gravity="end">
+        android:gravity="end"
+        android:visibility="gone">
 
         <!-- this empty view blocks the left quarter of the screen -->
         <View
@@ -60,7 +61,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:gravity="start">
+        android:gravity="start"
+        android:visibility="gone">
 
         <androidx.cardview.widget.CardView
             android:layout_width="48dp"
