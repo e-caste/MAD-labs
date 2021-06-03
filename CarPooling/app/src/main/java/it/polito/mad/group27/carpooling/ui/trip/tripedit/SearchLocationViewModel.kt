@@ -49,7 +49,10 @@ class SearchLocationViewModel : ViewModel() {
         clearPreviousJobs()
         activeJob = MainScope().launch {
                 loadingGeopoint.value  = true
-                val result = retrofit.getPlaceFromGeoPoint(point.latitude, point.longitude)
+            Log.d(getLogTag(), "asking for place at position %.6f".format( point.latitude ).replace(",", ".") + " %.6f".format( point.longitude ).replace(",", "."))
+                val result = retrofit.getPlaceFromGeoPoint(
+                        "%.6f".format( point.latitude ).replace(",", "."),
+                        "%.6f".format( point.longitude ).replace(",", "."))
                 if(result?.display_name != null) {
                     locationString.value = result.toString()
                     geoPoint.value = point
@@ -91,8 +94,8 @@ interface SearchAPI{
 
     @GET("/reverse")
     suspend fun getPlaceFromGeoPoint(
-        @Query("lat") lat: Double,
-        @Query("lon") lon: Double,
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
         @Query("format") format:String = "json"): Suggestion?
 
 }
