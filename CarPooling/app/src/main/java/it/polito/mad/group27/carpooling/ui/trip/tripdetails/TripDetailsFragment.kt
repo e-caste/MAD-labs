@@ -555,12 +555,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             val avatar = view.findViewById<ImageView>(R.id.review_avatar_theirs)
             val name = view.findViewById<TextView>(R.id.name)
             val body = view.findViewById<TextView>(R.id.review_body_theirs)
-            if (privateMode) {  // driver
+            if (privateMode ||  // you are the driver and the review is for you
+                (!privateMode && review.isForDriver)  // you are a passenger and the review is for the driver
+            ) {
                 if (passenger?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
                 }
                 name.text = passenger?.fullName
-            } else {  // passenger
+            } else {  // you are a passenger || you are the driver and the review is for a passenger
                 if (driver?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
                 }
@@ -570,6 +572,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         fun bind(review: Review, reviewIsMine: Boolean) {
+            // don't show reviews that only contain a rating
+            if (review.comment == null || review.comment.isBlank()) {
+                mineLayout.visibility = View.GONE
+                theirsLayout.visibility = View.GONE
+                return
+            }
             // give it up for callback hell! - could be implemented by awaiting coroutines
             review.tripId?.get()
                 ?.addOnCompleteListener { task ->

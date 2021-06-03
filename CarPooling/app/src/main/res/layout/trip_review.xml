@@ -78,7 +78,8 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:background="@drawable/review_profile_image_circle" />
+                android:background="@drawable/review_profile_image_circle"
+                app:srcCompat="@drawable/ic_baseline_person_24" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout

@@ -8,7 +8,7 @@ data class Review(
     val tripId: DocumentReference? = null,
     val passengerUid: DocumentReference? = null,
     val rating: Long = 0L,
-    val comment: String = "",
+    val comment: String? = null,
     @field:JvmField
     val isForDriver: Boolean = false,
     val timestamp: Timestamp = Timestamp.now(),
