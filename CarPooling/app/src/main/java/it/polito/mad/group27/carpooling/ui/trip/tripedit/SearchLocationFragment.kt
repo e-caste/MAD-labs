@@ -101,6 +101,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                     marker?.isDraggable = true
                     Log.d(getLogTag(), "at the beginning marker has position ${marker?.position}")
                     marker?.setOnMarkerDragListener(MyDragListener(viewModel))
+                    marker?.setOnMarkerClickListener(MyClickListener(getString(R.string.long_press)))
                     map.overlays.add(marker)
                 }
 
@@ -305,6 +306,15 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         }
     }
 
+    class MyClickListener(private val message: String):Marker.OnMarkerClickListener{
+        override fun onMarkerClick(marker: Marker, mapView: MapView): Boolean {
+            Snackbar.make(mapView, message, Snackbar.LENGTH_LONG)
+                .show()
+            return true
+        }
+
+    }
+    
 }
 
 
