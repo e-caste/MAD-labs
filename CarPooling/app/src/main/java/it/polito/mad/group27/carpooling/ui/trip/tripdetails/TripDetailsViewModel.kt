@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.entities.Profile
+import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 
@@ -24,6 +25,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     var interestedExpanded: Int = View.GONE
     var acceptedExpanded: Int = View.GONE
     var userIsBooked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val stopList: MutableLiveData<List<Stop>> = MutableLiveData(listOf())
 
     fun loadTrip(tripId : String) : Trip {
         tripDocument = db.collection("trips").document(tripId)
@@ -35,11 +37,21 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
                 if(value!=null){
                     trip.value = value.toObject(TripDB::class.java)!!.toTrip()
                     loadDriverProfile()
+                    loadStopList()
                 }
             }
         }
 
         return trip.value ?: Trip()
+    }
+
+    fun loadStopList() {
+        val fromStop = Stop(trip.value!!.from, trip.value!!.startDateTime, trip.value!!.fromGeoPoint)
+        val toStop = Stop(trip.value!!.to, trip.value!!.endDateTime, trip.value!!.toGeoPoint)
+        val mutableStops = trip.value!!.stops
+        mutableStops.add(0,fromStop)
+        mutableStops.add(mutableStops.size,toStop)
+        stopList.value = mutableStops.toList()
     }
 
     private fun loadDriverProfile() {

@@ -29,9 +29,13 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import org.w3c.dom.Text
+import org.osmdroid.views.MapView
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.coroutines.awaitAll
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -81,6 +85,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var noTravellerInfoMessage: TextView
     private lateinit var unadvertisedTripMessage: TextView
     private lateinit var bookingFAB: FloatingActionButton
+    private lateinit var map: MapView
 
     private lateinit var reviewsRecyclerView: RecyclerView
     private lateinit var warningMessageNoReviews: TextView
@@ -155,6 +160,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         driverImage = view.findViewById(R.id.driver_image_trip_details)
         driverNickname = view.findViewById(R.id.driver_nickname_trip_details)
         driverRating = view.findViewById(R.id.driver_rating_trip_details)
+        map = view.findViewById(R.id.map_trip_details)
 
         reviewsRecyclerView = view.findViewById(R.id.trip_reviews_list)
         warningMessageNoReviews = view.findViewById(R.id.warning_message_noreviews)
@@ -165,6 +171,18 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
         reviewFormTextfield = view.findViewById(R.id.review_form_textfield)
         reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
+
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.isVerticalMapRepetitionEnabled = false
+        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().maxLatitude, MapView.getTileSystem().minLatitude+5.0, 10)
+        map.controller.setCenter(GeoPoint(49.8, 6.12))
+        map.minZoomLevel = 3.3
+        map.controller.setZoom(5.5)
+
+        val rotationGestureOverlay = RotationGestureOverlay(map)
+        rotationGestureOverlay.isEnabled = true
+        map.setMultiTouchControls(true)
+        map.overlays.add(rotationGestureOverlay)
 
         checkPrivateMode()
         checkAdvertised()
@@ -290,7 +308,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.driverProfile.observe(viewLifecycleOwner){
             if(it != null){
-                Glide.with(requireContext()).load(it.profileImageUri).circleCrop().into(driverImage)
+                if(it.profileImageUri != null) {
+                    Glide.with(requireContext()).load(it.profileImageUri).circleCrop()
+                        .into(driverImage)
+                } else {
+                    driverImage.setImageResource(R.drawable.ic_baseline_person_24)
+                }
                 driverNickname.text = it.nickName
                 if(it.countRatingsDriver > 0) {
                     driverRating.numStars = (it.sumRatingsDriver / it.countRatingsDriver).toInt()
@@ -304,6 +327,25 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         bundleOf("profile" to it)
                     )
                 }
+            }
+        }
+
+        tripDetailsViewModel.stopList.observe(viewLifecycleOwner){
+            if(it != null && it.size > 1) {
+                for (stop in it) {
+                    val marker = Marker(map)
+                    marker.position = stop.geoPoint
+                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    marker.title = stop.place
+                    if (map.overlays.size > map.overlays.size + 1) {
+                        map.overlays.removeAt(map.overlays.size - 1)
+                    }
+                    map.overlays.add(map.overlays.size, marker)
+                }
+                //double to zoom to trigger repaint
+                map.controller.animateTo(it.first().geoPoint)
+                map.controller.zoomTo(5.49)
+                map.controller.zoomTo(5.5)
             }
         }
 
@@ -498,7 +540,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val time = Hour(item[Calendar.HOUR_OF_DAY], item[Calendar.MINUTE]).toString()
         return "$date, $time"
     }
-
 
     // TRIP REVIEWS MANAGEMENT SECTION
 
