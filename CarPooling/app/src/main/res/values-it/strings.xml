@@ -121,4 +121,6 @@
     <string name="select_location">"Seleziona il luogo "</string>
     <string name="save_profile_error">Errore nel salvataggio del profilo, riprova più tardi</string>
     <string name="rating">Valutazioni</string>
+    <string name="error_profile_loading">Errore nel carimento del profilo dal server</string>
+    <string name="error_profile_saving">Errore nel salvataggio del profilo sul server</string>
 </resources>
