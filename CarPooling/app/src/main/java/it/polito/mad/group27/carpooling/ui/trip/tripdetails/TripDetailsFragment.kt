@@ -308,6 +308,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             }
         }
         reviewsRecyclerView.adapter = reviewAdapter
+        reviewsRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     private fun checkAdvertised(): Boolean {
