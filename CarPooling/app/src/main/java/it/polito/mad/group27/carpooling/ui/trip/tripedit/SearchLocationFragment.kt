@@ -130,9 +130,13 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                     getLogTag(), "${geoPoint.latitude} , ${geoPoint.longitude}")
 
                 viewModel.loadPlaceFromGeopoint(geoPoint as GeoPoint)
-                val imm: InputMethodManager =
-                    requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+
+                if(act.currentFocus!=null) {
+                    //removing keyboard if present
+                    val imm: InputMethodManager =
+                        requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(act.currentFocus!!.windowToken, 0)
+                }
 
                 act.currentFocus?.clearFocus()
                 return true
