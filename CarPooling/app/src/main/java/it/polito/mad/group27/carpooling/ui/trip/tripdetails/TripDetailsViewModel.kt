@@ -48,7 +48,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     fun loadStopList() {
         val fromStop = Stop(trip.value!!.from, trip.value!!.startDateTime, trip.value!!.fromGeoPoint)
         val toStop = Stop(trip.value!!.to, trip.value!!.endDateTime, trip.value!!.toGeoPoint)
-        val mutableStops = trip.value!!.stops
+        val mutableStops = trip.value!!.stops.toMutableList()
         mutableStops.add(0,fromStop)
         mutableStops.add(mutableStops.size,toStop)
         stopList.value = mutableStops.toList()

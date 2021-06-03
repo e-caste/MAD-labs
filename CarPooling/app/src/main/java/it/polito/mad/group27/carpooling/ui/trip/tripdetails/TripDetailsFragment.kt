@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -338,6 +339,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.stopList.observe(viewLifecycleOwner){
             if(it != null && it.size > 1) {
+                while (map.overlays.size > 1 )
+                    map.overlays.removeLast()
                 for (stop in it) {
                     val marker = Marker(map)
                     marker.position = stop.geoPoint
@@ -350,14 +353,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 }
                 //double to zoom to trigger repaint
                 map.controller.animateTo(it.first().geoPoint)
-                map.controller.zoomTo(5.49)
-                map.controller.zoomTo(5.5)
             }
         }
 
-        if(!checkPrivateMode()) {
-            tripDetailsViewModel.checkBookedUser(currentUserUid)
-        }
+            if(!checkPrivateMode()) {
+                tripDetailsViewModel.checkBookedUser(currentUserUid)
+            }
 
         val tripDocRef = db
             .collection("trips")
