@@ -356,27 +356,53 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 if (reviewFormRating.rating == 0F) {
                                     Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
                                 } else {
-                                    db.collection("reviews").add(
-                                        Review(
-                                            tripId = tripDocRef,
-                                            passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
-                                            rating = reviewFormRating.rating.toLong(),
-                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
-                                            isForDriver = false,
-                                            timestamp = Timestamp.now(),
-                                        )
+                                    db.collection("reviews")
+                                        .add(
+                                            Review(
+                                                tripId = tripDocRef,
+                                                passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
+                                                rating = reviewFormRating.rating.toLong(),
+                                                comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                                isForDriver = false,
+                                                timestamp = Timestamp.now(),
+                                            )
                                     ).addOnSuccessListener {
-                                        dropdownPassengers.remove(selectedDropdownPassenger)
-                                        if (dropdownPassengers.size == 0) {
-                                            showReviewForm = false
-                                            reviewForm.visibility = View.GONE
-                                        } else {
-                                            reviewFormDropdown.setText(dropdownPassengers[0].fullName)
-                                            reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
-                                            reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
-                                            selectedDropdownPassenger = dropdownPassengers[0]
+                                        selectedDropdownPassenger.uid?.let { uid ->
+                                            db.collection("users")
+                                                .document(uid)
+                                                .set(
+                                                    Profile(
+                                                        uid = uid,
+                                                        profileImageUri = selectedDropdownPassenger.profileImageUri,
+                                                        fullName = selectedDropdownPassenger.fullName,
+                                                        nickName = selectedDropdownPassenger.nickName,
+                                                        email = selectedDropdownPassenger.email,
+                                                        location = selectedDropdownPassenger.location,
+                                                        registrationDate = selectedDropdownPassenger.registrationDate,
+                                                        notificationToken = selectedDropdownPassenger.notificationToken,
+                                                        sumRatingsPassenger = selectedDropdownPassenger.sumRatingsPassenger + reviewFormRating.rating.toLong(),
+                                                        countRatingsPassenger = selectedDropdownPassenger.countRatingsPassenger + 1,
+                                                        sumRatingsDriver = selectedDropdownPassenger.sumRatingsDriver,
+                                                        countRatingsDriver = selectedDropdownPassenger.countRatingsDriver,
+                                                    )
+                                                )
+                                                .addOnSuccessListener {
+                                                    dropdownPassengers.remove(selectedDropdownPassenger)
+                                                    if (dropdownPassengers.size == 0) {
+                                                        showReviewForm = false
+                                                        reviewForm.visibility = View.GONE
+                                                    } else {
+                                                        reviewFormDropdown.setText(dropdownPassengers[0].fullName)
+                                                        reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
+                                                        reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
+                                                        selectedDropdownPassenger = dropdownPassengers[0]
+                                                    }
+                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                }
                                         }
-                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
                                     }.addOnFailureListener {
                                         Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
                                     }
