@@ -152,4 +152,5 @@
     <string name="warning_message_mustrate">You must give a rating to submit a review.</string>
     <string name="success_ratingsubmitted">Your review has been submitted!</string>
     <string name="warning_message_failedrating">There was a problem submitting your review. Please retry.</string>
+    <string name="no_search_results">No results for current search</string>
 </resources>
