@@ -12,7 +12,7 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
     android:gravity="center"
-    >
+    android:id="@+id/warning_message_notrips" >
 
     <androidx.cardview.widget.CardView
         android:layout_width="350dp"
@@ -22,7 +22,7 @@
         app:cardBackgroundColor="#00000000">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/warning_message_notrips_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -32,12 +32,13 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/warning_message_notrips_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/warning_message_notrips_triplist"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/warning_message_notrips_imageview" />
 
 </LinearLayout>

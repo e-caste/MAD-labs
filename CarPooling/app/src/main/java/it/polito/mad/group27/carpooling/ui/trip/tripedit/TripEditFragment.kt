@@ -66,19 +66,18 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         tripEditViewModel = ViewModelProvider(this).get(TripEditViewModel::class.java)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Log.d(getLogTag(), "TripEditFragment onViewCreated")
         // get trip from bundle
-        if(arguments?.getParcelable<Trip>("trip")==null && !tripEditViewModel.isNewtripInitialized()) {
-            tripEditViewModel.newTrip =  Trip()
-        }else if(arguments?.getParcelable<Trip>("trip")!=null) {
-            tripEditViewModel.newTrip = arguments?.getParcelable("trip") ?: Trip()
+        if(!tripEditViewModel.isNewtripInitialized()) {
+            Log.d(getLogTag(), "Initializing new Trip")
+            if (arguments?.getParcelable<Trip>("trip") == null) {
+                tripEditViewModel.newTrip = Trip()
+            } else if (arguments?.getParcelable<Trip>("trip") != null) {
+                tripEditViewModel.newTrip = arguments?.getParcelable("trip") ?: Trip()
+            }
         }
 
         if(tripEditViewModel.newTrip.id==null)

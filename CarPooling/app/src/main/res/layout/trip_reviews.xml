@@ -28,8 +28,17 @@
         android:paddingBottom="8dp" />
     <!-- tools:listitem="@layout/trip_review_theirs" -->
 
+    <TextView
+        android:id="@+id/warning_message_noreviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="There are no reviews yet. Use the form below to add one!"
+        android:textSize="18sp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center_horizontal" />
+
     <LinearLayout
-        android:id="@+id/review_tosend_mine"
+        android:id="@+id/review_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -40,6 +49,7 @@
         android:paddingEnd="8dp" >
 
         <TextView
+            android:id="@+id/review_form_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="How was your trip with $USER?"
@@ -54,18 +64,19 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
             <AutoCompleteTextView
+                android:id="@+id/review_form_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RatingBar
-            android:id="@+id/my_review_rating"
+            android:id="@+id/review_form_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
+            android:id="@+id/review_form_textfield_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -73,13 +84,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/review_form_textfield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <!-- android:imeOptions="actionSend" -->
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/review_button_send"
+            android:id="@+id/review_form_button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"

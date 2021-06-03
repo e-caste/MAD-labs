@@ -19,11 +19,12 @@ class TripsOfInterestList(
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
-    override val warningMessageLayoutId: Int = R.id.warning_message_notrips_tripsofinterestlist
+    override val warningMessageStringId: Int = R.string.warning_message_notrips_tripsofinterestlist
+    override val warningMessagePictureDrawableId: Int = R.drawable.woman_running_behind_car
 
     override fun customizeCardView(tripViewHolder: TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
-            findNavController().navigate(R.id.action_boughtTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
+            findNavController().navigate(R.id.action_tripsOfInterestList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
         }
         tripViewHolder.topRightButtonShadow.visibility = View.GONE
         tripViewHolder.topRightButton.visibility = View.GONE

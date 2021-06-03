@@ -113,7 +113,6 @@ class EditProfileFragment : EditFragment(R.layout.edit_profile_fragment, R.menu.
         ))
 
         locationEdit.editText!!.addTextChangedListener(Watcher(
-            //TODO check location format
             { locationEdit.editText!!.text?.isEmpty() ?: true },
             { locationEdit.error = getString(R.string.validation_location)
                 activity?.invalidateOptionsMenu()
