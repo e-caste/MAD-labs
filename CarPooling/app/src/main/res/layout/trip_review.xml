@@ -24,25 +24,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:orientation="vertical"
-            android:background="@drawable/review_bubble_mine"
-            android:padding="8dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/review_title_mine"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp"
-                android:text="Review of $USER"/>
+                android:orientation="vertical"
+                android:background="@drawable/review_bubble_mine"
+                android:padding="8dp"
+                android:layout_gravity="end">
 
-            <TextView
-                android:id="@+id/review_body_mine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:text="My placeholder review that should wrap to the second line yay" />
+                <TextView
+                    android:id="@+id/review_title_mine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:text="Review of $USER"/>
+
+                <TextView
+                    android:id="@+id/review_body_mine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    android:text="My placeholder review" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

@@ -285,7 +285,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .document(tripId)
         val query = db
             .collection("reviews")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .whereEqualTo("tripId", tripDocRef)
         query.get()
             .addOnCompleteListener {
