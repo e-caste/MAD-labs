@@ -113,8 +113,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             else{
                 if (marker != null){
                     marker?.setVisible(false)
-                    map.controller.zoomTo(5.49)
-                    map.controller.zoomTo(5.5)
+                    map.invalidate()
                 }
             }
         }
