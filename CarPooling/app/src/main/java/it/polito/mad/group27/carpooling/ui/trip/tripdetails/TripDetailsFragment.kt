@@ -440,9 +440,34 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                             timestamp = Timestamp.now(),
                                         )
                                     ).addOnSuccessListener {
-                                        showReviewForm = false
-                                        reviewForm.visibility = View.GONE
-                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                        driver.uid?.let { uid ->
+                                            db.collection("users")
+                                                .document(uid)
+                                                .set(
+                                                    Profile(
+                                                        uid = uid,
+                                                        profileImageUri = driver.profileImageUri,
+                                                        fullName = driver.fullName,
+                                                        nickName = driver.nickName,
+                                                        email = driver.email,
+                                                        location = driver.location,
+                                                        registrationDate = driver.registrationDate,
+                                                        notificationToken = driver.notificationToken,
+                                                        sumRatingsPassenger = driver.sumRatingsPassenger,
+                                                        countRatingsPassenger = driver.countRatingsPassenger,
+                                                        sumRatingsDriver = driver.sumRatingsDriver + reviewFormRating.rating.toLong(),
+                                                        countRatingsDriver = driver.countRatingsDriver + 1,
+                                                    )
+                                                )
+                                                .addOnSuccessListener {
+                                                    showReviewForm = false
+                                                    reviewForm.visibility = View.GONE
+                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                }
+                                        }
                                     }.addOnFailureListener {
                                         Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
                                     }
