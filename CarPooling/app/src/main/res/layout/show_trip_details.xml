@@ -330,15 +330,15 @@
 
         <include layout="@layout/item_trip_stop_layout"/>
 
-        <org.osmdroid.views.MapView
+        <it.polito.mad.group27.carpooling.ui.trip.tripdetails.MyMapView
             android:id="@+id/map_trip_details"
             tilesource="Mapnik"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_weight="1">
-        </org.osmdroid.views.MapView>
+            android:layout_weight="1"/>
+
 
         <LinearLayout
             android:id="@+id/trip_options_details"
