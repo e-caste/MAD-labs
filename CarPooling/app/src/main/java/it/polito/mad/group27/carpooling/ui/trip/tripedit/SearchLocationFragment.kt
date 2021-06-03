@@ -138,8 +138,17 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         // observe unavailablePlace to show Snackbar
         viewModel.unavailablePlace.observe(viewLifecycleOwner){
             if (it == true){
-                Snackbar.make(view, "Selected location does not exist", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.location_not_exist), Snackbar.LENGTH_LONG)
                     .show()
+
+                if (viewModel.geoPoint.value != null){
+                    marker?.position = viewModel.geoPoint.value
+                    marker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    marker?.setVisible(true)
+                    map.controller.animateTo(marker?.position)
+
+                }
+
             }
         }
 
@@ -171,8 +180,6 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             adapter.loading = it
             adapter.notifyDataSetChanged()
         }
-
-
 
         viewModel.loadingGeopoint.observe(viewLifecycleOwner){
             if(it){
@@ -300,6 +307,8 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
 }
 
+
+
 fun Context.getProgressBarDrawable(): Drawable {
     val value = TypedValue()
     theme.resolveAttribute(android.R.attr.progressBarStyleSmallTitle, value, false)
@@ -310,6 +319,7 @@ fun Context.getProgressBarDrawable(): Drawable {
     array.recycle()
     return drawable
 }
+
 
 
 
