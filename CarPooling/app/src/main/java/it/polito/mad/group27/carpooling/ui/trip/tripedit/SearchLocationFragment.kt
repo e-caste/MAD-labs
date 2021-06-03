@@ -258,7 +258,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                 textView.visibility = View.VISIBLE
                 view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
                 if(suggestions.isEmpty()){
-                    textView.text = "No results for current search"
+                    textView.text = getString(R.string.no_search_results)
                 }else {
 
                     textView.text = suggestions[position].first
