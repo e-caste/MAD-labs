@@ -93,13 +93,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Leave a review for your [driver|passenger]"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/review_form_textfield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+<!--                android:hint="Leave a review for your [driver|passenger]" />-->
             <!-- android:imeOptions="actionSend" -->
         </com.google.android.material.textfield.TextInputLayout>
 
