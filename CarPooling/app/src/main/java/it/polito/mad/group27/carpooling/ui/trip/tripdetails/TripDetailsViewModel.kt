@@ -10,6 +10,7 @@ import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.ui.trip.Stop
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import kotlinx.coroutines.Job
 
 class TripDetailsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,6 +27,7 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
     var acceptedExpanded: Int = View.GONE
     var userIsBooked: MutableLiveData<Boolean> = MutableLiveData(false)
     val stopList: MutableLiveData<List<Stop>> = MutableLiveData(listOf())
+    var activeRoadSearchJob: Job? = null
 
     fun loadTrip(tripId : String) : Trip {
         tripDocument = db.collection("trips").document(tripId)
