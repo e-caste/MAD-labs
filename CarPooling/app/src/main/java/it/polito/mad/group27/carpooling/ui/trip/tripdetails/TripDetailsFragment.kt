@@ -104,7 +104,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var bookingFAB: FloatingActionButton
     private lateinit var map: MyMapView
 
-
+    private lateinit var tripReviews: LinearLayout
     private lateinit var reviewsRecyclerView: RecyclerView
     private lateinit var warningMessageNoReviews: TextView
     private lateinit var reviewForm: LinearLayout
@@ -181,6 +181,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         driverRating = view.findViewById(R.id.driver_rating_trip_details)
         map = view.findViewById(R.id.map_trip_details)
 
+        tripReviews = view.findViewById(R.id.trip_reviews)
         reviewsRecyclerView = view.findViewById(R.id.trip_reviews_list)
         warningMessageNoReviews = view.findViewById(R.id.warning_message_noreviews)
         reviewForm = view.findViewById(R.id.review_form)
@@ -416,8 +417,18 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         query.get()
             .addOnCompleteListener { query ->
                 if (query.isSuccessful) {
+
+                    // don't show the whole reviews block if we are before the start of the trip
+                    if (Calendar.getInstance() < tripDetailsViewModel.trip.value!!.startDateTime) {
+                        tripReviews.visibility = View.GONE
+                        return@addOnCompleteListener
+                    } else {
+                        tripReviews.visibility = View.VISIBLE
+                    }
+
                     val reviews = query.result?.toObjects(Review::class.java)!!
                     Log.d(getLogTag(), "reviews are $reviews")
+
                     // detect if current user can send a review
                     if (privateMode) { // driver
                         val dropdownPassengerUids = mutableListOf<String>()
@@ -428,8 +439,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                         Log.d(getLogTag(), "accepted uids: ${tripDetailsViewModel.trip.value!!.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids")
                         // is there any passenger the driver has not reviewed yet?
-                        showReviewForm = dropdownPassengerUids.size > 0 &&
-                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime
+                        showReviewForm = dropdownPassengerUids.size > 0
                         if (showReviewForm) {
                             db.collection("users")
                                 .whereIn("uid", dropdownPassengerUids)
@@ -512,7 +522,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                     } else {  // passenger
                         showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver } &&
-                                Calendar.getInstance() > tripDetailsViewModel.trip.value!!.startDateTime &&
                                 tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(currentUserUid)
                         reviewFormDropdownEnclosure.visibility = View.GONE
                         if (showReviewForm) {
