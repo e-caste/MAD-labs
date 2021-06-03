@@ -125,4 +125,5 @@
     <string name="review_title_theirs_driver">%1$s a %2$s</string>
     <string name="warning_message_notripreviews">Non c\'è ancora nessuna recensione.<br />Usa il form qui sotto per aggiungerne una!</string>
     <string name="send">invia</string>
+    <string name="review_form_title">Com\'è andato il tuo viaggio con %1$s?</string>
 </resources>
