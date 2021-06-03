@@ -258,6 +258,7 @@
                 android:background="@android:color/darker_gray" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:overScrollMode="never"
                 android:id="@+id/listTravelledWithMe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -290,6 +291,7 @@
                 android:id="@+id/listITravelledWith"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:overScrollMode="never"
                 app:layoutManager="LinearLayoutManager"
                 tools:listitem="@layout/fragment_trip" />
         </LinearLayout>
