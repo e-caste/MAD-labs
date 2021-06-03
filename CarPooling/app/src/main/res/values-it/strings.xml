@@ -138,4 +138,7 @@
     <string name="success_ratingsubmitted">La tua recensione è stata inviata correttamente!</string>
     <string name="warning_message_failedrating">C\'è stato un problema a inviare la tua recensione. Prova a reinviarla.</string>
     <string name="no_search_results">Nessun risultato trovato per la ricerca</string>
+    <string name="apply_filter">Applica il filtro</string>
+    <string name="start_date">Data d\'inizio</string>
+    <string name="hour">Ora</string>
 </resources>
