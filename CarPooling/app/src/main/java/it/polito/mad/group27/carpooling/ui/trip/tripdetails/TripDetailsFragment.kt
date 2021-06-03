@@ -1,14 +1,16 @@
 package it.polito.mad.group27.carpooling.ui.trip.tripdetails
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,7 +33,6 @@ import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
-import org.osmdroid.views.MapView
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -42,6 +43,7 @@ import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
@@ -49,6 +51,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
         R.menu.show_menu, null) {
@@ -99,7 +102,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var noTravellerInfoMessage: TextView
     private lateinit var unadvertisedTripMessage: TextView
     private lateinit var bookingFAB: FloatingActionButton
-    private lateinit var map: MapView
+    private lateinit var map: MyMapView
 
     private lateinit var reviewsRecyclerView: RecyclerView
     private lateinit var warningMessageNoReviews: TextView
@@ -189,6 +192,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setViewParent(view.findViewById<NestedScrollView>(R.id.show_trip_details))
         map.isVerticalMapRepetitionEnabled = false
         map.setScrollableAreaLimitLatitude(MapView.getTileSystem().maxLatitude, MapView.getTileSystem().minLatitude+5.0, 10)
         map.controller.setCenter(GeoPoint(49.8, 6.12))
@@ -199,6 +203,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         rotationGestureOverlay.isEnabled = true
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
+
 
         checkPrivateMode()
         checkAdvertised()
@@ -390,7 +395,6 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         val options = FirestoreRecyclerOptions.Builder<Review>()
             .setQuery(query, Review::class.java)
             .build()
-
         reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
             if (reviewAdapter!!.getShownItemCount() == 0) {
                 reviewsRecyclerView.visibility = View.GONE
@@ -856,5 +860,39 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onStop() {
         super.onStop()
         reviewAdapter!!.stopListening()
+    }
+}
+
+
+class MyMapView(ctx:Context, attrs : AttributeSet?, defStyle :Int , defStyleRes:Int) :
+    MapView(ctx , attrs) {
+
+    constructor (ctx : Context ) : this( ctx , null , 0, 0)
+    constructor( ctx : Context , attrs : AttributeSet ):
+    this(ctx , attrs , 0, 0)
+    constructor (ctx : Context , attrs : AttributeSet , defStyle : Int):
+    this (ctx , attrs , defStyle ,0)
+    private var mViewParent: ViewParent? = null
+    //add constructors here
+    fun setViewParent(viewParent: ViewParent) { //any ViewGroup
+        mViewParent = viewParent
+    }
+
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> if (null == mViewParent) {
+                parent.requestDisallowInterceptTouchEvent(true)
+            } else {
+                mViewParent!!.requestDisallowInterceptTouchEvent(true)
+            }
+            MotionEvent.ACTION_UP -> if (null == mViewParent) {
+                parent.requestDisallowInterceptTouchEvent(false)
+            } else {
+                mViewParent!!.requestDisallowInterceptTouchEvent(false)
+            }
+            else -> {
+            }
+        }
+        return super.onInterceptTouchEvent(event)
     }
 }

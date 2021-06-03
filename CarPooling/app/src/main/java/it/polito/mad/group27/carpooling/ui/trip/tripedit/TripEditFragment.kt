@@ -165,7 +165,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 datePickerTo.show(requireActivity().supportFragmentManager, "datePickerTag")
         }
 
-        from_place.placeholderText = getString(R.string.select_location)
+        from_place.hint = getString(R.string.select_location)
         from_place.editText?.setText(tripEditViewModel.newTrip.from)
         from_place.editText!!.setOnClickListener {
             setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
@@ -202,7 +202,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         from_date.editText?.addTextChangedListener(dateTimeWatcher)
         from_hour.editText?.addTextChangedListener(dateTimeWatcher)
 
-        to_place.placeholderText = getString(R.string.select_location)
+        to_place.hint = getString(R.string.select_location)
         to_place.editText?.setText(tripEditViewModel.newTrip.to)
         to_place.editText!!.setOnClickListener {
             setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { key, bundle ->
