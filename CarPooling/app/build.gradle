@@ -88,6 +88,7 @@ dependencies {
 
     // osmdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
+    implementation 'com.github.MKergall:osmbonuspack:6.7.0'
 
     implementation "androidx.fragment:fragment-ktx:1.3.4"
 
