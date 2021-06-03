@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.os.bundleOf
-import androidx.core.widget.NestedScrollView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +33,7 @@ import org.osmdroid.views.MapView
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -326,6 +326,25 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         bundleOf("profile" to it)
                     )
                 }
+            }
+        }
+
+        tripDetailsViewModel.stopList.observe(viewLifecycleOwner){
+            if(it != null && it.size > 1) {
+                for (stop in it) {
+                    val marker = Marker(map)
+                    marker.position = stop.geoPoint
+                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    marker.title = stop.place
+                    if (map.overlays.size > map.overlays.size + 1) {
+                        map.overlays.removeAt(map.overlays.size - 1)
+                    }
+                    map.overlays.add(map.overlays.size, marker)
+                }
+                //double to zoom to trigger repaint
+                map.controller.animateTo(it.first().geoPoint)
+                map.controller.zoomTo(5.49)
+                map.controller.zoomTo(5.5)
             }
         }
 
