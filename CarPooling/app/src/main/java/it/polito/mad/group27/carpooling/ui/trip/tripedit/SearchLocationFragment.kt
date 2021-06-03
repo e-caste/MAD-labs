@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
@@ -27,16 +28,15 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
-
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_fragment, R.menu.edit_menu, null) {
 
     private lateinit var viewModel: SearchLocationViewModel
     private lateinit var map: MapView
-
+    private var marker: Marker? = null
     private lateinit var searchPlace: TextInputLayout
-
-    private var baseOverlays: Int = 0
 
     companion object {
         val REQUEST_KEY = "place"
@@ -48,18 +48,19 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SearchLocationViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         // remove keyboard at start if present from previous fragment
         act.currentFocus?.clearFocus()
+
         if(arguments?.getString(location) != "" ){
             viewModel.locationString.value = arguments?.getString(location)
-
         }
+
         if(arguments?.getParcelable<GeoPoint>(geopoint) != null){
             viewModel.geoPoint.value = arguments?.getParcelable<GeoPoint>(geopoint)
         }
@@ -88,25 +89,28 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
 
-        baseOverlays = map.overlays.size +1
-
         // observe geopoint to put pinpoint
         viewModel.geoPoint.observe(viewLifecycleOwner){
             if (it != null)
             {
-                val marker = Marker(map)
-                marker.position = it
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                if (map.overlays.size > baseOverlays) {
-                    map.overlays.removeAt(map.overlays.size - 1)
+                if (marker == null){
+                    marker = Marker(map)
+                    marker?.position = it
+                    marker?.setVisible(true)
+                    marker?.infoWindow = null
+                    marker?.isDraggable = true
+                    Log.d(getLogTag(), "at the beginning marker has position ${marker?.position}")
+                    map.overlays.add(marker)
                 }
-                map.overlays.add(map.overlays.size, marker)
+
+                marker?.position = it
+                marker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker?.setVisible(true)
                 map.controller.animateTo(it)
             }
             else{
-                if (map.overlays.size > baseOverlays) {
-                    map.overlays.removeAt(map.overlays.size - 1)
-                    //double to zoom to trigger repaint
+                if (marker != null){
+                    marker?.setVisible(false)
                     map.controller.zoomTo(5.49)
                     map.controller.zoomTo(5.5)
                 }
