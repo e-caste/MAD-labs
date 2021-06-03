@@ -44,8 +44,7 @@
         android:paddingEnd="8dp"
         android:text="@string/warning_message_notripreviews"
         android:textSize="18sp"
-        android:textColor="@color/colorAccent"
-        android:gravity="center_horizontal"/>
+        android:textColor="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/review_form"
@@ -68,6 +67,7 @@
 
         <!-- only show this to the driver, since there may have been >1 passengers -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/review_form_dropdown_enclosure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -84,8 +84,10 @@
             android:id="@+id/review_form_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminate="false"
             android:isIndicator="false"
             android:numStars="5"
+            android:rating="0"
             android:stepSize="1" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -93,13 +95,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Leave a review for your [driver|passenger]"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/review_form_textfield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+<!--                android:hint="Leave a review for your [driver|passenger]" />-->
             <!-- android:imeOptions="actionSend" -->
         </com.google.android.material.textfield.TextInputLayout>
 
