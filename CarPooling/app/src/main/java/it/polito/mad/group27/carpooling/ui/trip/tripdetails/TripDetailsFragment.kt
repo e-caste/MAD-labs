@@ -338,27 +338,31 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                         }
                                         Log.d(getLogTag(), "dropdownPassengers are $dropdownPassengers")
                                         reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.trip_reviews, dropdownPassengers))
+                                        reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
                                     } else {
                                         Log.d(getLogTag(), "dropdownPassengers query failed")
                                     }
                                 }
-                            reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
+                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
                         }
                     } else {  // passenger
                         showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver }
                         reviewFormDropdownEnclosure.visibility = View.GONE
-                        db.collection("users")
-                            .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
-                            .get()
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    driver = it.result?.toObjects(Profile::class.java)!![0]
-                                    Log.d(getLogTag(), "driver is $driver")
-                                    reviewFormTitle.text = getString(R.string.review_form_title, driver.fullName)
-                                } else {
-                                    Log.d(getLogTag(), "driver query failed")
+                        if (showReviewForm) {
+                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
+                            db.collection("users")
+                                .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
+                                .get()
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        driver = it.result?.toObjects(Profile::class.java)!![0]
+                                        Log.d(getLogTag(), "driver is $driver")
+                                        reviewFormTitle.text = getString(R.string.review_form_title, driver.fullName)
+                                    } else {
+                                        Log.d(getLogTag(), "driver query failed")
+                                    }
                                 }
-                            }
+                        }
                     }
                     reviewForm.visibility = if (showReviewForm) View.VISIBLE else View.GONE
                 } else {
