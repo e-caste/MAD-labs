@@ -331,7 +331,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .setQuery(query, Review::class.java)
             .build()
         reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
-            if (reviewAdapter!!.itemCount == 0) {
+            if (reviewAdapter!!.getShownItemCount() == 0) {
                 reviewsRecyclerView.visibility = View.GONE
                 warningMessageNoReviews.visibility = View.VISIBLE
             } else {
@@ -525,6 +525,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         override fun getItemCount(): Int {
             return this.snapshots.size
+        }
+
+        fun getShownItemCount(): Int {
+            return this.snapshots.filter { !(it.comment == null || it.comment.isBlank()) }.size
         }
     }
 

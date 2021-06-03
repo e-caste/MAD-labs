@@ -128,4 +128,6 @@
     <string name="review_title_mine">Recensione di %1$s</string>
     <string name="reviews">Recensioni</string>
     <string name="review_title_theirs_driver">%1$s a %2$s</string>
+    <string name="warning_message_notripreviews">Non c\'è ancora nessuna recensione.<br />Usa il form qui sotto per aggiungerne una!</string>
+    <string name="send">invia</string>
 </resources>
