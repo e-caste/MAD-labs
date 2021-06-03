@@ -100,6 +100,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                     marker?.infoWindow = null
                     marker?.isDraggable = true
                     Log.d(getLogTag(), "at the beginning marker has position ${marker?.position}")
+                    marker?.setOnMarkerDragListener(MyDragListener(viewModel))
                     map.overlays.add(marker)
                 }
 
@@ -279,6 +280,24 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             }
         }
     }
+
+    // inner class to implement behaviour on drag pinpoint
+    class MyDragListener(val viewModel: SearchLocationViewModel) : Marker.OnMarkerDragListener{
+        override fun onMarkerDrag(marker: Marker?) {
+            return
+        }
+
+        override fun onMarkerDragEnd(marker: Marker?) {
+            if (marker != null) {
+                viewModel.loadPlaceFromGeopoint(marker.position)
+            }
+        }
+
+        override fun onMarkerDragStart(marker: Marker?) {
+            return
+        }
+    }
+
 }
 
 fun Context.getProgressBarDrawable(): Drawable {
