@@ -19,6 +19,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -31,7 +32,6 @@ import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import org.osmdroid.views.MapView
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
-import kotlinx.coroutines.awaitAll
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
@@ -48,6 +48,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private val currentUserUid = FirebaseAuth.getInstance().currentUser.uid
     private val db = FirebaseFirestore.getInstance()
     private var reviewAdapter: ReviewFirestoreRecyclerAdapter? = null
+    private var showReviewForm: Boolean = true
+    private val dropdownPassengers: MutableList<Profile> = mutableListOf()
+    private lateinit var driver: Profile
+    private lateinit var selectedDropdownPassenger: Profile
 
     private lateinit var fragmentTitle: TextView
     private lateinit var tripDetailsViewModel: TripDetailsViewModel
@@ -91,6 +95,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var warningMessageNoReviews: TextView
     private lateinit var reviewForm: LinearLayout
     private lateinit var reviewFormTitle: TextView
+    private lateinit var reviewFormDropdownEnclosure: TextInputLayout
     private lateinit var reviewFormDropdown: AutoCompleteTextView
     private lateinit var reviewFormRating: RatingBar
     private lateinit var reviewFormTextfieldLayout: TextInputLayout
@@ -166,6 +171,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         warningMessageNoReviews = view.findViewById(R.id.warning_message_noreviews)
         reviewForm = view.findViewById(R.id.review_form)
         reviewFormTitle = view.findViewById(R.id.review_form_title)
+        reviewFormDropdownEnclosure = view.findViewById(R.id.review_form_dropdown_enclosure)
         reviewFormDropdown = view.findViewById(R.id.review_form_dropdown)
         reviewFormRating = view.findViewById(R.id.review_form_rating)
         reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
@@ -360,18 +366,11 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             .collection("reviews")
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .whereEqualTo("tripId", tripDocRef)
-        query.get()
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val revs = it.result?.toObjects(Review::class.java)!!
-                    Log.d(getLogTag(), "reviews are $revs")
-                } else {
-                    Log.d(getLogTag(), "reviews query failed")
-                }
-            }
+
         val options = FirestoreRecyclerOptions.Builder<Review>()
             .setQuery(query, Review::class.java)
             .build()
+
         reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
             if (reviewAdapter!!.getShownItemCount() == 0) {
                 reviewsRecyclerView.visibility = View.GONE
@@ -383,6 +382,126 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
         reviewsRecyclerView.adapter = reviewAdapter
         reviewsRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        // initialize review form
+
+        Log.d(getLogTag(), "private mode: $privateMode - check: ${checkPrivateMode()}")
+        query.get()
+            .addOnCompleteListener { query ->
+                if (query.isSuccessful) {
+                    val reviews = query.result?.toObjects(Review::class.java)!!
+                    Log.d(getLogTag(), "reviews are $reviews")
+                    // detect if current user can send a review
+                    if (privateMode) { // driver
+                        val dropdownPassengerUids = mutableListOf<String>()
+                        for (passengerUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids) {
+                            if (!reviews.any { it.passengerUid?.id == passengerUid && !it.isForDriver }) {
+                                dropdownPassengerUids.add(passengerUid)
+                            }
+                        }
+                        Log.d(getLogTag(), "accepted uids: ${tripDetailsViewModel.trip.value!!.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids")
+                        // is there any passenger the driver has not reviewed yet?
+                        showReviewForm = dropdownPassengerUids.size > 0
+                        if (showReviewForm) {
+                            db.collection("users")
+                                .whereIn("uid", dropdownPassengerUids)
+                                .get()
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        task.result?.toObjects(Profile::class.java)?.let {
+                                                it1 -> dropdownPassengers.addAll(it1)
+                                        }
+                                        Log.d(getLogTag(), "dropdownPassengers are $dropdownPassengers")
+                                        reviewFormDropdown.setText(dropdownPassengers[0].fullName)
+                                        reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
+                                        reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
+                                        selectedDropdownPassenger = dropdownPassengers[0]
+                                        reviewFormDropdown.setOnItemClickListener { _, _, i, _ ->
+                                            reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[i].fullName)
+                                            selectedDropdownPassenger = dropdownPassengers[i]
+                                        }
+                                    } else {
+                                        Log.d(getLogTag(), "dropdownPassengers query failed")
+                                    }
+                                }
+                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
+                            reviewFormSendButton.setOnClickListener {
+                                if (reviewFormRating.rating == 0F) {
+                                    Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
+                                } else {
+                                    db.collection("reviews").add(
+                                        Review(
+                                            tripId = tripDocRef,
+                                            passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
+                                            rating = reviewFormRating.rating.toLong(),
+                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                            isForDriver = false,
+                                            timestamp = Timestamp.now(),
+                                        )
+                                    ).addOnSuccessListener {
+                                        dropdownPassengers.remove(selectedDropdownPassenger)
+                                        if (dropdownPassengers.size == 0) {
+                                            showReviewForm = false
+                                            reviewForm.visibility = View.GONE
+                                        } else {
+                                            reviewFormDropdown.setText(dropdownPassengers[0].fullName)
+                                            reviewFormDropdown.setAdapter(ArrayAdapter(requireContext(), R.layout.dropdown_element, dropdownPassengers.map { it.fullName }))
+                                            reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
+                                            selectedDropdownPassenger = dropdownPassengers[0]
+                                        }
+                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
+                        }
+                    } else {  // passenger
+                        showReviewForm = !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver }
+                        reviewFormDropdownEnclosure.visibility = View.GONE
+                        if (showReviewForm) {
+                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
+                            db.collection("users")
+                                .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
+                                .get()
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        driver = it.result?.toObjects(Profile::class.java)!![0]
+                                        Log.d(getLogTag(), "driver is $driver")
+                                        reviewFormTitle.text = getString(R.string.review_form_title, driver.fullName)
+                                    } else {
+                                        Log.d(getLogTag(), "driver query failed")
+                                    }
+                                }
+                            reviewFormSendButton.setOnClickListener {
+                                if (reviewFormRating.rating == 0F) {
+                                    Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
+                                } else {
+                                    db.collection("reviews").add(
+                                        Review(
+                                            tripId = tripDocRef,
+                                            passengerUid = db.collection("users").document(currentUserUid),
+                                            rating = reviewFormRating.rating.toLong(),
+                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                            isForDriver = true,
+                                            timestamp = Timestamp.now(),
+                                        )
+                                    ).addOnSuccessListener {
+                                        showReviewForm = false
+                                        reviewForm.visibility = View.GONE
+                                        Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    reviewForm.visibility = if (showReviewForm) View.VISIBLE else View.GONE
+                } else {
+                    Log.d(getLogTag(), "reviews query failed")
+                }
+            }
     }
 
     private fun checkAdvertised(): Boolean {
