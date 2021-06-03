@@ -29,6 +29,7 @@ import it.polito.mad.group27.carpooling.ui.trip.Hour
 import it.polito.mad.group27.carpooling.ui.trip.Option
 import it.polito.mad.group27.carpooling.ui.trip.Trip
 import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import kotlinx.coroutines.awaitAll
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -500,6 +501,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         private val theirsLayout = view.findViewById<LinearLayout>(R.id.trip_review_theirs)
         private var driver: Profile? = null
         private var passenger: Profile? = null
+        private var arg1: String? = ""
+        private var arg2: String? = ""
 
         private fun setComment(comment: String?, body: TextView) {
             body.text = comment
@@ -510,7 +513,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             theirsLayout.visibility = View.GONE
             val title = view.findViewById<TextView>(R.id.review_title_mine)
             val body = view.findViewById<TextView>(R.id.review_body_mine)
-            title.text = "Review of " + if (privateMode) passenger?.fullName else driver?.fullName
+            if (privateMode) {
+                arg1 = passenger?.fullName
+                arg2 = driver?.fullName
+            } else {
+                arg1 = driver?.fullName
+                arg2 = passenger?.fullName
+            }
+            title.text = getString(R.string.review_title_mine, arg1, arg2)
             setComment(review.comment, body)
         }
 
@@ -535,6 +545,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         }
 
         fun bind(review: Review, reviewIsMine: Boolean) {
+            // give it up for callback hell! - could be implemented by awaiting coroutines
             review.tripId?.get()
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -543,26 +554,26 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         db.collection("users")
                             .whereEqualTo("uid", tripDB.ownerUid)
                             .get()
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    driver = it.result?.toObjects(Profile::class.java)!![0]
+                            .addOnCompleteListener { task1 ->
+                                if (task1.isSuccessful) {
+                                    driver = task1.result?.toObjects(Profile::class.java)!![0]
                                     Log.d(getLogTag(), "driver is $driver")
+                                    review.passengerUid?.get()
+                                        ?.addOnCompleteListener { task2 ->
+                                            if (task2.isSuccessful) {
+                                                passenger = task2.result?.toObject(Profile::class.java)!!
+                                                Log.d(getLogTag(), "passenger is $passenger")
+                                                if (reviewIsMine) {
+                                                    bindMine(review)
+                                                } else {
+                                                    bindTheirs(review)
+                                                }
+                                            }
+                                        }
                                 }
                             }
                     }
                 }
-            review.passengerUid?.get()
-                ?.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        passenger = it.result?.toObject(Profile::class.java)!!
-                        Log.d(getLogTag(), "passenger is $passenger")
-                    }
-                }
-            if (reviewIsMine) {
-                bindMine(review)
-            } else {
-                bindTheirs(review)
-            }
         }
     }
 
