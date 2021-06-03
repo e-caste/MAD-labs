@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -331,6 +332,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.stopList.observe(viewLifecycleOwner){
             if(it != null && it.size > 1) {
+                while (map.overlays.size > 1 )
+                    map.overlays.removeLast()
                 for (stop in it) {
                     val marker = Marker(map)
                     marker.position = stop.geoPoint
@@ -343,36 +346,34 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 }
                 //double to zoom to trigger repaint
                 map.controller.animateTo(it.first().geoPoint)
-                map.controller.zoomTo(5.49)
-                map.controller.zoomTo(5.5)
             }
         }
 
-        if(!checkPrivateMode()) {
-            tripDetailsViewModel.checkBookedUser(currentUserUid)
-        }
+            if(!checkPrivateMode()) {
+                tripDetailsViewModel.checkBookedUser(currentUserUid)
+            }
 
-        val tripDocRef = db
-            .collection("trips")
-            .document(tripId)
-        val query = db
-            .collection("reviews")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
-            .whereEqualTo("tripId", tripDocRef)
-        val options = FirestoreRecyclerOptions.Builder<Review>()
-            .setQuery(query, Review::class.java)
-            .build()
-        reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
-            if (reviewAdapter!!.itemCount == 0) {
-                reviewsRecyclerView.visibility = View.GONE
-                warningMessageNoReviews.visibility = View.VISIBLE
-            } else {
-                reviewsRecyclerView.visibility = View.VISIBLE
-                warningMessageNoReviews.visibility = View.GONE
-                reviewsRecyclerView.adapter = reviewAdapter
+            val tripDocRef = db
+                .collection("trips")
+                .document(tripId)
+            val query = db
+                .collection("reviews")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .whereEqualTo("tripId", tripDocRef)
+            val options = FirestoreRecyclerOptions.Builder<Review>()
+                .setQuery(query, Review::class.java)
+                .build()
+            reviewAdapter = ReviewFirestoreRecyclerAdapter(options) {
+                if (reviewAdapter!!.itemCount == 0) {
+                    reviewsRecyclerView.visibility = View.GONE
+                    warningMessageNoReviews.visibility = View.VISIBLE
+                } else {
+                    reviewsRecyclerView.visibility = View.VISIBLE
+                    warningMessageNoReviews.visibility = View.GONE
+                    reviewsRecyclerView.adapter = reviewAdapter
+                }
             }
         }
-    }
 
     private fun checkAdvertised(): Boolean {
         tripIsAdvertised = tripDetailsViewModel.trip.value!!.advertised
