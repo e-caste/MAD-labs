@@ -113,8 +113,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var reviewFormDropdownEnclosure: TextInputLayout
     private lateinit var reviewFormDropdown: AutoCompleteTextView
     private lateinit var reviewFormRating: RatingBar
-    private lateinit var reviewFormTextfieldLayout: TextInputLayout
-    private lateinit var reviewFormTextfield: TextInputEditText
+    private lateinit var reviewFormTextFieldLayout: TextInputLayout
+    private lateinit var reviewFormTextField: TextInputEditText
     private lateinit var reviewFormSendButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,8 +190,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         reviewFormDropdownEnclosure = view.findViewById(R.id.review_form_dropdown_enclosure)
         reviewFormDropdown = view.findViewById(R.id.review_form_dropdown)
         reviewFormRating = view.findViewById(R.id.review_form_rating)
-        reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
-        reviewFormTextfield = view.findViewById(R.id.review_form_textfield)
+        reviewFormTextFieldLayout = view.findViewById(R.id.review_form_textfield_layout)
+        reviewFormTextField = view.findViewById(R.id.review_form_textfield)
         reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -469,7 +469,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                         Log.d(getLogTag(), "dropdownPassengers query failed")
                                     }
                                 }
-                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
+                            reviewFormTextField.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
                             reviewFormSendButton.setOnClickListener {
                                 if (reviewFormRating.rating == 0F) {
                                     Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
@@ -480,7 +480,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                                 tripId = tripDocRef,
                                                 passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
                                                 rating = reviewFormRating.rating.toLong(),
-                                                comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                                comment = if (reviewFormTextField.text.isNullOrBlank()) null else reviewFormTextField.text.toString(),
                                                 isForDriver = false,
                                                 timestamp = Timestamp.now(),
                                             )
@@ -532,7 +532,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(currentUserUid)
                         reviewFormDropdownEnclosure.visibility = View.GONE
                         if (showReviewForm) {
-                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
+                            reviewFormTextField.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
                             db.collection("users")
                                 .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
                                 .get()
@@ -554,7 +554,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                             tripId = tripDocRef,
                                             passengerUid = db.collection("users").document(currentUserUid),
                                             rating = reviewFormRating.rating.toLong(),
-                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                            comment = if (reviewFormTextField.text.isNullOrBlank()) null else reviewFormTextField.text.toString(),
                                             isForDriver = true,
                                             timestamp = Timestamp.now(),
                                         )
@@ -612,6 +612,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //TODO check trip date is not in the past
         if(privateMode && tripIsAdvertised){
             menu.clear()
             inflater.inflate(optionsMenuId, menu)
