@@ -61,8 +61,10 @@ class OthersTripList(
         tripViewHolder.carImageView.setOnClickListener {
             findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
         }
-        // the trip is full
-        if (trip.acceptedUsersUids.size == trip.totalSeats) {
+        // the trip is full and the current user has not booked it
+        if (trip.acceptedUsersUids.size == trip.totalSeats &&
+                !trip.interestedUsersUids.contains(currentUserUid) &&
+                !trip.acceptedUsersUids.contains(currentUserUid)) {
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.visibility = View.INVISIBLE
             return
