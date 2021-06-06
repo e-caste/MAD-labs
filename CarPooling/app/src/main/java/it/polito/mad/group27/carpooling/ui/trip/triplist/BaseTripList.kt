@@ -61,6 +61,7 @@ abstract class BaseTripList(
 
         val topRightButton: ImageButton = view.findViewById(R.id.topright_button)
         val topRightButtonShadow: ImageView = view.findViewById(R.id.topright_button_shadow)
+        val topRightSoldOutTextView: TextView = view.findViewById(R.id.topright_soldout)
         val carImageView: ImageView = view.findViewById(R.id.car_image)
 
         fun setPrice(price: BigDecimal?) {
