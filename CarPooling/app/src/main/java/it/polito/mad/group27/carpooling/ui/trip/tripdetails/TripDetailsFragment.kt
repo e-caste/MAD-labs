@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
@@ -42,6 +43,7 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -50,7 +52,6 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
@@ -377,13 +378,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     tripDetailsViewModel.activeRoadSearchJob!!.cancel()
                 }
                 tripDetailsViewModel.activeRoadSearchJob = MainScope().launch {
+                    val road: Road
                     withContext(Dispatchers.IO) {
                         val roadManager: RoadManager = OSRMRoadManager(context, "")
-                        val road: Road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint>)
+                        road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint?>)
                         val roadOverlay: Polyline = RoadManager.buildRoadOverlay(road, Color.BLUE, 10.0f)
                         map.overlays.add(roadOverlay)
                         map.invalidate()
                     }
+                    zoomToBounds(map,computeArea(road.routeLow))
                 }
             }
         }
@@ -880,6 +883,38 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onStop() {
         super.onStop()
         reviewAdapter!!.stopListening()
+    }
+
+    private fun zoomToBounds(map: MyMapView, box: BoundingBox?) {
+        if (map.height > 0) {
+            map.zoomToBoundingBox(box, true)
+        } else {
+            val vto: ViewTreeObserver = map.viewTreeObserver
+            vto.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    map.zoomToBoundingBox(box, true)
+                    val vto2: ViewTreeObserver = map.viewTreeObserver
+                        vto2.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+    }
+
+    private fun computeArea(points: ArrayList<GeoPoint?>): BoundingBox {
+        var north = 0.0
+        var south = 0.0
+        var west = 0.0
+        var east = 0.0
+        for (i in 0 until points.size) {
+            if(points[i] == null) continue
+            val lat = points[i]!!.latitude
+            val lon = points[i]!!.longitude
+            if (i == 0 || lat > north) north = lat
+            if (i == 0 || lat < south) south = lat
+            if (i == 0 || lon < west) west = lon
+            if (i == 0 || lon > east) east = lon
+        }
+        return BoundingBox(north+1.5, east+1.5, south-1.5, west-1.5)
     }
 }
 
