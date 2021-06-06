@@ -23,9 +23,9 @@ import com.google.firebase.firestore.Query
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat

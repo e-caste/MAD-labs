@@ -21,9 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.entities.TripFilter
-import it.polito.mad.group27.carpooling.ui.trip.Option
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Option
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*

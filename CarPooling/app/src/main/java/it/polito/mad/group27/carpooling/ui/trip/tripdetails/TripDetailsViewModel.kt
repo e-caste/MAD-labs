@@ -7,9 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.carpooling.entities.Profile
-import it.polito.mad.group27.carpooling.ui.trip.Stop
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Stop
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import kotlinx.coroutines.Job
 
 class TripDetailsViewModel(application: Application) : AndroidViewModel(application) {

@@ -10,18 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
-import it.polito.mad.group27.carpooling.MainActivity
 import it.polito.mad.group27.carpooling.R
 import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.getLogTag
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Stop
-import it.polito.mad.group27.carpooling.ui.trip.Trip
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Stop
+import it.polito.mad.group27.carpooling.entities.Trip
 
 class StopRecyclerViewAdapter(val trip: Trip, private val context: Context, private val navController: NavController) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {

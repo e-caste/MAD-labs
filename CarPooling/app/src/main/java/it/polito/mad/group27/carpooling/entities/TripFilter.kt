@@ -1,9 +1,6 @@
 package it.polito.mad.group27.carpooling.entities
 
 import android.os.Parcelable
-import it.polito.mad.group27.carpooling.ui.trip.BigDecimalSerializer
-import it.polito.mad.group27.carpooling.ui.trip.CalendarSerializer
-import it.polito.mad.group27.carpooling.ui.trip.Option
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
@@ -17,7 +14,7 @@ data class TripFilter(
     var to: String? = null,
     @Serializable(with= BigDecimalSerializer::class)
     var priceMin: BigDecimal = BigDecimal("0.00"),
-    @Serializable(with=BigDecimalSerializer::class)
+    @Serializable(with= BigDecimalSerializer::class)
     var priceMax: BigDecimal = BigDecimal("100.00"),
     @Serializable(with= CalendarSerializer::class)
     var dateTime: Calendar? = null,

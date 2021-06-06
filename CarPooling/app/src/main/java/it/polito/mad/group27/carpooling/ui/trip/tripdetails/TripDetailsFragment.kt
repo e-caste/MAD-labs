@@ -31,10 +31,10 @@ import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.entities.Review
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Option
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Option
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
