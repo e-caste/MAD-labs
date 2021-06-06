@@ -125,7 +125,7 @@ data class Trip(
     var advertised: Boolean = true
 ) : Parcelable {
 
-    fun toTripD B() = TripDB(
+    fun toTripDB() = TripDB(
             id = id,
             ownerUid = ownerUid,
             carImageUri = carImageUri?.toString(),
