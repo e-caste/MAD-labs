@@ -142,4 +142,5 @@
     <string name="start_date">Data d\'inizio</string>
     <string name="hour">Ora</string>
     <string name="other_options">Altre opzioni</string>
+    <string name="sold_out">Completo</string>
 </resources>
