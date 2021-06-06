@@ -37,7 +37,6 @@ class SearchLocationViewModel : ViewModel() {
     fun loadSuggestions(search:String){
         clearPreviousJobs()
         activeJob = MainScope().launch {
-            //TODO manage errors
             loadingSuggestions.value = true
             val results = retrofit.getSuggestions(search)
             searchSuggestions.value = results.map{ Pair(it.toString(), it.geopoint)}
@@ -110,7 +109,6 @@ data class Suggestion (
         get()= GeoPoint(lat.toDouble(), lon.toDouble())
 
     override fun toString():String{
-        //TODO see if addess is present and format it
         return display_name
     }
 }

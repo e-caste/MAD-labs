@@ -19,8 +19,8 @@ import it.polito.mad.group27.carpooling.entities.TripFilter
 import it.polito.mad.group27.carpooling.Watcher
 import it.polito.mad.group27.carpooling.getLogTag
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Option
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Option
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.clearHour
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getDatePicker
 import it.polito.mad.group27.carpooling.ui.trip.tripedit.getTimePicker

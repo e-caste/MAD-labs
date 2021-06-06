@@ -183,7 +183,6 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
             viewModel.geoPoint.value = null
 
         }
-        //TODO add loading field
         viewModel.loadingSuggestions.observe(viewLifecycleOwner){
             adapter.loading = it
             adapter.notifyDataSetChanged()

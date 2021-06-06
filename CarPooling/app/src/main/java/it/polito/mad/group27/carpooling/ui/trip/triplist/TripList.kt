@@ -1,7 +1,6 @@
 package it.polito.mad.group27.carpooling.ui.trip.triplist
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -9,8 +8,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.carpooling.R
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import java.util.*
 
 

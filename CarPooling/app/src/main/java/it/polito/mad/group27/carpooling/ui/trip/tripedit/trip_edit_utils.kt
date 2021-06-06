@@ -9,8 +9,8 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Trip
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Trip
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*

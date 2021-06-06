@@ -25,10 +25,10 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.ui.EditFragment
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Option
-import it.polito.mad.group27.carpooling.ui.trip.Stop
-import it.polito.mad.group27.carpooling.ui.trip.Trip
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Option
+import it.polito.mad.group27.carpooling.entities.Stop
+import it.polito.mad.group27.carpooling.entities.Trip
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -432,7 +432,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
             created = true
         }
 
-        val optionToSwitch = mapOf(Option.LUGGAGE to R.id.luggage_switch,
+        val optionToSwitch = mapOf(
+            Option.LUGGAGE to R.id.luggage_switch,
             Option.SMOKE to R.id.smokers_switch,
             Option.ANIMALS to R.id.animal_switch)
         tripEditViewModel.newTrip.options.removeAll { true }

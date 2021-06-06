@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
@@ -30,10 +31,10 @@ import it.polito.mad.group27.carpooling.*
 import it.polito.mad.group27.carpooling.entities.Profile
 import it.polito.mad.group27.carpooling.entities.Review
 import it.polito.mad.group27.carpooling.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.carpooling.ui.trip.Hour
-import it.polito.mad.group27.carpooling.ui.trip.Option
-import it.polito.mad.group27.carpooling.ui.trip.Trip
-import it.polito.mad.group27.carpooling.ui.trip.TripDB
+import it.polito.mad.group27.carpooling.entities.Hour
+import it.polito.mad.group27.carpooling.entities.Option
+import it.polito.mad.group27.carpooling.entities.Trip
+import it.polito.mad.group27.carpooling.entities.TripDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -42,6 +43,7 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -50,7 +52,6 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragment,
@@ -112,8 +113,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var reviewFormDropdownEnclosure: TextInputLayout
     private lateinit var reviewFormDropdown: AutoCompleteTextView
     private lateinit var reviewFormRating: RatingBar
-    private lateinit var reviewFormTextfieldLayout: TextInputLayout
-    private lateinit var reviewFormTextfield: TextInputEditText
+    private lateinit var reviewFormTextFieldLayout: TextInputLayout
+    private lateinit var reviewFormTextField: TextInputEditText
     private lateinit var reviewFormSendButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,8 +190,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         reviewFormDropdownEnclosure = view.findViewById(R.id.review_form_dropdown_enclosure)
         reviewFormDropdown = view.findViewById(R.id.review_form_dropdown)
         reviewFormRating = view.findViewById(R.id.review_form_rating)
-        reviewFormTextfieldLayout = view.findViewById(R.id.review_form_textfield_layout)
-        reviewFormTextfield = view.findViewById(R.id.review_form_textfield)
+        reviewFormTextFieldLayout = view.findViewById(R.id.review_form_textfield_layout)
+        reviewFormTextField = view.findViewById(R.id.review_form_textfield)
         reviewFormSendButton = view.findViewById(R.id.review_form_button_send)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -377,13 +378,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     tripDetailsViewModel.activeRoadSearchJob!!.cancel()
                 }
                 tripDetailsViewModel.activeRoadSearchJob = MainScope().launch {
+                    val road: Road
                     withContext(Dispatchers.IO) {
                         val roadManager: RoadManager = OSRMRoadManager(context, "")
-                        val road: Road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint>)
+                        road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint?>)
                         val roadOverlay: Polyline = RoadManager.buildRoadOverlay(road, Color.BLUE, 10.0f)
                         map.overlays.add(roadOverlay)
                         map.invalidate()
                     }
+                    zoomToBounds(map,computeArea(road.routeLow))
                 }
             }
         }
@@ -466,7 +469,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                         Log.d(getLogTag(), "dropdownPassengers query failed")
                                     }
                                 }
-                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
+                            reviewFormTextField.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
                             reviewFormSendButton.setOnClickListener {
                                 if (reviewFormRating.rating == 0F) {
                                     Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
@@ -477,7 +480,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                                 tripId = tripDocRef,
                                                 passengerUid = selectedDropdownPassenger.uid?.let { it1 -> db.collection("users").document(it1) },
                                                 rating = reviewFormRating.rating.toLong(),
-                                                comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                                comment = if (reviewFormTextField.text.isNullOrBlank()) null else reviewFormTextField.text.toString(),
                                                 isForDriver = false,
                                                 timestamp = Timestamp.now(),
                                             )
@@ -529,7 +532,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(currentUserUid)
                         reviewFormDropdownEnclosure.visibility = View.GONE
                         if (showReviewForm) {
-                            reviewFormTextfield.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
+                            reviewFormTextField.hint = getString(R.string.review_form_textfield, getString(R.string.driver))
                             db.collection("users")
                                 .whereEqualTo("uid", tripDetailsViewModel.trip.value!!.ownerUid)
                                 .get()
@@ -551,7 +554,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                             tripId = tripDocRef,
                                             passengerUid = db.collection("users").document(currentUserUid),
                                             rating = reviewFormRating.rating.toLong(),
-                                            comment = if (reviewFormTextfield.text.isNullOrBlank()) null else reviewFormTextfield.text.toString(),
+                                            comment = if (reviewFormTextField.text.isNullOrBlank()) null else reviewFormTextField.text.toString(),
                                             isForDriver = true,
                                             timestamp = Timestamp.now(),
                                         )
@@ -609,6 +612,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //TODO check trip date is not in the past
         if(privateMode && tripIsAdvertised){
             menu.clear()
             inflater.inflate(optionsMenuId, menu)
@@ -880,6 +884,38 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     override fun onStop() {
         super.onStop()
         reviewAdapter!!.stopListening()
+    }
+
+    private fun zoomToBounds(map: MyMapView, box: BoundingBox?) {
+        if (map.height > 0) {
+            map.zoomToBoundingBox(box, true)
+        } else {
+            val vto: ViewTreeObserver = map.viewTreeObserver
+            vto.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    map.zoomToBoundingBox(box, true)
+                    val vto2: ViewTreeObserver = map.viewTreeObserver
+                        vto2.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+    }
+
+    private fun computeArea(points: ArrayList<GeoPoint?>): BoundingBox {
+        var north = 0.0
+        var south = 0.0
+        var west = 0.0
+        var east = 0.0
+        for (i in 0 until points.size) {
+            if(points[i] == null) continue
+            val lat = points[i]!!.latitude
+            val lon = points[i]!!.longitude
+            if (i == 0 || lat > north) north = lat
+            if (i == 0 || lat < south) south = lat
+            if (i == 0 || lon < west) west = lon
+            if (i == 0 || lon > east) east = lon
+        }
+        return BoundingBox(north+1.5, east+1.5, south-1.5, west-1.5)
     }
 }
 

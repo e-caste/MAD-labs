@@ -1,4 +1,4 @@
-package it.polito.mad.group27.carpooling.ui.trip
+package it.polito.mad.group27.carpooling.entities
 
 import android.net.Uri
 import android.os.Build
@@ -9,8 +9,6 @@ import com.google.firebase.firestore.GeoPoint
 import it.polito.mad.group27.carpooling.calendarToTimestamp
 import it.polito.mad.group27.carpooling.timestampToCalendar
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
@@ -19,7 +17,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import org.osmdroid.views.MapView
 import java.io.File
 import java.math.BigDecimal
 import java.text.DateFormat
@@ -173,7 +170,7 @@ data class Stop(
     @Serializable(with = OsmdroidGeoPointSerializer::class)
     var geoPoint: org.osmdroid.util.GeoPoint? = null
 ) : Parcelable {
-    fun toStopDB():StopDB{
+    fun toStopDB(): StopDB {
         return StopDB(
             place,
             calendarToTimestamp(dateTime),
