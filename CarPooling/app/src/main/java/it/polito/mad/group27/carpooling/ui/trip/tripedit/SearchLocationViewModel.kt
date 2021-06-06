@@ -109,7 +109,6 @@ data class Suggestion (
         get()= GeoPoint(lat.toDouble(), lon.toDouble())
 
     override fun toString():String{
-        //TODO see if address is present and format it
         return display_name
     }
 }
