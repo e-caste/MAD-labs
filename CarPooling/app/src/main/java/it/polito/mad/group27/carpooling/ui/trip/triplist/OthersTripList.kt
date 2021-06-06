@@ -65,8 +65,9 @@ class OthersTripList(
         if (trip.acceptedUsersUids.size == trip.totalSeats &&
                 !trip.interestedUsersUids.contains(currentUserUid) &&
                 !trip.acceptedUsersUids.contains(currentUserUid)) {
-            tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
-            tripViewHolder.topRightButton.visibility = View.INVISIBLE
+            tripViewHolder.topRightButtonShadow.visibility = View.GONE
+            tripViewHolder.topRightButton.visibility = View.GONE
+            tripViewHolder.topRightSoldOutTextView.visibility = View.VISIBLE
             return
         }
         var icon: Int? = null
