@@ -806,7 +806,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             theirsLayout.visibility = View.GONE
             val title = view.findViewById<TextView>(R.id.review_title_mine)
             val body = view.findViewById<TextView>(R.id.review_body_mine)
-            val reviewOf = if (privateMode) passenger?.fullName else driver?.fullName
+            val reviewOf = if (privateMode) passenger?.nickName else driver?.nickName
             title.text = getString(R.string.review_title_mine, reviewOf)
             setComment(review.comment, body)
         }
@@ -823,12 +823,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 if (passenger?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
                 }
-                name.text = passenger?.fullName
+                name.text = passenger?.nickName
             } else {  // you are a passenger || you are the driver and the review is for a passenger
                 if (driver?.profileImageUri != null) {
                     Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
                 }
-                name.text = getString(R.string.review_title_theirs_driver, driver?.fullName, passenger?.fullName)
+                name.text = getString(R.string.review_title_theirs_driver, driver?.nickName, passenger?.nickName)
             }
             setComment(review.comment, body)
         }
