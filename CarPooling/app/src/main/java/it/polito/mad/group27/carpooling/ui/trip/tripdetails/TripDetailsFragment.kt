@@ -264,21 +264,24 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 tripOwner = it.toObject(Profile::class.java)
                                 val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
                                 if (tripOwner != null && me != null) {
-                                    MessagingService.sendNotification(
-                                        tripOwner!!.notificationToken,
-                                        AndroidNotification(
-                                            "New trip reservation!",
-                                            "User ${me.fullName} has just booked your trip from " +
-                                                    "${tripDetailsViewModel.trip.value!!.from} " +
-                                                    "to ${tripDetailsViewModel.trip.value!!.to} " +
-                                                    "on ${
-                                                        SimpleDateFormat("dd/MM/yyyy HH:mm").format(
-                                                            tripDetailsViewModel.trip.value!!.startDateTime.time
-                                                        )
-                                                    }",
-                                            tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                    //TODO add feedback
+                                    MainScope().launch {
+                                        MessagingService.sendNotification(
+                                            tripOwner!!.notificationToken,
+                                            AndroidNotification(
+                                                "New trip reservation!",
+                                                "User ${me.fullName} has just booked your trip from " +
+                                                        "${tripDetailsViewModel.trip.value!!.from} " +
+                                                        "to ${tripDetailsViewModel.trip.value!!.to} " +
+                                                        "on ${
+                                                            SimpleDateFormat("dd/MM/yyyy HH:mm").format(
+                                                                tripDetailsViewModel.trip.value!!.startDateTime.time
+                                                            )
+                                                        }",
+                                                tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                            )
                                         )
-                                    )
+                                    }
                                     Log.d(
                                         getLogTag(), "reservation notification: sent " +
                                             "from ${me.fullName} (${me.uid}) " +
