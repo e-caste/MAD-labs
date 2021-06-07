@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Car Pooling</string>
+    <string name="app_name" translatable="false">Hubert</string>
     <string name="log_tag" translatable="false">MAD-group-27</string>
     <string name="default_location">Turin, Italy</string>
     <string name="default_email">john.smith@polito.it</string>
@@ -157,4 +157,5 @@
     <string name="start_date">Start date</string>
     <string name="hour">Hour</string>
     <string name="other_options">Other options</string>
+    <string name="sold_out">Sold Out</string>
 </resources>
