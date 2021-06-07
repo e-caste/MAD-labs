@@ -1,9 +1,6 @@
 package it.polito.mad.group27.hubert.entities
 
 import android.os.Parcelable
-import it.polito.mad.group27.hubert.entities.BigDecimalSerializer
-import it.polito.mad.group27.hubert.entities.CalendarSerializer
-import it.polito.mad.group27.hubert.entities.Option
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal

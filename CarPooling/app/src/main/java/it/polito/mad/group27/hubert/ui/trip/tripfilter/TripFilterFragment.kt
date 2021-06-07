@@ -19,8 +19,8 @@ import it.polito.mad.group27.hubert.entities.TripFilter
 import it.polito.mad.group27.hubert.Watcher
 import it.polito.mad.group27.hubert.getLogTag
 import it.polito.mad.group27.hubert.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.hubert.ui.trip.Hour
-import it.polito.mad.group27.hubert.ui.trip.Option
+import it.polito.mad.group27.hubert.entities.Hour
+import it.polito.mad.group27.hubert.entities.Option
 import it.polito.mad.group27.hubert.ui.trip.tripedit.clearHour
 import it.polito.mad.group27.hubert.ui.trip.tripedit.getDatePicker
 import it.polito.mad.group27.hubert.ui.trip.tripedit.getTimePicker
