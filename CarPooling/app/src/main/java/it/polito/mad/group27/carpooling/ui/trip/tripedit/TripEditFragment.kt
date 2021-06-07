@@ -29,6 +29,8 @@ import it.polito.mad.group27.carpooling.entities.Hour
 import it.polito.mad.group27.carpooling.entities.Option
 import it.polito.mad.group27.carpooling.entities.Stop
 import it.polito.mad.group27.carpooling.entities.Trip
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -465,24 +467,44 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     private fun sendNotifications(){
         // send notifications to newly accepted users
         for (uid in tripEditViewModel.newAcceptedUsers){
-            MessagingService.sendNotification(
-                tripEditViewModel.getProfileByUid(uid).notificationToken,
-                AndroidNotification(getString(R.string.request_accepted_title),
-                    getString(R.string.request_accepted_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
-                    tripEditViewModel.newTrip.carImageUri.toString())
-            )
+            MainScope().launch {
+                //TODO add feedback
+                MessagingService.sendNotification(
+                    tripEditViewModel.getProfileByUid(uid).notificationToken,
+                    AndroidNotification(
+                        getString(R.string.request_accepted_title),
+                        getString(
+                            R.string.request_accepted_message,
+                            tripEditViewModel.newTrip.from,
+                            tripEditViewModel.newTrip.to,
+                            df.format(tripEditViewModel.newTrip.startDateTime.time)
+                        ),
+                        tripEditViewModel.newTrip.carImageUri.toString()
+                    )
+                )
+            }
         }
 
         //send notifications to interested users if trip has finished places
         if (tripEditViewModel.newTrip.acceptedUsersUids.size >= tripEditViewModel.newTrip.totalSeats ?: 0
             && tripEditViewModel.newAcceptedUsers.size > 0){ // with the newly accepted users, seats are finished
             for (uid in tripEditViewModel.newTrip.interestedUsersUids){
-                MessagingService.sendNotification(
-                    tripEditViewModel.getProfileByUid(uid).notificationToken,
-                    AndroidNotification(getString(R.string.seats_finished_title),
-                        getString(R.string.seats_finished_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
-                        tripEditViewModel.newTrip.carImageUri.toString())
-                )
+                //TODO add feedback
+                MainScope().launch {
+                    MessagingService.sendNotification(
+                        tripEditViewModel.getProfileByUid(uid).notificationToken,
+                        AndroidNotification(
+                            getString(R.string.seats_finished_title),
+                            getString(
+                                R.string.seats_finished_message,
+                                tripEditViewModel.newTrip.from,
+                                tripEditViewModel.newTrip.to,
+                                df.format(tripEditViewModel.newTrip.startDateTime.time)
+                            ),
+                            tripEditViewModel.newTrip.carImageUri.toString()
+                        )
+                    )
+                }
             }
         }
 
@@ -490,14 +512,22 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         if (!tripEditViewModel.newTrip.advertised) {
             for (uid in tripEditViewModel.newTrip.acceptedUsersUids) {
                 if (!tripEditViewModel.newAcceptedUsers.contains(uid)) {
-                    MessagingService.sendNotification(
-                        tripEditViewModel.getProfileByUid(uid).notificationToken,
-                        AndroidNotification(
-                            getString(R.string.trip_cancelled_title),
-                            getString(R.string.trip_cancelled_message, tripEditViewModel.newTrip.from, tripEditViewModel.newTrip.to, df.format(tripEditViewModel.newTrip.startDateTime.time)),
-                            tripEditViewModel.newTrip.carImageUri.toString()
+                    //TODO add feedback
+                    MainScope().launch {
+                        MessagingService.sendNotification(
+                            tripEditViewModel.getProfileByUid(uid).notificationToken,
+                            AndroidNotification(
+                                getString(R.string.trip_cancelled_title),
+                                getString(
+                                    R.string.trip_cancelled_message,
+                                    tripEditViewModel.newTrip.from,
+                                    tripEditViewModel.newTrip.to,
+                                    df.format(tripEditViewModel.newTrip.startDateTime.time)
+                                ),
+                                tripEditViewModel.newTrip.carImageUri.toString()
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

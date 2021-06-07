@@ -24,6 +24,8 @@ import it.polito.mad.group27.carpooling.entities.TripFilter
 import it.polito.mad.group27.carpooling.entities.Option
 import it.polito.mad.group27.carpooling.entities.Trip
 import it.polito.mad.group27.carpooling.entities.TripDB
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -87,15 +89,22 @@ class OthersTripList(
                                     tripOwner = it.toObject(Profile::class.java)
                                     val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
                                     if (tripOwner != null && me != null) {
-                                        MessagingService.sendNotification(
-                                            tripOwner!!.notificationToken,
-                                            AndroidNotification(
-                                                "New trip reservation!",
-                                                "User ${me.fullName} has just booked your trip from " +
-                                                        "${trip.from} to ${trip.to} on ${sdf.format(trip.startDateTime.time)}",
-                                                trip.carImageUri.toString()
+                                        //TODO add feedback
+                                        MainScope().launch {
+                                            MessagingService.sendNotification(
+                                                tripOwner!!.notificationToken,
+                                                AndroidNotification(
+                                                    "New trip reservation!",
+                                                    "User ${me.fullName} has just booked your trip from " +
+                                                            "${trip.from} to ${trip.to} on ${
+                                                                sdf.format(
+                                                                    trip.startDateTime.time
+                                                                )
+                                                            }",
+                                                    trip.carImageUri.toString()
+                                                )
                                             )
-                                        )
+                                        }
                                         Log.d(
                                             getLogTag(), "reservation notification: sent " +
                                                 "from ${me.fullName} (${me.uid}) " +
