@@ -1,4 +1,4 @@
-package it.polito.mad.group27.hubert.ui.trip
+package it.polito.mad.group27.hubert.entities
 
 import android.net.Uri
 import android.os.Build

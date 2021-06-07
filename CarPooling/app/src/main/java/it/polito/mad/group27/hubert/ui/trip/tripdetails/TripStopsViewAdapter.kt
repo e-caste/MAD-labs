@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.group27.hubert.R
-import it.polito.mad.group27.hubert.ui.trip.Hour
-import it.polito.mad.group27.hubert.ui.trip.Stop
+import it.polito.mad.group27.hubert.entities.Hour
+import it.polito.mad.group27.hubert.entities.Stop
 import java.text.DateFormat
 import java.util.*
 

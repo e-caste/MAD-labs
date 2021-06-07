@@ -17,9 +17,9 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import it.polito.mad.group27.hubert.R
 import it.polito.mad.group27.hubert.Watcher
 import it.polito.mad.group27.hubert.getLogTag
-import it.polito.mad.group27.hubert.ui.trip.Hour
-import it.polito.mad.group27.hubert.ui.trip.Stop
-import it.polito.mad.group27.hubert.ui.trip.Trip
+import it.polito.mad.group27.hubert.entities.Hour
+import it.polito.mad.group27.hubert.entities.Stop
+import it.polito.mad.group27.hubert.entities.Trip
 
 class StopRecyclerViewAdapter(val trip: Trip, private val context: Context, private val navController: NavController) :
     RecyclerView.Adapter<StopRecyclerViewAdapter.ItemViewHolder>() {

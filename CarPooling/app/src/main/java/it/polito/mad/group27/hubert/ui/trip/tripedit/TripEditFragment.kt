@@ -25,10 +25,10 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.hubert.*
 import it.polito.mad.group27.hubert.ui.EditFragment
-import it.polito.mad.group27.hubert.ui.trip.Hour
-import it.polito.mad.group27.hubert.ui.trip.Option
-import it.polito.mad.group27.hubert.ui.trip.Stop
-import it.polito.mad.group27.hubert.ui.trip.Trip
+import it.polito.mad.group27.hubert.entities.Hour
+import it.polito.mad.group27.hubert.entities.Option
+import it.polito.mad.group27.hubert.entities.Stop
+import it.polito.mad.group27.hubert.entities.Trip
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.math.BigDecimal

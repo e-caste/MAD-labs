@@ -22,9 +22,9 @@ import com.google.firebase.firestore.Query
 import it.polito.mad.group27.hubert.R
 import it.polito.mad.group27.hubert.getLogTag
 import it.polito.mad.group27.hubert.ui.BaseFragmentWithToolbar
-import it.polito.mad.group27.hubert.ui.trip.Hour
-import it.polito.mad.group27.hubert.ui.trip.Trip
-import it.polito.mad.group27.hubert.ui.trip.TripDB
+import it.polito.mad.group27.hubert.entities.Hour
+import it.polito.mad.group27.hubert.entities.Trip
+import it.polito.mad.group27.hubert.entities.TripDB
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat

@@ -21,9 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.hubert.*
 import it.polito.mad.group27.hubert.entities.Profile
 import it.polito.mad.group27.hubert.entities.TripFilter
-import it.polito.mad.group27.hubert.ui.trip.Option
-import it.polito.mad.group27.hubert.ui.trip.Trip
-import it.polito.mad.group27.hubert.ui.trip.TripDB
+import it.polito.mad.group27.hubert.entities.Option
+import it.polito.mad.group27.hubert.entities.Trip
+import it.polito.mad.group27.hubert.entities.TripDB
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
