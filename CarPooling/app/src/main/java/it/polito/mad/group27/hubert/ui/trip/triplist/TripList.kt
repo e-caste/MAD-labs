@@ -8,8 +8,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.mad.group27.hubert.R
-import it.polito.mad.group27.hubert.ui.trip.Trip
-import it.polito.mad.group27.hubert.ui.trip.TripDB
+import it.polito.mad.group27.hubert.entities.Trip
+import it.polito.mad.group27.hubert.entities.TripDB
 import java.util.*
 
 
