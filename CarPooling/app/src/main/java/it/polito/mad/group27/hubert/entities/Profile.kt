@@ -13,8 +13,6 @@ data class Profile(
     var email: String = "john.smith@polito.it",
     var location: String = "Turin, Italy",
     var registrationDate: Timestamp = Timestamp.now(),
-    @Deprecated("Will be removed")
-    var rating: Float = 4.5f,
     var notificationToken: String?=null,
     var sumRatingsPassenger: Long = 0,
     var countRatingsPassenger: Long = 0,

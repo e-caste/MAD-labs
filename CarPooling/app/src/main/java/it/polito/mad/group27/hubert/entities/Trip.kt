@@ -9,113 +9,31 @@ import com.google.firebase.firestore.GeoPoint
 import it.polito.mad.group27.hubert.calendarToTimestamp
 import it.polito.mad.group27.hubert.timestampToCalendar
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import java.io.File
 import java.math.BigDecimal
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 
-@Serializer(forClass = Date::class)
-object CalendarSerializer : KSerializer<Calendar> {
-    private val df: DateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
-
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: Calendar) {
-        encoder.encodeString(df.format(value.time))
-    }
-
-    override fun deserialize(decoder: Decoder): Calendar {
-        return Calendar.getInstance().also {
-            it.time = df.parse(decoder.decodeString())!!
-        }
-    }
-}
-
-@Serializer(forClass = Uri::class)
-object UriSerializer : KSerializer<Uri> {
-
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: Uri) {
-        encoder.encodeString(value.path ?: "")
-    }
-
-    override fun deserialize(decoder: Decoder): Uri {
-        return Uri.fromFile(File(decoder.decodeString()))
-    }
-}
-
-@Serializer(forClass = BigDecimal::class)
-object BigDecimalSerializer : KSerializer<BigDecimal> {
-
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: BigDecimal) {
-        encoder.encodeString(value.toString())
-    }
-
-    override fun deserialize(decoder: Decoder): BigDecimal {
-        return BigDecimal(decoder.decodeString())
-    }
-}
-
-@Serializer(forClass = org.osmdroid.util.GeoPoint::class)
-object OsmdroidGeoPointSerializer : KSerializer<org.osmdroid.util.GeoPoint> {
-
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("osmdroidGeoPoint", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): org.osmdroid.util.GeoPoint {
-        val decoded = decoder.decodeString().split(" ")
-        return org.osmdroid.util.GeoPoint(decoded[0].toDoubleOrNull() ?: 0.0, decoded[1].toDoubleOrNull() ?: 0.0)
-    }
-
-    override fun serialize(encoder: Encoder, value: org.osmdroid.util.GeoPoint) {
-        encoder.encodeString("${value.latitude} ${value.longitude}")
-    }
-}
 
 // do we need the Trip/TripDB id? YES, in OthersTripList
 // we should use the document id. How to get it automatically? DONE in saveTrip method of tripEditFragment
 
-@Serializable
+
 @Parcelize
 data class Trip(
     // primary keys
     var id: String? = null,
     var ownerUid: String = "testUid",
     // other fields
-    @Serializable(with = UriSerializer::class)
     var carImageUri: Uri? = null,
     var totalSeats: Int? = null,
-    @Deprecated("Will no longer be used, use the list size")
-    var availableSeats: Int? = null,
-    @Serializable(with = BigDecimalSerializer::class)
     var price: BigDecimal? = null,
-    @Serializable(with = CalendarSerializer::class)
     var startDateTime: Calendar = (Calendar.getInstance()
         .clone() as Calendar).also { it.add(Calendar.HOUR, +1) },
-    @Serializable(with = CalendarSerializer::class)
     var endDateTime: Calendar = (Calendar.getInstance()
         .clone() as Calendar).also { it.add(Calendar.HOUR, +2) },
     var from: String = "",
-    @Serializable(with = OsmdroidGeoPointSerializer::class)
     var fromGeoPoint: org.osmdroid.util.GeoPoint? = null,
     var to: String = "",
-    @Serializable(with = OsmdroidGeoPointSerializer::class)
     var toGeoPoint: org.osmdroid.util.GeoPoint? = null,
     val stops: MutableList<Stop> = mutableListOf(),
     val options: MutableList<Option> = mutableListOf(),
@@ -146,7 +64,6 @@ data class Trip(
         )
 }
 
-@Serializable
 @Parcelize
 data class Hour(var hour: Int, var minute: Int) : Parcelable {
     constructor(calendar: Calendar) : this(
@@ -162,12 +79,11 @@ data class Hour(var hour: Int, var minute: Int) : Parcelable {
 
 }
 
-@Serializable
+
 @Parcelize
 data class Stop(
     var place: String,
-    @Serializable(with = CalendarSerializer::class) var dateTime: Calendar,
-    @Serializable(with = OsmdroidGeoPointSerializer::class)
+    var dateTime: Calendar,
     var geoPoint: org.osmdroid.util.GeoPoint? = null
 ) : Parcelable {
     fun toStopDB(): StopDB {
