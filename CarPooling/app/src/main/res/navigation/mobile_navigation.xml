@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_trips"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.TripList"
+        android:name="it.polito.mad.group27.hubert.ui.trip.triplist.TripList"
         tools:layout="@layout/fragment_trip_list" >
         <action
             android:id="@+id/action_tripList_to_tripDetailsFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_profile"
-        android:name="it.polito.mad.group27.carpooling.ui.profile.showprofile.ShowProfileFragment"
+        android:name="it.polito.mad.group27.hubert.ui.profile.showprofile.ShowProfileFragment"
         tools:layout="@layout/show_profile_fragment" >
         <action
             android:id="@+id/action_showProfileFragment_to_editProfileFragment"
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="it.polito.mad.group27.carpooling.ui.profile.editprofile.EditProfileFragment"
+        android:name="it.polito.mad.group27.hubert.ui.profile.editprofile.EditProfileFragment"
         tools:layout="@layout/edit_profile_fragment" >
         <action
             android:id="@+id/action_editProfileFragment_to_searchLocationFragment"
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.tripdetails.TripDetailsFragment"
+        android:name="it.polito.mad.group27.hubert.ui.trip.tripdetails.TripDetailsFragment"
         tools:layout="@layout/trip_details_fragment" >
         <action
             android:id="@+id/action_tripDetailsFragment_to_tripEditFragment"
@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/tripEditFragment"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.tripedit.TripEditFragment"
+        android:name="it.polito.mad.group27.hubert.ui.trip.tripedit.TripEditFragment"
         tools:layout="@layout/trip_edit_fragment" >
         <action
             android:id="@+id/action_tripEditFragment_to_tripDetailsFragment"
@@ -71,7 +71,7 @@
            </fragment>
     <fragment
         android:id="@+id/othersTripList"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.OthersTripList"
+        android:name="it.polito.mad.group27.hubert.ui.trip.triplist.OthersTripList"
         android:label="OthersTripList" >
         <action
             android:id="@+id/action_othersTripList_to_tripFilterFragment"
@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/tripFilterFragment"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.tripfilter.TripFilterFragment"
+        android:name="it.polito.mad.group27.hubert.ui.trip.tripfilter.TripFilterFragment"
         android:label="TripFilterFragment" >
         <action
             android:id="@+id/action_tripFilterFragment_to_othersTripList"
@@ -95,12 +95,12 @@
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.tripedit.SearchLocationFragment"
+        android:name="it.polito.mad.group27.hubert.ui.trip.tripedit.SearchLocationFragment"
         android:label="search_location_fragment"
         tools:layout="@layout/search_location_fragment" />
     <fragment
         android:id="@+id/boughtTripList"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.BoughtTripList"
+        android:name="it.polito.mad.group27.hubert.ui.trip.triplist.BoughtTripList"
         android:label="BoughtTripList" >
         <action
             android:id="@+id/action_boughtTripList_to_tripDetailsFragment"
@@ -108,7 +108,7 @@
     </fragment>
     <fragment
         android:id="@+id/tripsOfInterestList"
-        android:name="it.polito.mad.group27.carpooling.ui.trip.triplist.TripsOfInterestList"
+        android:name="it.polito.mad.group27.hubert.ui.trip.triplist.TripsOfInterestList"
         android:label="TripsOfInterestList" >
         <action
             android:id="@+id/action_tripsOfInterestList_to_tripDetailsFragment"

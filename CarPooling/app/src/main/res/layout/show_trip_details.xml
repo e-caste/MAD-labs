@@ -334,7 +334,7 @@
 
         <include layout="@layout/item_trip_stop_layout"/>
 
-        <it.polito.mad.group27.carpooling.ui.trip.tripdetails.MyMapView
+        <it.polito.mad.group27.hubert.ui.trip.tripdetails.MyMapView
             android:id="@+id/map_trip_details"
             tilesource="Mapnik"
             android:layout_marginTop="16dp"
