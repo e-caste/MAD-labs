@@ -39,6 +39,7 @@ class ProfileViewModel(application: Application) : ProfileBaseViewModel(applicat
                         currentUser.photoUrl?.toString(),
                         currentUser.displayName ?: "",
                         email = currentUser.email ?: "",
+                        nickName = currentUser.email?.split("@")?.get(0) ?: "",
                         notificationToken = token
                     )
                 ).addOnFailureListener {
