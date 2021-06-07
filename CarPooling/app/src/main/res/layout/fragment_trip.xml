@@ -84,6 +84,15 @@
                     app:srcCompat="@drawable/ic_baseline_edit_24"
                     app:tint="#FFFFFF" />
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/topright_soldout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sold_out"
+                android:textColor="@color/colorAccent"
+                style="@style/trip_card_text_style"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- departure + destination texts horizontal layout -->

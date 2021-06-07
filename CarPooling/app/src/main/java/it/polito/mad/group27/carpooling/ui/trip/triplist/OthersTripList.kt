@@ -53,15 +53,23 @@ class OthersTripList(
     private val nf = NumberFormat.getCurrencyInstance(Locale.ITALY)
     override val warningMessageStringId: Int = R.string.warning_message_notrips_otherstriplist
     override val warningMessagePictureDrawableId: Int = R.drawable.woman_pushing_car
+    private val optionToString = mapOf(
+        Option.ANIMALS to R.string.animals,
+        Option.LUGGAGE to R.string.luggage,
+        Option.SMOKE to R.string.smokers,
+    )
 
     override fun customizeCardView(tripViewHolder: BaseTripList.TripViewHolder, trip: Trip) {
         tripViewHolder.carImageView.setOnClickListener {
             findNavController().navigate(R.id.action_othersTripList_to_tripDetailsFragment, bundleOf("tripId" to trip.id))
         }
-        // the trip is full
-        if (trip.acceptedUsersUids.size == trip.totalSeats) {
-            tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
-            tripViewHolder.topRightButton.visibility = View.INVISIBLE
+        // the trip is full and the current user has not booked it
+        if (trip.acceptedUsersUids.size == trip.totalSeats &&
+                !trip.interestedUsersUids.contains(currentUserUid) &&
+                !trip.acceptedUsersUids.contains(currentUserUid)) {
+            tripViewHolder.topRightButtonShadow.visibility = View.GONE
+            tripViewHolder.topRightButton.visibility = View.GONE
+            tripViewHolder.topRightSoldOutTextView.visibility = View.VISIBLE
             return
         }
         var icon: Int? = null
@@ -199,7 +207,7 @@ class OthersTripList(
             chipGroup.addView(chip)
         }
 
-        var s = ""
+        var s: String
 
         if (tripFilter.from != defaultTripFilter.from) {
             s = "${getString(R.string.from)} ${tripFilter.from!!}"
@@ -229,7 +237,7 @@ class OthersTripList(
         for (opt in Option.values()) {
             if (tripFilter.options.contains(opt) && tripFilter.options[opt] != defaultTripFilter.options[opt]) {
                 val optionName = opt.name.toLowerCase(Locale.ROOT)
-                addChip(optionName.capitalize(Locale.ROOT), optionName, optionName)
+                addChip(getString(optionToString[opt]!!), optionName, optionName)
             }
         }
     }

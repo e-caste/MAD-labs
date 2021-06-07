@@ -35,6 +35,12 @@ class TripList(
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.setOnClickListener {}
+            // show red border around card
+            if (!trip.advertised) {
+                val v = tripViewHolder.view as MaterialCardView
+                v.strokeColor = Color.RED
+                v.invalidate()
+            }
             return
         }
         val icon = R.drawable.ic_baseline_edit_24
@@ -42,12 +48,6 @@ class TripList(
         tripViewHolder.topRightButton.setImageResource(icon)
         tripViewHolder.topRightButton.setOnClickListener {
             findNavController().navigate(R.id.action_tripList_to_tripEditFragment, bundleOf("trip" to trip))
-        }
-        // show red border around card
-        if (!trip.advertised) {
-            val v = tripViewHolder.view as MaterialCardView
-            v.strokeColor = Color.RED
-            v.invalidate()
         }
     }
 
