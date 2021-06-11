@@ -346,11 +346,27 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         else
             interested_button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
 
+        val passengersListWrapper = view.findViewById<LinearLayout>(R.id.passengers_list_wrapper)
+        if (tripEditViewModel.newTrip.id == null)
+            passengersListWrapper.visibility = View.GONE
+        else
+            passengersListWrapper.visibility = View.VISIBLE
+
         tripEditViewModel.acceptedExpandVisibility.observe(viewLifecycleOwner){
+            if(tripEditViewModel.interestedExpandVisibility.value == View.GONE
+                && it == View.GONE)
+                    passengersListWrapper.visibility = View.GONE
+            else
+                passengersListWrapper.visibility = View.VISIBLE
             accepted_button.visibility = it
             accepted_title.visibility = it
         }
         tripEditViewModel.interestedExpandVisibility.observe(viewLifecycleOwner){
+            if(tripEditViewModel.acceptedExpandVisibility.value == View.GONE
+                && it == View.GONE)
+                passengersListWrapper.visibility = View.GONE
+            else
+                passengersListWrapper.visibility = View.VISIBLE
             interested_button.visibility = it
             interested_title.visibility = it
         }
@@ -398,12 +414,6 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 }
                 .show()
         }
-
-        val passengersListWrapper = view.findViewById<LinearLayout>(R.id.passengers_list_wrapper)
-        if (tripEditViewModel.newTrip.id == null)
-            passengersListWrapper.visibility = View.GONE
-        else
-            passengersListWrapper.visibility = View.VISIBLE
 
     }
 
