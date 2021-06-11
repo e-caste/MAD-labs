@@ -159,14 +159,16 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 fullNameView?.text = profile.fullName
             }
             if (profile.profileImageUri != null) {
-                val circularProgressDrawable = CircularProgressDrawable(requireContext())
-                circularProgressDrawable.strokeWidth = 5f
-                circularProgressDrawable.centerRadius = 30f
-                circularProgressDrawable.start()
 
-                Glide.with(this).load(profile.profileImageUri)
-                    .placeholder(circularProgressDrawable)
-                    .into(profileImageView)
+                loadImage(profile.profileImageUri!!,profileImageView, Size.HUGE)
+//                val circularProgressDrawable = CircularProgressDrawable(requireContext())
+//                circularProgressDrawable.strokeWidth = 5f
+//                circularProgressDrawable.centerRadius = 30f
+//                circularProgressDrawable.start()
+//
+//                Glide.with(this).load(profile.profileImageUri)
+//                    .placeholder(circularProgressDrawable)
+//                    .into(profileImageView)
 
             }else
                 profileImageView.setImageResource(R.drawable.ic_baseline_person_24)

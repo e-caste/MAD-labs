@@ -21,6 +21,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
@@ -243,7 +244,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 Log.d(getLogTag(), "already booked on view created")
                 bookingFAB.setImageResource(R.drawable.ic_baseline_done_24)
                 bookingFAB.setOnClickListener {
-                    Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG)
+                    Snackbar.make(view, getString(R.string.warning_message_alreadybooked), Snackbar.LENGTH_LONG)
                         .show()
                 }
             }
@@ -255,7 +256,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 .document(tripDetailsViewModel.trip.value!!.id!!)
                 .set(tripDetailsViewModel.trip.value!!.toTripDB())
                 .addOnSuccessListener {
-                    Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                    Snackbar.make(view, getString(R.string.success_message_booked), Snackbar.LENGTH_LONG).show()
                     var tripOwner: Profile?
                     FirebaseFirestore.getInstance().collection("users")
                         .document(tripDetailsViewModel.trip.value!!.ownerUid).get()
@@ -264,21 +265,19 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 tripOwner = it.toObject(Profile::class.java)
                                 val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
                                 if (tripOwner != null && me != null) {
-                                    //TODO add feedback
                                     MainScope().launch {
                                         MessagingService.sendNotification(
                                             tripOwner!!.notificationToken,
                                             AndroidNotification(
-                                                "New trip reservation!",
-                                                "User ${me.fullName} has just booked your trip from " +
-                                                        "${tripDetailsViewModel.trip.value!!.from} " +
-                                                        "to ${tripDetailsViewModel.trip.value!!.to} " +
-                                                        "on ${
-                                                            SimpleDateFormat("dd/MM/yyyy HH:mm").format(
-                                                                tripDetailsViewModel.trip.value!!.startDateTime.time
-                                                            )
-                                                        }",
-                                                tripDetailsViewModel.trip.value!!.carImageUri.toString()
+                                                getString(R.string.reservation_notification_title),
+                                                getString(R.string.reservation_notification_body,
+                                                    me.fullName, tripDetailsViewModel.trip.value!!.from,
+                                                    tripDetailsViewModel.trip.value!!.to,
+                                                    SimpleDateFormat("dd/MM/yyyy HH:mm").format(
+                                                        tripDetailsViewModel.trip.value!!.startDateTime.time
+                                                    )),
+                                                me.profileImageUri.toString()
+
                                             )
                                         )
                                     }
@@ -293,10 +292,10 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                         }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(
-                        requireContext(),
+                    Snackbar.make(
+                        requireView(),
                         getString(R.string.warning_message_failedbooking),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     ).show()
                 }
 
@@ -475,7 +474,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                             reviewFormTextField.hint = getString(R.string.review_form_textfield, getString(R.string.passenger))
                             reviewFormSendButton.setOnClickListener {
                                 if (reviewFormRating.rating == 0F) {
-                                    Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
+                                    Snackbar.make(view, getString(R.string.warning_message_mustrate), Snackbar.LENGTH_LONG).show()
                                 } else {
                                     db.collection("reviews")
                                         .add(
@@ -518,14 +517,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                                         reviewFormTitle.text = getString(R.string.review_form_title, dropdownPassengers[0].fullName)
                                                         selectedDropdownPassenger = dropdownPassengers[0]
                                                     }
-                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                    Snackbar.make(view, getString(R.string.success_ratingsubmitted), Snackbar.LENGTH_LONG).show()
                                                 }
                                                 .addOnFailureListener {
-                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                    Snackbar.make(view, getString(R.string.warning_message_failedrating), Snackbar.LENGTH_LONG).show()
                                                 }
                                         }
                                     }.addOnFailureListener {
-                                        Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                            Snackbar.make(view, getString(R.string.warning_message_failedrating), Snackbar.LENGTH_LONG).show()
                                     }
                                 }
                             }
@@ -550,7 +549,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                 }
                             reviewFormSendButton.setOnClickListener {
                                 if (reviewFormRating.rating == 0F) {
-                                    Toast.makeText(context, getString(R.string.warning_message_mustrate), Toast.LENGTH_LONG).show()
+                                    Snackbar.make(view, getString(R.string.warning_message_mustrate), Snackbar.LENGTH_LONG).show()
                                 } else {
                                     db.collection("reviews").add(
                                         Review(
@@ -584,14 +583,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                                                 .addOnSuccessListener {
                                                     showReviewForm = false
                                                     reviewForm.visibility = View.GONE
-                                                    Toast.makeText(context, getString(R.string.success_ratingsubmitted), Toast.LENGTH_LONG).show()
+                                                    Snackbar.make(view, getString(R.string.success_ratingsubmitted), Snackbar.LENGTH_LONG).show()
                                                 }
                                                 .addOnFailureListener {
-                                                    Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                                    Snackbar.make(view, getString(R.string.warning_message_failedrating), Snackbar.LENGTH_LONG).show()
                                                 }
                                         }
                                     }.addOnFailureListener {
-                                        Toast.makeText(context, getString(R.string.warning_message_failedrating), Toast.LENGTH_LONG).show()
+                                        Snackbar.make(view, getString(R.string.warning_message_failedrating), Snackbar.LENGTH_LONG).show()
                                     }
                                 }
                             }

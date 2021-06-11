@@ -16,6 +16,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import it.polito.mad.group27.hubert.*
@@ -85,7 +86,7 @@ class OthersTripList(
                 coll.document(trip.id!!).set(trip.toTripDB())
                     .addOnSuccessListener {
 //                        icon = R.drawable.ic_baseline_done_24
-                        Toast.makeText(requireContext(), getString(R.string.success_message_booked), Toast.LENGTH_LONG).show()
+                        Snackbar.make(requireView(), getString(R.string.success_message_booked), Snackbar.LENGTH_LONG).show()
                         // try sending notification to trip owner
                         var tripOwner: Profile? = null
                         usersColl
@@ -97,19 +98,19 @@ class OthersTripList(
                                     tripOwner = it.toObject(Profile::class.java)
                                     val me = ViewModelProvider(act).get(ProfileViewModel::class.java).profile.value
                                     if (tripOwner != null && me != null) {
-                                        //TODO add feedback
                                         MainScope().launch {
-                                            MessagingService.sendNotification(
+                                            val result =  MessagingService.sendNotification(
                                                 tripOwner!!.notificationToken,
                                                 AndroidNotification(
-                                                    "New trip reservation!",
-                                                    "User ${me.fullName} has just booked your trip from " +
-                                                            "${trip.from} to ${trip.to} on ${
-                                                                sdf.format(
-                                                                    trip.startDateTime.time
-                                                                )
-                                                            }",
-                                                    trip.carImageUri.toString()
+                                                    getString(R.string.reservation_notification_title),
+                                                    getString(R.string.reservation_notification_body,
+                                                        me.fullName, trip.from,
+                                                        trip.to,
+                                                        sdf.format(
+                                                            trip.startDateTime.time
+                                                        )),
+                                                    ViewModelProvider(act).get(ProfileViewModel::class.java)
+                                                        .profile.value!!.profileImageUri.toString()
                                                 )
                                             )
                                         }
@@ -123,7 +124,7 @@ class OthersTripList(
                     }
                     .addOnFailureListener {
 //                        icon = R.drawable.ic_baseline_add_24
-                        Toast.makeText(requireContext(), getString(R.string.warning_message_failedbooking), Toast.LENGTH_LONG).show()
+                        Snackbar.make(requireView(), getString(R.string.warning_message_failedbooking), Snackbar.LENGTH_LONG).show()
                     }
                 }
         }

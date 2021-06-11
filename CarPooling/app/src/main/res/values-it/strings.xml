@@ -143,4 +143,15 @@
     <string name="hour">Ora</string>
     <string name="other_options">Altre opzioni</string>
     <string name="sold_out">Completo</string>
+    <string name="oauth_token_error">Non è stato possibile ottenere il token OAuth, le notifiche non saranno inviate</string>
+    <string name="credentials_error">Errore di login, riprova più tardi</string>
+    <string name="firebase_login_error">Non è possibile accedere ai servizi Firebase, riprova più tardi</string>
+    <string name="reservation_confirm_notification_success">Tutti i passeggeri sono stati notificati della conferma di prenotazione</string>
+    <string name="reservation_confirm_notification_error">Non è stato possibile notificare a tutti i passeggeri la conferma di prenotazione</string>
+    <string name="reservation_terminated_notification_success">I passeggeri in attesa sono stati correttamente notificati dell\'esaurimento dei posti disponibilie</string>
+    <string name="reservation_termination_notification_error">Non è stato possibile notificare i passeggeri in attesa riguardo all\'esaurimento dei posti</string>
+    <string name="reservation_notification_title">Nuova prenotazione di un viaggio!</string>
+    <string name="reservation_notification_body">L\'utente %s ha appena prenotato il viaggio da %s a %s del %s</string>
+    <string name="trip_cancelled_notification_success">Tutti i passeggeri sono stati correttamente avvisati della cancellazione del viaggio</string>
+    <string name="trip_cancelled_notification_error">Non è stato possibile notificare a tutti i passeggeri la cancellazione del tuo viaggio</string>
 </resources>

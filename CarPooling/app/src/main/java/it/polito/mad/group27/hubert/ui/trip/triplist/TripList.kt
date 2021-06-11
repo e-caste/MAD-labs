@@ -2,6 +2,7 @@ package it.polito.mad.group27.hubert.ui.trip.triplist
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -35,10 +36,10 @@ class TripList(
             tripViewHolder.topRightButtonShadow.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.visibility = View.INVISIBLE
             tripViewHolder.topRightButton.setOnClickListener {}
-            // show red border around card
+            // show warning border around card
             if (!trip.advertised) {
                 val v = tripViewHolder.view as MaterialCardView
-                v.strokeColor = Color.RED
+                v.strokeColor = ResourcesCompat.getColor(resources, R.color.colorSecondary, null)
                 v.invalidate()
             }
             return

@@ -481,10 +481,12 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun sendNotifications(){
         // send notifications to newly accepted users
-        for (uid in tripEditViewModel.newAcceptedUsers){
-            MainScope().launch {
-                //TODO add feedback
-                MessagingService.sendNotification(
+        MainScope().launch {
+            var completeResult = true
+            var countNotification =0
+            for (uid in tripEditViewModel.newAcceptedUsers) {
+                countNotification++
+                val result = MessagingService.sendNotification(
                     tripEditViewModel.getProfileByUid(uid).notificationToken,
                     AndroidNotification(
                         getString(R.string.request_accepted_title),
@@ -497,16 +499,25 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         tripEditViewModel.newTrip.carImageUri.toString()
                     )
                 )
+                if(!result)
+                    completeResult= false
             }
+            if(countNotification>0)
+                showNotificationFeedback(
+                    completeResult,
+                    R.string.reservation_confirm_notification_success,
+                    R.string.reservation_confirm_notification_error
+                )
         }
 
         //send notifications to interested users if trip has finished places
         if (tripEditViewModel.newTrip.acceptedUsersUids.size >= tripEditViewModel.newTrip.totalSeats ?: 0
             && tripEditViewModel.newAcceptedUsers.size > 0){ // with the newly accepted users, seats are finished
-            for (uid in tripEditViewModel.newTrip.interestedUsersUids){
-                //TODO add feedback
-                MainScope().launch {
-                    MessagingService.sendNotification(
+            MainScope().launch {
+                var completeResult = true
+                for (uid in tripEditViewModel.newTrip.interestedUsersUids) {
+
+                    val result = MessagingService.sendNotification(
                         tripEditViewModel.getProfileByUid(uid).notificationToken,
                         AndroidNotification(
                             getString(R.string.seats_finished_title),
@@ -519,17 +530,25 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                             tripEditViewModel.newTrip.carImageUri.toString()
                         )
                     )
+                    if(!result)
+                        completeResult= false
                 }
+                showNotificationFeedback(completeResult,
+                    R.string.reservation_terminated_notification_success,
+                    R.string.reservation_termination_notification_error)
             }
+
         }
 
         // send notifications to accepted users if driver has stopped advertising the trip
         if (!tripEditViewModel.newTrip.advertised) {
-            for (uid in tripEditViewModel.newTrip.acceptedUsersUids) {
-                if (!tripEditViewModel.newAcceptedUsers.contains(uid)) {
-                    //TODO add feedback
-                    MainScope().launch {
-                        MessagingService.sendNotification(
+            MainScope().launch {
+                var completeResult = true
+                var countNotification =0
+                for (uid in tripEditViewModel.newTrip.acceptedUsersUids) {
+                    if (!tripEditViewModel.newAcceptedUsers.contains(uid)) {
+                        countNotification++
+                        val result = MessagingService.sendNotification(
                             tripEditViewModel.getProfileByUid(uid).notificationToken,
                             AndroidNotification(
                                 getString(R.string.trip_cancelled_title),
@@ -542,8 +561,16 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                                 tripEditViewModel.newTrip.carImageUri.toString()
                             )
                         )
+
+                        if (!result)
+                            completeResult = false
                     }
                 }
+                if(countNotification>0)
+                    showNotificationFeedback(
+                        completeResult, R.string.trip_cancelled_notification_success,
+                        R.string.trip_cancelled_notification_error
+                    )
             }
         }
     }

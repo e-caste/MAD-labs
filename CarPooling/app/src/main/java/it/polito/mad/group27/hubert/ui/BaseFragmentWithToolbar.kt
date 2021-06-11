@@ -17,7 +17,7 @@ import it.polito.mad.group27.hubert.getLogTag
 open class BaseFragmentWithToolbar(layoutId: Int,
                                    protected val optionsMenuId: Int,
                                    private val titleId: Int?): Fragment(layoutId) {
-    protected lateinit var act :MainActivity
+    lateinit var act :MainActivity
 
     private var toolbarLayout: CollapsingToolbarLayout? = null
 
