@@ -248,8 +248,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         }
         passengers.editText?.addTextChangedListener(Watcher(
             { passengers.editText?.text?.isEmpty() ?: true
-                    || passengers.editText?.text?.toString()?.toInt() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size },
-            { if(passengers.editText?.text?.isEmpty() ?: true ) {
+                    || passengers.editText?.text?.toString()?.toIntOrNull() ?: 0 <= 0
+                    || passengers.editText?.text?.toString()?.toIntOrNull() ?: 0 < tripEditViewModel.newTrip.acceptedUsersUids.size },
+            { if(passengers.editText?.text?.isEmpty() ?: true || passengers.editText?.text?.toString()?.toIntOrNull() ?: 0 <= 0) {
                 passengers.error = getString(R.string.insert_passengers)
             }
                 else{
@@ -260,8 +261,8 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 tripEditViewModel.newTrip.totalSeats = -1
              },
             { passengers.error = null
-                tripEditViewModel.newTrip.totalSeats = passengers.editText?.text?.toString()?.toInt()
-                tripEditViewModel.totalSeats.value = passengers.editText?.text?.toString()?.toInt()
+                tripEditViewModel.newTrip.totalSeats = passengers.editText?.text?.toString()?.toIntOrNull()
+                tripEditViewModel.totalSeats.value = passengers.editText?.text?.toString()?.toIntOrNull()
                  }
         ))
 
