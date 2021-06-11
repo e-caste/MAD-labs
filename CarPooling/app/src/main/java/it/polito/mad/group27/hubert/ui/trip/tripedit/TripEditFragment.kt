@@ -1,10 +1,13 @@
 package it.polito.mad.group27.hubert.ui.trip.tripedit
 
 import android.content.Context
+import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.view.get
@@ -24,17 +27,18 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.group27.hubert.*
-import it.polito.mad.group27.hubert.ui.EditFragment
 import it.polito.mad.group27.hubert.entities.Hour
 import it.polito.mad.group27.hubert.entities.Option
 import it.polito.mad.group27.hubert.entities.Stop
 import it.polito.mad.group27.hubert.entities.Trip
+import it.polito.mad.group27.hubert.ui.EditFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
     R.menu.edit_menu,
@@ -322,7 +326,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         val accepted_rv = view.findViewById<RecyclerView>(R.id.accepted_rv)
         val accepted_button = view.findViewById<ImageView>(R.id.expand_accepted_button)
         val accepted_title = view.findViewById<TextView>(R.id.accepted_users)
-        accepted_rv.layoutManager = MyLinearLayoutManager(this.requireContext(), scrollView)
+        accepted_rv.layoutManager = MyLinearLayoutManager(this.requireContext(), scrollView, accepted_rv)
         accepted_rv.adapter = PassengerRecyclerViewAdapter(tripEditViewModel, null, requireContext())
 
         val interested_rv = view.findViewById<RecyclerView>(R.id.interested_rv)
@@ -381,7 +385,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 view.visibility = View.VISIBLE
                 button.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
                 scrollView.post {
-                    scrollView.fullScroll(View.FOCUS_DOWN)
+                    scrollToView(scrollView, view)
                 }
             }
         }
@@ -661,18 +665,59 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
         return true
     }
 
-    private class MyLinearLayoutManager(val context: Context, private val scrollView: NestedScrollView) :
+    class MyLinearLayoutManager(val context: Context, private val scrollView: NestedScrollView, private val view: View) :
         LinearLayoutManager(context) {
 
         // Force new items appear at the top
         override fun onItemsAdded(recyclerView: RecyclerView, positionStart: Int, itemCount: Int) {
             super.onItemsAdded(recyclerView, positionStart, itemCount)
-
             scrollView.post {
-                scrollView.fullScroll(View.FOCUS_DOWN)
+                scrollToView(scrollView, view)
             }
         }
     }
 
+}
+
+
+/**
+ * Used to scroll to the given view.
+ *
+ * @param scrollViewParent Parent ScrollView
+ * @param view View to which we need to scroll.
+ */
+private fun scrollToView(scrollViewParent: NestedScrollView, view: View) {
+    // Get deepChild Offset
+    val childOffset = Point()
+    getDeepChildOffset(scrollViewParent, view.parent, view, childOffset)
+    // Scroll to child.
+    scrollViewParent.smoothScrollTo(0, childOffset.y)
+}
+
+/**
+ * Used to get deep child offset.
+ *
+ *
+ * 1. We need to scroll to child in scrollview, but the child may not the direct child to scrollview.
+ * 2. So to get correct child position to scroll, we need to iterate through all of its parent views till the main parent.
+ *
+ * @param mainParent        Main Top parent.
+ * @param parent            Parent.
+ * @param child             Child.
+ * @param accumulatedOffset Accumulated Offset.
+ */
+private fun getDeepChildOffset(
+    mainParent: ViewGroup,
+    parent: ViewParent,
+    child: View,
+    accumulatedOffset: Point
+) {
+    val parentGroup = parent as ViewGroup
+    accumulatedOffset.x += child.left
+    accumulatedOffset.y += child.top
+    if (parentGroup == mainParent) {
+        return
+    }
+    getDeepChildOffset(mainParent, parentGroup.parent, parentGroup, accumulatedOffset)
 }
 
