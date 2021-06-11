@@ -44,6 +44,10 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
                     callback(userProfiles)
                 }
             }
+        else{
+            userProfiles = mapTmp.toMap()
+            callback(userProfiles)
+        }
     }
 
     fun getProfileByUid(uid:String): Profile {
@@ -51,8 +55,8 @@ class TripEditViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun putToAccepted(uid: String){
-        newTrip.interestedUsersUids.remove(uid)
         newTrip.acceptedUsersUids.add(uid)
+        newTrip.interestedUsersUids.remove(uid)
         newAcceptedUsers.add(uid)
     }
 
