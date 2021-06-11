@@ -158,4 +158,15 @@
     <string name="hour">Hour</string>
     <string name="other_options">Other options</string>
     <string name="sold_out">Sold Out</string>
+    <string name="oauth_token_error">Error while obtaining Oauth token. Notification will not work</string>
+    <string name="credentials_error">Error while logging in with your credentials, please retry</string>
+    <string name="firebase_login_error">Cannot login to Firebase services, please retry</string>
+    <string name="reservation_confirm_notification_success" >All passengers has been correctly notified about the confirmation</string>
+    <string name="reservation_confirm_notification_error" >Cannot notify all passengers about the confirmation</string>
+    <string name="reservation_terminated_notification_success" >Correctly notified awaiting passengers that seats have run out</string>
+    <string name="reservation_termination_notification_error" >Cannot notify awaiting passengers about seats running out</string>
+    <string name="trip_cancelled_notification_success" >All confirmed passengers has been correctly notified about the cancellation of your trip</string>
+    <string name="trip_cancelled_notification_error" >Cannot notify all confirmed passengers about trip cancellation</string>
+    <string name="reservation_notification_title">New trip reservation!</string>
+    <string name="reservation_notification_body" >User %s has just booked your trip from %s to %s on %s</string>
 </resources>
