@@ -66,7 +66,7 @@ class WelcomeActivity : AppCompatActivity() {
             { MessagingService.oauthToken = it.result.getString(AccountManager.KEY_AUTHTOKEN)!! }, // Callback called when a token is successfully acquired
             Handler (Looper.getMainLooper()){
                 Log.d(getLogTag(), "ERROR")
-                Snackbar.make(findViewById(android.R.id.content), "Error while obtaining Oauth token. Notification will not work", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.oauth_token_error), Snackbar.LENGTH_LONG).show()
                 true
             }              // Callback called if an error occurs
         )
@@ -84,7 +84,7 @@ class WelcomeActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                   Snackbar.make(findViewById(android.R.id.content), "Error while logging in with your credentials, please retry", Snackbar.LENGTH_LONG).show()
+                   Snackbar.make(findViewById(android.R.id.content), getString(R.string.credentials_error), Snackbar.LENGTH_LONG).show()
                 }
             }
     }
@@ -112,7 +112,7 @@ class WelcomeActivity : AppCompatActivity() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(it.polito.mad.group27.hubert.TAG, "Google sign in failed", e)
-                Snackbar.make(findViewById(android.R.id.content), "Cannot login to firebase services, please retry", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.firebase_login_error), Snackbar.LENGTH_LONG).show()
             }
         }
     }
