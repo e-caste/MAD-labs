@@ -2,13 +2,18 @@ package it.polito.mad.group27.hubert.ui.trip.tripdetails
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
@@ -229,7 +234,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     soldOutTextView.visibility = View.VISIBLE
                     bookingFAB.visibility = View.GONE
                 } else {
-                    seatsIcon.colorFilter = null
+                    seatsIcon.clearColorFilter()
                     seatsView.setTextColor(resources.getColor(R.color.dim_grey))
                     soldOutTextView.visibility = View.GONE
                 }
@@ -375,10 +380,20 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             if(it != null && it.size > 1) {
                 while (map.overlays.size > 1)
                     map.overlays.removeLast()
-                for (stop in it) {
+                it.forEachIndexed { index, stop ->
                     val marker = Marker(map)
                     marker.position = stop.geoPoint
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+                    val markerDrawable = ResourcesCompat.getDrawable(
+                        resources,
+                        when (index) {
+                            0 -> R.drawable.ic_baseline_marker_car
+                            it.size -1 -> R.drawable.ic_baseline_outlined_flag_24
+                            else -> R.drawable.ic_baseline_location_on_24
+                        },
+                        null)
+                    marker.icon = markerDrawable
                     marker.title = stop.place
                     if (map.overlays.size > map.overlays.size + 1) {
                         map.overlays.removeAt(map.overlays.size - 1)
@@ -395,8 +410,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                     withContext(Dispatchers.IO) {
                         val roadManager: RoadManager = OSRMRoadManager(context, "")
                         road = roadManager.getRoad(it.map { stop -> stop.geoPoint } as ArrayList<GeoPoint?>)
-                        val roadOverlay: Polyline = RoadManager.buildRoadOverlay(road, Color.BLUE, 10.0f)
-                        map.overlays.add(roadOverlay)
+                        val roadOverlay: Polyline = RoadManager.buildRoadOverlay(road, resources.getColor(R.color.colorPrimaryDark), 4.0f)
+                        map.overlays.add(0, roadOverlay)
                         map.invalidate()
                     }
                     zoomToBounds(map,computeArea(road.routeLow))
