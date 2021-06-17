@@ -80,6 +80,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     private lateinit var driverImage: ImageView
     private lateinit var driverNickname: TextView
     private lateinit var driverRating: RatingBar
+    private lateinit var seatsIcon: ImageView
+    private lateinit var soldOutTextView: TextView
     private lateinit var seatsView: TextView
     private lateinit var dateView: TextView
     private lateinit var estimatedTimeView: TextView
@@ -152,7 +154,9 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
         expandButton = view.findViewById(R.id.expandButton)
         carImageView = view.findViewById(R.id.image_details_view)
         estimatedTimeView = view.findViewById(R.id.estimated_time_details)
+        seatsIcon = view.findViewById(R.id.seats_icon)
         seatsView = view.findViewById(R.id.showTripSeats)
+        soldOutTextView = view.findViewById(R.id.sold_out_textview)
         dateView = view.findViewById(R.id.showTripDate)
         priceView = view.findViewById(R.id.showTripPrice)
         departureDateTime = view.findViewById(R.id.departureTimeDetails)
@@ -220,7 +224,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             if (it != null) {
                 updateFields(it)
                 if(it.acceptedUsersUids.size == it.totalSeats){
+                    seatsIcon.setColorFilter(Color.argb(255,255,0,0))
+                    seatsView.setTextColor(resources.getColor(R.color.red))
+                    soldOutTextView.visibility = View.VISIBLE
                     bookingFAB.visibility = View.GONE
+                } else {
+                    seatsIcon.colorFilter = null
+                    seatsView.setTextColor(resources.getColor(R.color.dim_grey))
+                    soldOutTextView.visibility = View.GONE
                 }
             }
         }

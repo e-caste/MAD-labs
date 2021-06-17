@@ -123,6 +123,7 @@
             android:layout_marginBottom="8dp">
 
             <ImageView
+                android:id="@+id/seats_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:scaleType="center"
@@ -136,8 +137,21 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="1/5"
-                android:textColor="#636363"
+                android:textColor="@color/dim_grey"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:id="@+id/sold_out_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="8sp"
+                android:paddingEnd="8sp"
+                android:text="@string/sold_out"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
         </LinearLayout>
 
         <TextView
@@ -175,7 +189,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="@string/default_registration_date"
-                android:textColor="#636363"
+                android:textColor="@color/dim_grey"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
@@ -214,7 +228,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="22h 56min"
-                android:textColor="#636363"
+                android:textColor="@color/dim_grey"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
@@ -253,7 +267,7 @@
                 android:paddingStart="8sp"
                 android:paddingEnd="8sp"
                 android:text="105,99"
-                android:textColor="#636363"
+                android:textColor="@color/dim_grey"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
@@ -283,7 +297,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="#636363"
+                android:textColor="@color/dim_grey"
                 android:gravity="start"
                 android:paddingTop="8sp"
                 android:paddingStart="8sp"
@@ -385,7 +399,7 @@
                     android:paddingStart="8sp"
                     android:paddingEnd="8sp"
                     android:text="@string/luggage_details"
-                    android:textColor="#636363"
+                    android:textColor="@color/dim_grey"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
@@ -409,7 +423,7 @@
                     android:paddingStart="8sp"
                     android:paddingEnd="8sp"
                     android:text="@string/animals_details"
-                    android:textColor="#636363"
+                    android:textColor="@color/dim_grey"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
@@ -433,7 +447,7 @@
                     android:paddingStart="8sp"
                     android:paddingEnd="8sp"
                     android:text="@string/smokers_details"
-                    android:textColor="#636363"
+                    android:textColor="@color/dim_grey"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
@@ -458,7 +472,7 @@
                     android:paddingStart="8sp"
                     android:paddingEnd="8sp"
                     android:text="@string/additional_information_details"
-                    android:textColor="#636363"
+                    android:textColor="@color/dim_grey"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
@@ -571,7 +585,7 @@
             android:paddingStart="8sp"
             android:paddingEnd="8sp"
             android:text="@string/no_passengers_message"
-            android:textColor="#636363"
+            android:textColor="@color/dim_grey"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:visibility="gone"/>
 
