@@ -29,6 +29,7 @@ class PassengerRecyclerViewAdapter(
         val other_rv: PassengerRecyclerViewAdapter?
     ) : RecyclerView.ViewHolder(v) {
 
+
         private val nicknameView: TextView = v.findViewById(R.id.nicknameView)
         private val viewProfile: LinearLayout = v.findViewById(R.id.viewProfileLink)
         private val button: Button = v.findViewById(R.id.accept_button)
@@ -95,6 +96,8 @@ class PassengerRecyclerViewAdapter(
         }
     }
 
+    private val passengers: MutableList<Profile> = mutableListOf()
+
     init {
         // download users data from db
         viewModel.downloadUsers{
@@ -116,8 +119,6 @@ class PassengerRecyclerViewAdapter(
             }
         }
     }
-
-  private val passengers: MutableList<Profile> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layout = LayoutInflater.from(parent.context)
