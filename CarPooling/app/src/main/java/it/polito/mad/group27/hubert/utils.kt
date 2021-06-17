@@ -29,9 +29,8 @@ enum class Size {
 
 fun Fragment.loadImage(uri:String, view: ImageView, dimension:Size){
     val circularProgressDrawable = CircularProgressDrawable(requireContext())
-    //TODO set dimensions
-    circularProgressDrawable.strokeWidth = dpTopixel(requireContext(), 5f)
-    circularProgressDrawable.centerRadius = dpTopixel(requireContext(), 50f)
+    circularProgressDrawable.strokeWidth = dpTopixel(requireContext(), if (dimension== Size.HUGE) 5f else 3f)
+    circularProgressDrawable.centerRadius = dpTopixel(requireContext(), if (dimension== Size.HUGE) 50f else 10f)
     circularProgressDrawable.start()
 
     Glide.with(this).load(uri)
