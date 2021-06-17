@@ -33,6 +33,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.type.DateTime
 import it.polito.mad.group27.hubert.*
 import it.polito.mad.group27.hubert.entities.Profile
 import it.polito.mad.group27.hubert.entities.Review
@@ -640,8 +641,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        //TODO check trip date is not in the past
-        if(privateMode && tripIsAdvertised){
+        if(privateMode && tripIsAdvertised && tripDetailsViewModel.trip.value?.startDateTime!!.after(Calendar.getInstance())){
             menu.clear()
             inflater.inflate(optionsMenuId, menu)
         }
