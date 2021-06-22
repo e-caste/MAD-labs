@@ -12,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -161,14 +159,6 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
             if (profile.profileImageUri != null) {
 
                 loadImage(profile.profileImageUri!!,profileImageView, Size.HUGE)
-//                val circularProgressDrawable = CircularProgressDrawable(requireContext())
-//                circularProgressDrawable.strokeWidth = 5f
-//                circularProgressDrawable.centerRadius = 30f
-//                circularProgressDrawable.start()
-//
-//                Glide.with(this).load(profile.profileImageUri)
-//                    .placeholder(circularProgressDrawable)
-//                    .into(profileImageView)
 
             }else
                 profileImageView.setImageResource(R.drawable.ic_baseline_person_24)
@@ -270,7 +260,7 @@ class ShowProfileFragment : BaseFragmentWithToolbar(
                 carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
                 carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
             } else {
-                Glide.with(this@ShowProfileFragment).load(carImageUri).into(carImageView)
+                loadImage(carImageUri.toString(), carImageView, Size.HUGE)
                 carImageView.colorFilter = null
             }
         }
