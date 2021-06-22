@@ -1,6 +1,7 @@
 package it.polito.mad.group27.hubert
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -29,9 +30,9 @@ enum class Size {
 
 fun Fragment.loadImage(uri:String, view: ImageView, dimension:Size, circularCrop:Boolean = false){
     val circularProgressDrawable = CircularProgressDrawable(requireContext())
-    //TODO set dimensions
-    circularProgressDrawable.strokeWidth = dpTopixel(requireContext(), 5f)
-    circularProgressDrawable.centerRadius = dpTopixel(requireContext(), 50f)
+    circularProgressDrawable.setColorFilter ( resources.getColor(R.color.colorSecondaryDark), PorterDuff.Mode.SRC_ATOP)
+    circularProgressDrawable.strokeWidth = dpTopixel(requireContext(), if (dimension== Size.HUGE) 5f else 3f)
+    circularProgressDrawable.centerRadius = dpTopixel(requireContext(), if (dimension== Size.HUGE) 40f else 10f)
     circularProgressDrawable.start()
 
     Glide.with(this).load(uri)

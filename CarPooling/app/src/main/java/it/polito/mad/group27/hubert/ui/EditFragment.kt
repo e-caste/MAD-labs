@@ -17,7 +17,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImage
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.hubert.*
@@ -261,7 +260,7 @@ open class EditFragment(layoutId: Int,
 
     protected fun setImage(imgURI:String?, firstTime: Boolean  = false){
         if(imgURI!=null) {
-            Glide.with(this).load(imgURI).into(imageView)
+            loadImage(imgURI, imageView, Size.HUGE)
         }
         editViewModel.imagePresent = imgURI != null
         if(!firstTime)

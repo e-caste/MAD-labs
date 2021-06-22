@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -103,6 +104,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
                 }
 
                 marker?.position = it
+                marker?.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_location_on_24, null)
                 marker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 marker?.setVisible(true)
                 map.controller.animateTo(it)
