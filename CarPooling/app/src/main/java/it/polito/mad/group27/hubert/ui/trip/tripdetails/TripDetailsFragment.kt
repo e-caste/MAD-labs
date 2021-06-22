@@ -577,7 +577,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                             reviewFormSendButton.setOnClickListener {
                                 if (reviewFormRating.rating == 0F) {
                                     Snackbar.make(view, getString(R.string.warning_message_mustrate), Snackbar.LENGTH_LONG).show()
-                                } else {
+                                } else if(reviewFormTextField.text?.length ?: 0 <= 100){
                                     db.collection("reviews").add(
                                         Review(
                                             tripId = tripDocRef,

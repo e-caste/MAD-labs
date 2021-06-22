@@ -96,6 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="100"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -103,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
-                android:maxLines="1" />
+                 />
 <!--                android:hint="Leave a review for your [driver|passenger]" />-->
         </com.google.android.material.textfield.TextInputLayout>
 
