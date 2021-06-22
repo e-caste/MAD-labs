@@ -20,11 +20,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import it.polito.mad.group27.hubert.R
+import it.polito.mad.group27.hubert.Size
 import it.polito.mad.group27.hubert.getLogTag
 import it.polito.mad.group27.hubert.ui.BaseFragmentWithToolbar
 import it.polito.mad.group27.hubert.entities.Hour
 import it.polito.mad.group27.hubert.entities.Trip
 import it.polito.mad.group27.hubert.entities.TripDB
+import it.polito.mad.group27.hubert.loadImage
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.NumberFormat
@@ -74,7 +76,7 @@ abstract class BaseTripList(
                 carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
                 carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
             } else {
-                Glide.with(this@BaseTripList).load(carImageUri).into(carImageView)
+                loadImage(carImageUri.toString(), carImageView, Size.HUGE)
                 carImageView.colorFilter = null
             }
         }
