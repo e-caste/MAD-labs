@@ -8,14 +8,21 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.group27.hubert.entities.Profile
 import it.polito.mad.group27.hubert.R
+import it.polito.mad.group27.hubert.Size
+import it.polito.mad.group27.hubert.dpTopixel
+import it.polito.mad.group27.hubert.loadImage
 
 class PassengerRecyclerViewAdapter(
     private val viewModel: TripEditViewModel,
@@ -44,7 +51,10 @@ class PassengerRecyclerViewAdapter(
         ) {
 
             if (passenger.profileImageUri != null)
-                Glide.with(context).load(passenger.profileImageUri ).circleCrop().into(image)
+                (context as AppCompatActivity).supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment)
+                    ?.childFragmentManager?.fragments?.get(0)
+                    ?.loadImage(passenger.profileImageUri!!, image, Size.SMALL, true)
 
             nicknameView.text = passenger.nickName
             if (other_rv != null) {
