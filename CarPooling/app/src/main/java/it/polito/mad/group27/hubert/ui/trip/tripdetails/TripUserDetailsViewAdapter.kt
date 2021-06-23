@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import it.polito.mad.group27.hubert.loadImage
+import it.polito.mad.group27.hubert.Size
 import it.polito.mad.group27.hubert.entities.Profile
 import it.polito.mad.group27.hubert.R
 
@@ -40,7 +42,10 @@ class TripUserDetailsViewAdapter (
             val item = values[position]
 
             if(item.profileImageUri != null)
-                Glide.with(context).load(item.profileImageUri).circleCrop().into(holder.image)
+                (context as AppCompatActivity).supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment)
+                    ?.childFragmentManager?.fragments?.get(0)
+                    ?.loadImage(item.profileImageUri!!, image, Size.SMALL, true)
 
             holder.nickname.text = item.nickName
             if (item.uid == null){
