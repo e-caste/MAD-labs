@@ -2,10 +2,7 @@ package it.polito.mad.group27.hubert.ui.trip.tripdetails
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
@@ -13,7 +10,6 @@ import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +17,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.button.MaterialButton
@@ -33,8 +28,9 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.type.DateTime
 import it.polito.mad.group27.hubert.*
+import it.polito.mad.group27.hubert.loadImage
+import it.polito.mad.group27.hubert.Size
 import it.polito.mad.group27.hubert.entities.Profile
 import it.polito.mad.group27.hubert.entities.Review
 import it.polito.mad.group27.hubert.ui.BaseFragmentWithToolbar
@@ -355,9 +351,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
 
         tripDetailsViewModel.driverProfile.observe(viewLifecycleOwner){
             if(it != null){
-                if(it.profileImageUri != null) {
-                    Glide.with(requireContext()).load(it.profileImageUri).circleCrop()
-                        .into(driverImage)
+                if(it.profileImageUri != null) run {
+                    loadImage(it.profileImageUri!!, driverImage, Size.SMALL, true)
                 } else {
                     driverImage.setImageResource(R.drawable.ic_baseline_person_24)
                 }
@@ -680,7 +675,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
             carImageView.setColorFilter(Color.argb(34, 68, 68, 68))
             carImageView.setImageResource(R.drawable.ic_baseline_directions_car_24)
         } else {
-            Glide.with(this).load(trip.carImageUri).into(carImageView)
+            loadImage(trip.carImageUri!!.toString(), carImageView, Size.HUGE)
         }
 
         (trip.acceptedUsersUids.size.toString() + "/" + trip.totalSeats).also {
@@ -853,12 +848,12 @@ class TripDetailsFragment : BaseFragmentWithToolbar(R.layout.trip_details_fragme
                 (!privateMode && review.isForDriver)  // you are a passenger and the review is for the driver
             ) {
                 if (passenger?.profileImageUri != null) {
-                    Glide.with(this@TripDetailsFragment).load(passenger?.profileImageUri).into(avatar)
+                    loadImage(passenger?.profileImageUri.toString(), avatar,Size.SMALL, true)
                 }
                 name.text = passenger?.nickName
             } else {  // you are a passenger || you are the driver and the review is for a passenger
                 if (driver?.profileImageUri != null) {
-                    Glide.with(this@TripDetailsFragment).load(driver?.profileImageUri).into(avatar)
+                    loadImage(driver?.profileImageUri.toString(),avatar, Size.SMALL, true)
                 }
                 name.text = getString(R.string.review_title_theirs_driver, driver?.nickName, passenger?.nickName)
             }
