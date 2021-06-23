@@ -37,9 +37,11 @@ class TripDetailsViewModel(application: Application) : AndroidViewModel(applicat
                 throw Exception("No trip found")
             } else {
                 if(value!=null){
-                    trip.value = value.toObject(TripDB::class.java)!!.toTrip()
-                    loadDriverProfile()
-                    loadStopList()
+                    trip.value = value.toObject(TripDB::class.java)?.toTrip()
+                    if(trip.value!=null) {
+                        loadDriverProfile()
+                        loadStopList()
+                    }
                 }
             }
         }
