@@ -169,4 +169,5 @@
     <string name="trip_cancelled_notification_error" >Cannot notify all confirmed passengers about trip cancellation</string>
     <string name="reservation_notification_title">New trip reservation!</string>
     <string name="reservation_notification_body" >User %s has just booked your trip from %s to %s on %s</string>
+    <string name="starting_from">Starting from</string>
 </resources>
