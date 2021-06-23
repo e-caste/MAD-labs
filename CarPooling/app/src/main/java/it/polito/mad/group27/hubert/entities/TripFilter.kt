@@ -11,7 +11,7 @@ data class TripFilter(
     var from: String? = null,
     var to: String? = null,
     var priceMin: BigDecimal = BigDecimal("0.00"),
-    var priceMax: BigDecimal = BigDecimal("100.00"),
+    var priceMax: BigDecimal = BigDecimal("500.00"),
     var dateTime: Calendar? = null,
     var options: MutableMap<Option, Boolean> = Option.values().map{ it to false }.toMap(mutableMapOf())
 ): Parcelable

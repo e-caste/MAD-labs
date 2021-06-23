@@ -100,7 +100,8 @@ class WelcomeActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == RC_SIGN_IN){
+            if(resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -114,7 +115,9 @@ class WelcomeActivity : AppCompatActivity() {
                 Log.w(it.polito.mad.group27.hubert.TAG, "Google sign in failed", e)
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.firebase_login_error), Snackbar.LENGTH_LONG).show()
             }
-        }
+        }else {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.firebase_login_error), Snackbar.LENGTH_LONG).show()
+        }}
     }
 
     companion object {

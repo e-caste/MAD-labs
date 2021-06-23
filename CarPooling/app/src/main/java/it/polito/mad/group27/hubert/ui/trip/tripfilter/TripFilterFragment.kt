@@ -148,7 +148,7 @@ class TripFilterFragment : BaseFragmentWithToolbar(
 
             viewModel.tripFilter.priceMin = if(minPriceText.text== "0 €") BigDecimal("0.00")
                         else BigDecimal(minPriceText.text.split(" ")[0])
-            viewModel.tripFilter.priceMax = if(maxPriceText.text== "100 €") BigDecimal("100.00")
+            viewModel.tripFilter.priceMax = if(maxPriceText.text== "500 €") BigDecimal("500.00")
                         else BigDecimal(maxPriceText.text.split(" ")[0])
 
 

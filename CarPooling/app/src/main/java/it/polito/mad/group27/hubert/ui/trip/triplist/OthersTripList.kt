@@ -231,7 +231,7 @@ class OthersTripList(
         }
 
         if (tripFilter.dateTime != defaultTripFilter.dateTime) {
-            s = "${getString(R.string.since)} ${sdf.format(tripFilter.dateTime?.time!!)}"
+            s = "${getString(R.string.starting_from)} ${sdf.format(tripFilter.dateTime?.time!!)}"
             addChip(s, "dateTime", s)
         }
 

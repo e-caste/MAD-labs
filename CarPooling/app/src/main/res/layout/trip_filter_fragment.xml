@@ -17,7 +17,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            app:contentScrim="?attr/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/Theme.CarPooling.PopupOverlay" />
@@ -145,7 +145,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="6"
                 android:valueFrom="0.0"
-                android:valueTo="100.0"
+                android:valueTo="500.0"
                 app:values="@array/initial_price_filter"
                 app:labelBehavior="gone"
                 android:id="@+id/price_range"/>
@@ -154,7 +154,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="100€"
+                android:text="1000€"
                 android:textAlignment="textStart"
                 android:layout_gravity="start|center_vertical"/>
         </LinearLayout>

@@ -47,7 +47,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
-            android:name="it.polito.mad.group27.carpooling.ui.triplist.TripList"
+            android:name="it.polito.mad.group27.hubert.ui.triplist.TripList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="LinearLayoutManager"

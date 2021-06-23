@@ -154,4 +154,5 @@
     <string name="reservation_notification_body">L\'utente %s ha appena prenotato il viaggio da %s a %s del %s</string>
     <string name="trip_cancelled_notification_success">Tutti i passeggeri sono stati correttamente avvisati della cancellazione del viaggio</string>
     <string name="trip_cancelled_notification_error">Non è stato possibile notificare a tutti i passeggeri la cancellazione del tuo viaggio</string>
+    <string name="starting_from">A partire dal</string>
 </resources>

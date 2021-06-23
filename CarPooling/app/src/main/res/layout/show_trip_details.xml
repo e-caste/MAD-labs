@@ -297,7 +297,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/dim_grey"
+                android:textColor="@color/colorSecondary"
                 android:gravity="start"
                 android:paddingTop="8sp"
                 android:paddingStart="8sp"

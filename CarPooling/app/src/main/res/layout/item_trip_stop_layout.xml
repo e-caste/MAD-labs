@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#636363"
+        android:textColor="@color/colorSecondary"
         android:gravity="start"
         android:text="25/08/2022, 12:06" />
 
