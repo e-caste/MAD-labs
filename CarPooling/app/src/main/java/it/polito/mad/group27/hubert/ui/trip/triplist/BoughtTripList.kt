@@ -16,6 +16,7 @@ class BoughtTripList(
 ) {
     private val query = queryBase
         .whereArrayContains("acceptedUsersUids", currentUserUid)
+        .whereEqualTo("advertised", true)
     override val options = FirestoreRecyclerOptions.Builder<TripDB>()
         .setQuery(query, TripDB::class.java)
         .build()
