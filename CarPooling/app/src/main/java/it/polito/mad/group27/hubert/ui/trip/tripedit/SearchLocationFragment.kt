@@ -2,6 +2,8 @@ package it.polito.mad.group27.hubert.ui.trip.tripedit
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -192,6 +194,7 @@ class SearchLocationFragment : BaseFragmentWithToolbar(R.layout.search_location_
 
                 searchPlace.endIconMode = TextInputLayout.END_ICON_CUSTOM
                 val progress = requireContext().getProgressBarDrawable()
+                progress.setColorFilter(resources.getColor(R.color.colorSecondary), PorterDuff.Mode.SRC_ATOP)
                 searchPlace.endIconDrawable =progress
                 (progress as? Animatable)?.start()
 
