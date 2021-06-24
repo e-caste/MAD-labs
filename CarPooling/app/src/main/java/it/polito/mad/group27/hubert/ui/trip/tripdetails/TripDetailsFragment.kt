@@ -308,6 +308,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                                             if (task.isSuccessful) {
                                                 task.result?.toObjects(Profile::class.java)
                                                     ?.let { it1 ->
+                                                        dropdownPassengers.clear()
                                                         dropdownPassengers.addAll(it1)
                                                     }
                                                 Log.d(
