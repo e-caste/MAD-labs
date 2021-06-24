@@ -675,7 +675,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                 }
                 driverNickname.text = it.nickName
                 if (it.countRatingsDriver > 0) {
-                    driverRating.rating = (it.sumRatingsDriver / it.countRatingsDriver).toFloat()
+                    driverRating.rating = (it.sumRatingsDriver.toFloat() / it.countRatingsDriver)
                 } else {
                     driverRating.visibility = View.GONE
                 }
