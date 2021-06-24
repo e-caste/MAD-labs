@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
@@ -77,7 +76,7 @@ class OthersTripList(
         if (trip.interestedUsersUids.contains(currentUserUid) || trip.acceptedUsersUids.contains(currentUserUid)) {
             icon = R.drawable.ic_baseline_done_24
             tripViewHolder.topRightButton.setOnClickListener {
-                Toast.makeText(requireContext(), getString(R.string.warning_message_alreadybooked), Toast.LENGTH_LONG).show()
+                Snackbar.make(requireView(), getString(R.string.warning_message_alreadybooked), Snackbar.LENGTH_LONG).show()
             }
         } else {
             icon = R.drawable.ic_baseline_add_24
