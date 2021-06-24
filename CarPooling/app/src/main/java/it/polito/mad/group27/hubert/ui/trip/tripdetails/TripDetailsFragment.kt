@@ -413,6 +413,8 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                                                                         )
                                                                     selectedDropdownPassenger =
                                                                         dropdownPassengers[0]
+                                                                    reviewFormTextField.text = null
+                                                                    reviewFormRating.rating = 0.0f
                                                                 }
                                                                 Snackbar.make(
                                                                     view,
