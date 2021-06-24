@@ -59,6 +59,7 @@
             />
     </LinearLayout>
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sign_as_interested_fab"
         android:layout_width="wrap_content"
@@ -68,5 +69,5 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_baseline_add_24" />
 
-
+    <include layout="@layout/loading_layout"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

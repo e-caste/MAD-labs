@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
@@ -275,7 +276,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                         if (query.isSuccessful) {
 
                             // don't show the whole reviews block if we are before the start of the trip
-                            if (Calendar.getInstance() < tripDetailsViewModel.trip.value!!.startDateTime) {
+                            if (Calendar.getInstance() < it.startDateTime) {
                                 tripReviews.visibility = View.GONE
                                 return@addOnCompleteListener
                             } else {
@@ -288,14 +289,14 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                             // detect if current user can send a review
                             if (privateMode) { // driver
                                 val dropdownPassengerUids = mutableListOf<String>()
-                                for (passengerUid in tripDetailsViewModel.trip.value!!.acceptedUsersUids) {
-                                    if (!reviews.any { it.passengerUid?.id == passengerUid && !it.isForDriver }) {
+                                for (passengerUid in it.acceptedUsersUids) {
+                                    if (!reviews.any {review-> review.passengerUid?.id == passengerUid && !review.isForDriver }) {
                                         dropdownPassengerUids.add(passengerUid)
                                     }
                                 }
                                 Log.d(
                                     getLogTag(),
-                                    "accepted uids: ${tripDetailsViewModel.trip.value!!.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids"
+                                    "accepted uids: ${it.acceptedUsersUids} - dropdown uids: $dropdownPassengerUids"
                                 )
                                 // is there any passenger the driver has not reviewed yet?
                                 showReviewForm = dropdownPassengerUids.size > 0
@@ -438,7 +439,7 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                                 }
                             } else {  // passenger
                                 showReviewForm =
-                                    !reviews.any { it.passengerUid?.id == currentUserUid && it.isForDriver } &&
+                                    !reviews.any { review -> review.passengerUid?.id == currentUserUid && review.isForDriver } &&
                                             tripDetailsViewModel.trip.value!!.acceptedUsersUids.contains(
                                                 currentUserUid
                                             )
@@ -777,6 +778,15 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
     }
 
     private fun updateFields(trip: Trip) {
+        val loadingArea = requireView().findViewById<ConstraintLayout>(R.id.loading)
+        Log.d(getLogTag(), "Trip is $trip")
+        if (trip.id == null) {
+            loadingArea.visibility = View.VISIBLE
+            Log.d(getLogTag(), "Setting visible")
+        }
+        else
+            loadingArea.visibility = View.GONE
+
         // Update title only in portrait orientation
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             updateTitle("${getString(R.string.trip_to)} ${trip.to}")
@@ -798,13 +808,13 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
             loadImage(trip.carImageUri!!.toString(), carImageView, Size.HUGE)
         }
 
-        (trip.acceptedUsersUids.size.toString() + "/" + trip.totalSeats).also {
+        (trip.acceptedUsersUids.size.toString() + "/" + (trip.totalSeats ?: 0)).also {
             seatsView.text = it
         }
         dateView.text = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
             .format(tripDetailsViewModel.trip.value!!.startDateTime.time)
         setEstimatedTime(trip)
-        priceView.text = trip.price.toString()
+        priceView.text = (trip.price ?: "0.0" ).toString()
         departureDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.startDateTime)
         departureLocation.text = trip.from
         destinationDateTime.text = getDateTime(tripDetailsViewModel.trip.value!!.endDateTime)
@@ -884,10 +894,16 @@ class TripDetailsFragment : BaseFragmentWithToolbar(
                 noTravellerInfoMessage.visibility = View.VISIBLE
             }
         } else {
-            driverInfo.visibility = View.VISIBLE
             travellersDetails.visibility = View.GONE
-            bookingFAB.visibility = View.VISIBLE
-            tripDetailsViewModel.checkBookedUser(currentUserUid)
+            if(trip.id!=null) {
+                //While loading not showing profile of driver
+                driverInfo.visibility = View.VISIBLE
+                bookingFAB.visibility = View.VISIBLE
+                tripDetailsViewModel.checkBookedUser(currentUserUid)
+            }else{
+                driverInfo.visibility = View.GONE
+                bookingFAB.visibility = View.GONE
+            }
         }
     }
 

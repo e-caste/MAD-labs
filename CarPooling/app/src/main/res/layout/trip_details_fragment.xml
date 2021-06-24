@@ -48,6 +48,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/show_trip_details"/>
+    <include layout="@layout/loading_layout"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sign_as_interested_fab"
