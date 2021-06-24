@@ -481,6 +481,32 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
 
     private fun sendNotifications(){
         // send notifications to newly accepted users
+
+        val acceptedTitle = getString(R.string.request_accepted_title)
+        val acceptedMessage =  getString(
+            R.string.request_accepted_message,
+            tripEditViewModel.newTrip.from,
+            tripEditViewModel.newTrip.to,
+            df.format(tripEditViewModel.newTrip.startDateTime.time)
+        )
+
+        val finishTitle = getString(R.string.seats_finished_title)
+        val finishMessage = getString(
+            R.string.seats_finished_message,
+            tripEditViewModel.newTrip.from,
+            tripEditViewModel.newTrip.to,
+            df.format(tripEditViewModel.newTrip.startDateTime.time)
+        )
+        val carImageUri= tripEditViewModel.newTrip.carImageUri.toString()
+
+        val cancelTitle = getString(R.string.trip_cancelled_title)
+        val cancelMessage = getString(
+            R.string.trip_cancelled_message,
+            tripEditViewModel.newTrip.from,
+            tripEditViewModel.newTrip.to,
+            df.format(tripEditViewModel.newTrip.startDateTime.time)
+        )
+        tripEditViewModel.newTrip.carImageUri.toString()
         MainScope().launch {
             var completeResult = true
             var countNotification =0
@@ -489,14 +515,9 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                 val result = MessagingService.sendNotification(
                     tripEditViewModel.getProfileByUid(uid).notificationToken,
                     AndroidNotification(
-                        getString(R.string.request_accepted_title),
-                        getString(
-                            R.string.request_accepted_message,
-                            tripEditViewModel.newTrip.from,
-                            tripEditViewModel.newTrip.to,
-                            df.format(tripEditViewModel.newTrip.startDateTime.time)
-                        ),
-                        tripEditViewModel.newTrip.carImageUri.toString()
+                        acceptedTitle,
+                        acceptedMessage,
+                        carImageUri
                     )
                 )
                 if(!result)
@@ -520,14 +541,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                     val result = MessagingService.sendNotification(
                         tripEditViewModel.getProfileByUid(uid).notificationToken,
                         AndroidNotification(
-                            getString(R.string.seats_finished_title),
-                            getString(
-                                R.string.seats_finished_message,
-                                tripEditViewModel.newTrip.from,
-                                tripEditViewModel.newTrip.to,
-                                df.format(tripEditViewModel.newTrip.startDateTime.time)
-                            ),
-                            tripEditViewModel.newTrip.carImageUri.toString()
+                            finishTitle, finishMessage, carImageUri
                         )
                     )
                     if(!result)
@@ -551,14 +565,7 @@ class TripEditFragment : EditFragment(R.layout.trip_edit_fragment,
                         val result = MessagingService.sendNotification(
                             tripEditViewModel.getProfileByUid(uid).notificationToken,
                             AndroidNotification(
-                                getString(R.string.trip_cancelled_title),
-                                getString(
-                                    R.string.trip_cancelled_message,
-                                    tripEditViewModel.newTrip.from,
-                                    tripEditViewModel.newTrip.to,
-                                    df.format(tripEditViewModel.newTrip.startDateTime.time)
-                                ),
-                                tripEditViewModel.newTrip.carImageUri.toString()
+                               cancelTitle, cancelMessage, carImageUri
                             )
                         )
 
