@@ -27,7 +27,6 @@ open class BaseFragmentWithToolbar(layoutId: Int,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val inflater: MenuInflater = inflater
         inflater.inflate(optionsMenuId, menu)
     }
 
@@ -39,7 +38,7 @@ open class BaseFragmentWithToolbar(layoutId: Int,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        toolbarLayout =  view?.findViewById(R.id.toolbar_layout)
+        toolbarLayout =  view.findViewById(R.id.toolbar_layout)
 
         act.setSupportActionBar(toolbar)
         act.setupActionBarWithNavController(findNavController(), act.appBarConfiguration)
